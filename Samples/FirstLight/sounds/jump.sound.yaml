@@ -1,0 +1,17 @@
+# 같은 소리를 반복하면 금방 질린다. 변주와 랜덤화를 값으로 적는다.
+schema: alice/sound/1
+name: PlayerJump
+bus: sfx
+
+variations:
+  - asset: sfx/jump_01.wav
+  - asset: sfx/jump_02.wav
+  - asset: sfx/jump_03.wav
+    weight: 0.5
+
+pickMode: randomNoRepeat
+volume: [0.75, 0.95]
+pitch: [0.94, 1.06]
+loop: false
+maxInstances: 4
+cooldown: 0.08

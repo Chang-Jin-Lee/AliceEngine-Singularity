@@ -1,0 +1,24 @@
+# 물리 입력을 이름 있는 행동으로 바꾼다.
+# behavior 문서는 키가 아니라 이름을 참조하므로 PC·패드·터치가 같은 콘텐츠로 굴러간다.
+schema: alice/input/1
+name: Default
+
+actions:
+  - name: Jump
+    type: button
+    bindings: [key.space, gamepad.a, touch.tap]
+
+  - name: MoveX
+    type: axis
+    bindings: [key.ad, gamepad.leftStick.x]
+    deadzone: 0.12
+
+  - name: Move
+    type: axis2
+    bindings: [key.wasd, gamepad.leftStick, touch.leftStick]
+    deadzone: 0.12
+
+  - name: Look
+    type: axis2
+    bindings: [mouse.delta, gamepad.rightStick]
+    deadzone: 0.08

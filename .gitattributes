@@ -1,0 +1,12 @@
+# 콘텐츠 문서는 항상 LF. 파서의 열 계산과 진단 스니펫이 플랫폼마다 달라지면 안 된다.
+*        text=auto eol=lf
+*.bat    text eol=crlf
+*.cmd    text eol=crlf
+*.ps1    text eol=crlf
+
+*.png    binary
+*.jpg    binary
+*.wav    binary
+*.ogg    binary
+*.fbx    binary
+*.mesh   binary
