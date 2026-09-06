@@ -131,6 +131,17 @@ public:
     /// 소스 위치. 파서가 채운다. 손으로 만든 값에는 없다.
     Mark mark;
 
+    /// 이 값 앞에 있던 주석 줄들. 빈 문자열은 빈 줄을 뜻한다.
+    ///
+    /// 왜 값이 주석을 들고 다니는가:
+    /// 이 엔진의 핵심 주장은 "읽고 → 고치고 → 되쓴다" 는 고리가 닫힌다는 것이다.
+    /// 되쓸 때 주석이 사라지면 그 고리를 한 번 돌 때마다 사람이 남긴 의도가 지워진다.
+    /// AI 가 씬을 덤프하고 되돌려 넣는 순간 팀의 메모가 전부 날아가면 아무도 그 기능을 안 쓴다.
+    std::vector<std::string> comments;
+
+    /// 같은 줄 뒤에 붙어 있던 주석. `speed: 4.5  # m/s` 의 "m/s".
+    std::string trailingComment;
+
 private:
     void Destroy() noexcept;
     void CopyFrom(const Value& other);

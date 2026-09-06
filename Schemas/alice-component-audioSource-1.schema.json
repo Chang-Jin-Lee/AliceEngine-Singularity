@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-component-audioSource-1.schema.json",
+  "type": "object",
+  "properties": {
+    "sound": {
+      "type": "string",
+      "x-alice-format": "asset-path",
+      "description": "재생할 sound 문서"
+    },
+    "autoPlay": {
+      "type": "boolean",
+      "description": "액터가 살아날 때 바로 재생할지",
+      "default": false
+    },
+    "loop": {
+      "type": "boolean",
+      "description": "반복 재생",
+      "default": false
+    },
+    "volume": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "0..1",
+      "default": 1.0
+    },
+    "pitch": {
+      "type": "number",
+      "description": "재생 속도 배율",
+      "default": 1.0
+    },
+    "spatial": {
+      "type": "boolean",
+      "description": "3D 위치 기반으로 들릴지",
+      "default": true
+    },
+    "minDistance": {
+      "type": "number",
+      "description": "이 거리 안에서는 감쇠 없음(미터)",
+      "default": 1.0
+    },
+    "maxDistance": {
+      "type": "number",
+      "description": "이 거리 밖에서는 들리지 않음(미터)",
+      "default": 50.0
+    }
+  },
+  "required": [
+    "sound"
+  ],
+  "additionalProperties": false,
+  "title": "Audio Source",
+  "description": "이 액터의 위치에서 소리를 낸다",
+  "x-alice-schema-id": "alice/component/audioSource/1"
+}

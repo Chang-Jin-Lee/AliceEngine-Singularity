@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-actor-1.schema.json",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "x-alice-format": "schema-id",
+      "description": "독립 파일일 때는 alice/actor/1. 씬에 인라인이면 생략"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "질의용 태그. 예) [player, damageable]"
+    },
+    "active": {
+      "type": "boolean",
+      "description": "처음부터 켜져 있을지",
+      "default": true
+    },
+    "transform": {
+      "$ref": "./alice-component-transform-1.schema.json",
+      "description": "월드 공간에서의 위치·회전·크기. 모든 액터가 암묵적으로 하나 가진다"
+    },
+    "components": {
+      "type": "object",
+      "properties": {
+        "mesh": {
+          "$ref": "./alice-component-mesh-1.schema.json",
+          "description": "정적/스키닝 메시를 그린다"
+        },
+        "camera": {
+          "$ref": "./alice-component-camera-1.schema.json",
+          "description": "장면을 촬영한다. priority 가 가장 높은 카메라가 화면을 담당한다"
+        },
+        "light": {
+          "$ref": "./alice-component-light-1.schema.json",
+          "description": "장면을 밝힌다"
+        },
+        "rigidbody": {
+          "$ref": "./alice-component-rigidbody-1.schema.json",
+          "description": "물리 시뮬레이션에 참여한다. Collider 가 함께 있어야 의미가 있다"
+        },
+        "collider": {
+          "$ref": "./alice-component-collider-1.schema.json",
+          "description": "충돌 형상. 모양에 따라 쓰는 필드가 다르다"
+        },
+        "audioSource": {
+          "$ref": "./alice-component-audioSource-1.schema.json",
+          "description": "이 액터의 위치에서 소리를 낸다"
+        },
+        "particles": {
+          "$ref": "./alice-component-particles-1.schema.json",
+          "description": "effect 문서를 이 액터 위치에서 재생한다"
+        },
+        "animator": {
+          "$ref": "./alice-component-animator-1.schema.json",
+          "description": "animation 문서의 상태 그래프를 이 액터의 스키닝 메시에 적용한다"
+        }
+      },
+      "additionalProperties": false,
+      "title": "Components",
+      "description": "액터에 붙은 기능들. 키가 컴포넌트 종류다"
+    },
+    "behaviors": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "x-alice-format": "asset-path"
+      },
+      "description": "적용할 behavior 문서 경로 목록"
+    },
+    "children": {
+      "type": "array",
+      "items": {
+        "$ref": "./alice-actor-1.schema.json",
+        "description": "장면에 놓이는 개체 하나. 트랜스폼과 컴포넌트, 그리고 행동으로 이루어진다"
+      },
+      "description": "부모-자식 계층. 자식 트랜스폼은 부모 기준이다"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "additionalProperties": false,
+  "title": "Actor",
+  "description": "장면에 놓이는 개체 하나. 트랜스폼과 컴포넌트, 그리고 행동으로 이루어진다",
+  "x-alice-schema-id": "alice/actor/1"
+}

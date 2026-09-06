@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-component-collider-1.schema.json",
+  "type": "object",
+  "properties": {
+    "shape": {
+      "type": "string",
+      "enum": [
+        "box",
+        "sphere",
+        "capsule",
+        "mesh"
+      ],
+      "description": "충돌 형상"
+    },
+    "size": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3,
+      "description": "box 의 각 축 크기(미터)",
+      "default": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "radius": {
+      "type": "number",
+      "description": "sphere/capsule 반지름(미터)",
+      "default": 0.5
+    },
+    "height": {
+      "type": "number",
+      "description": "capsule 전체 높이(미터)",
+      "default": 2.0
+    },
+    "asset": {
+      "type": "string",
+      "x-alice-format": "asset-path",
+      "description": "mesh 형상일 때의 충돌 메시"
+    },
+    "center": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3,
+      "description": "액터 원점 기준 오프셋",
+      "default": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "isTrigger": {
+      "type": "boolean",
+      "description": "겹침만 감지하고 밀어내지 않을지",
+      "default": false
+    },
+    "layer": {
+      "type": "string",
+      "description": "충돌 레이어 이름",
+      "default": "default"
+    }
+  },
+  "required": [
+    "shape"
+  ],
+  "additionalProperties": false,
+  "title": "Collider",
+  "description": "충돌 형상. 모양에 따라 쓰는 필드가 다르다",
+  "x-alice-schema-id": "alice/component/collider/1"
+}

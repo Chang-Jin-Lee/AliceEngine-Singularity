@@ -1,0 +1,228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-material-1.schema.json",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "x-alice-format": "schema-id",
+      "description": "항상 alice/material/1"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+    },
+    "shader": {
+      "type": "string",
+      "enum": [
+        "pbr",
+        "unlit",
+        "toon",
+        "custom"
+      ],
+      "description": "셰이딩 모델",
+      "default": "pbr"
+    },
+    "customShader": {
+      "type": "string",
+      "x-alice-format": "asset-path",
+      "description": "shader 가 custom 일 때의 셰이더 문서"
+    },
+    "blend": {
+      "type": "string",
+      "enum": [
+        "opaque",
+        "masked",
+        "translucent",
+        "additive"
+      ],
+      "description": "합성 방식. opaque 가 가장 빠르다",
+      "default": "opaque"
+    },
+    "doubleSided": {
+      "type": "boolean",
+      "description": "뒷면도 그릴지. 켜면 드로우 비용이 는다",
+      "default": false
+    },
+    "params": {
+      "type": "object",
+      "properties": {
+        "baseColor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "x-alice-format": "color-hex",
+              "description": "16진 색상. 예) \"#ff8800\""
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            }
+          ],
+          "description": "색상. \"#rrggbb\" 문자열 또는 [r, g, b, a] 배열(0..1)"
+        },
+        "metallic": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "0=비금속, 1=금속"
+        },
+        "roughness": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "0=거울, 1=완전 확산"
+        },
+        "emissive": {
+          "anyOf": [
+            {
+              "type": "string",
+              "x-alice-format": "color-hex",
+              "description": "16진 색상. 예) \"#ff8800\""
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            }
+          ],
+          "description": "색상. \"#rrggbb\" 문자열 또는 [r, g, b, a] 배열(0..1)"
+        },
+        "emissiveIntensity": {
+          "type": "number",
+          "description": "발광 세기"
+        },
+        "opacity": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "불투명도"
+        },
+        "alphaCutoff": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "masked 일 때의 컷오프"
+        },
+        "normalStrength": {
+          "type": "number",
+          "description": "노멀맵 강도"
+        }
+      },
+      "additionalProperties": false,
+      "title": "Material Params",
+      "description": "셰이딩 파라미터"
+    },
+    "textures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "slot": {
+            "type": "string",
+            "enum": [
+              "baseColor",
+              "normal",
+              "metallicRoughness",
+              "occlusion",
+              "emissive",
+              "opacity",
+              "custom0",
+              "custom1"
+            ],
+            "description": "셰이더의 어느 슬롯에 꽂을지"
+          },
+          "asset": {
+            "type": "string",
+            "x-alice-format": "asset-path",
+            "description": "텍스처 애셋 경로"
+          },
+          "wrap": {
+            "type": "string",
+            "enum": [
+              "repeat",
+              "clamp",
+              "mirror"
+            ],
+            "description": "UV 반복 방식",
+            "default": "repeat"
+          },
+          "filter": {
+            "type": "string",
+            "enum": [
+              "linear",
+              "point",
+              "anisotropic"
+            ],
+            "description": "샘플링 방식",
+            "default": "linear"
+          },
+          "tiling": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "UV 배율"
+          },
+          "offset": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "UV 오프셋"
+          }
+        },
+        "required": [
+          "slot",
+          "asset"
+        ],
+        "additionalProperties": false,
+        "title": "Texture Binding"
+      },
+      "description": "텍스처 바인딩 목록"
+    }
+  },
+  "required": [
+    "schema",
+    "name"
+  ],
+  "additionalProperties": false,
+  "title": "Material",
+  "description": "표면이 빛에 어떻게 반응하는지. 셰이더 코드를 쓰지 않고 값으로 기술한다",
+  "x-alice-pitfalls": [
+    {
+      "wrong": "baseColor: #ff8800",
+      "right": "baseColor: \"#ff8800\"",
+      "why": "YAML 에서 공백 뒤의 # 는 주석이다. 색상 문자열은 반드시 따옴표로 감싼다"
+    }
+  ],
+  "x-alice-schema-id": "alice/material/1"
+}

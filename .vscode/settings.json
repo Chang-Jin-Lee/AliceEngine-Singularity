@@ -1,0 +1,24 @@
+{
+  // 생성된 JSON Schema 를 콘텐츠 문서에 물린다.
+  // `alice schema emit Schemas` 로 갱신한다.
+  //
+  // 이걸 켜두면 에디터가 필드 자동완성과 오타 검사를 해준다.
+  // 사람이 손으로 쓸 때 alice check 까지 가기 전에 잡힌다.
+  "yaml.schemas": {
+    "./Schemas/alice-project-1.schema.json": ["**/project.yaml", "**/*.project.yaml"],
+    "./Schemas/alice-scene-1.schema.json": "**/*.scene.yaml",
+    "./Schemas/alice-actor-1.schema.json": "**/*.actor.yaml",
+    "./Schemas/alice-behavior-1.schema.json": "**/*.behavior.yaml",
+    "./Schemas/alice-material-1.schema.json": "**/*.material.yaml",
+    "./Schemas/alice-animation-1.schema.json": "**/*.animation.yaml",
+    "./Schemas/alice-effect-1.schema.json": "**/*.effect.yaml",
+    "./Schemas/alice-sound-1.schema.json": "**/*.sound.yaml",
+    "./Schemas/alice-physics-1.schema.json": "**/*.physics.yaml",
+    "./Schemas/alice-input-1.schema.json": "**/*.input.yaml"
+  },
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "C_Cpp.default.cppStandard": "c++20",
+  "cmake.configureArgs": ["-DALICE_WARNINGS_AS_ERRORS=ON"]
+}

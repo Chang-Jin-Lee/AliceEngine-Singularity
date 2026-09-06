@@ -61,6 +61,8 @@ Value::Value(const Value& other) { CopyFrom(other); }
 
 Value::Value(Value&& other) noexcept
     : mark(other.mark),
+      comments(std::move(other.comments)),
+      trailingComment(std::move(other.trailingComment)),
       m_kind(other.m_kind),
       m_scalar(other.m_scalar),
       m_string(std::move(other.m_string)),
@@ -76,8 +78,10 @@ Value& Value::operator=(const Value& other) {
 
 Value& Value::operator=(Value&& other) noexcept {
     if (this != &other) {
-        mark     = other.mark;
-        m_kind   = other.m_kind;
+        mark            = other.mark;
+        comments        = std::move(other.comments);
+        trailingComment = std::move(other.trailingComment);
+        m_kind          = other.m_kind;
         m_scalar = other.m_scalar;
         m_string = std::move(other.m_string);
         m_seq    = std::move(other.m_seq);
@@ -97,7 +101,9 @@ void Value::Destroy() noexcept {
 }
 
 void Value::CopyFrom(const Value& other) {
-    mark     = other.mark;
+    mark            = other.mark;
+    comments        = other.comments;
+    trailingComment = other.trailingComment;
     m_kind   = other.m_kind;
     m_scalar = other.m_scalar;
     m_string = other.m_string;

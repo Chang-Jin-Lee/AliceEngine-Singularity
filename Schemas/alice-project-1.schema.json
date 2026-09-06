@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-project-1.schema.json",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "x-alice-format": "schema-id",
+      "description": "항상 alice/project/1"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+    },
+    "version": {
+      "type": "string",
+      "description": "프로젝트 버전 문자열",
+      "default": "0.1.0"
+    },
+    "startScene": {
+      "type": "string",
+      "x-alice-format": "asset-path",
+      "description": "실행 시 처음 여는 씬"
+    },
+    "contentRoot": {
+      "type": "string",
+      "description": "콘텐츠 문서들의 루트 디렉터리",
+      "default": "Content"
+    },
+    "renderer": {
+      "type": "object",
+      "properties": {
+        "backend": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "d3d11",
+            "d3d12",
+            "vulkan",
+            "metal",
+            "null"
+          ],
+          "description": "그래픽 백엔드. auto 면 플랫폼에 맞게 고른다",
+          "default": "auto"
+        },
+        "vsync": {
+          "type": "boolean",
+          "description": "수직동기",
+          "default": true
+        },
+        "targetFrameRate": {
+          "type": "integer",
+          "description": "목표 프레임레이트",
+          "default": 60
+        },
+        "resolution": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "기본 창 해상도 [width, height]"
+        },
+        "msaa": {
+          "type": "string",
+          "enum": [
+            "off",
+            "2x",
+            "4x",
+            "8x"
+          ],
+          "description": "멀티샘플링",
+          "default": "off"
+        }
+      },
+      "additionalProperties": false,
+      "title": "Renderer Settings",
+      "description": "렌더링 설정"
+    },
+    "budgets": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+        "type": "number"
+      },
+      "description": "프로파일러 존별 프레임 예산(밀리초). 넘으면 구조화 로그가 나간다. 예) { Frame: 16.6, Render: 8.0, Physics: 2.0 }"
+    },
+    "logging": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": [
+            "trace",
+            "debug",
+            "info",
+            "warn",
+            "error",
+            "fatal",
+            "off"
+          ],
+          "description": "전역 로그 레벨",
+          "default": "info"
+        },
+        "channels": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "채널별 레벨 오버라이드. 예) { rhi: warn }"
+        },
+        "jsonlPath": {
+          "type": "string",
+          "description": "구조화 로그(NDJSON) 출력 경로",
+          "default": "Logs/alice.jsonl"
+        }
+      },
+      "additionalProperties": false,
+      "title": "Logging Settings",
+      "description": "로깅 설정"
+    },
+    "platforms": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "windows",
+          "macos",
+          "linux",
+          "ios",
+          "android",
+          "console"
+        ]
+      },
+      "description": "빌드 대상 플랫폼"
+    }
+  },
+  "required": [
+    "schema",
+    "name",
+    "startScene"
+  ],
+  "additionalProperties": false,
+  "title": "Project",
+  "description": "프로젝트 전체 설정. 엔진이 가장 먼저 읽는 문서다",
+  "x-alice-schema-id": "alice/project/1"
+}

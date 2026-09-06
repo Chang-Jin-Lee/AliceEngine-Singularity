@@ -139,7 +139,17 @@ public:
         SplitLines();
         SkipLeadingDirectives();
 
+        // 문서 맨 앞의 주석은 루트가 가져간다. 대개 이 파일이 무엇인지 설명하는 머리말이다.
+        SkipBlank();
+        std::vector<std::string> header = std::move(m_pending);
+        m_pending.clear();
+
         outRoot = ParseNode(-1, 0);
+
+        if (!header.empty()) {
+            while (!header.empty() && header.back().empty()) header.pop_back();
+            outRoot.comments = std::move(header);
+        }
 
         // 남은 줄이 있으면 구조가 어긋난 것이다. 조용히 버리지 않는다.
         SkipBlank();
@@ -223,8 +233,21 @@ private:
     bool  AtEnd() const noexcept { return m_index >= m_lines.size(); }
     Line& Cur() noexcept { return m_lines[m_index]; }
     void  Advance() noexcept { ++m_index; }
-    void  SkipBlank() noexcept {
-        while (m_index < m_lines.size() && m_lines[m_index].blank) ++m_index;
+
+    /// 빈 줄과 주석 줄을 건너뛰되 **버리지 않고 모은다.**
+    /// 다음에 나오는 값이 이걸 가져가 자기 앞머리 주석으로 삼는다.
+    /// 그래야 저장할 때 사람이 남긴 메모가 제자리로 돌아간다.
+    void SkipBlank() noexcept {
+        while (m_index < m_lines.size() && m_lines[m_index].blank) {
+            const Line& l = m_lines[m_index];
+            if (!l.comment.empty()) {
+                m_pending.push_back(l.comment);
+            } else if (!m_pending.empty() && !m_pending.back().empty()) {
+                // 빈 줄은 하나로 접는다. 여러 개를 그대로 두면 저장할 때마다 파일이 늘어난다.
+                m_pending.emplace_back();
+            }
+            ++m_index;
+        }
     }
 
     Mark MarkOf(const Line& l) const noexcept {
@@ -309,6 +332,15 @@ private:
             }
             if (!IsSeqEntry(Cur().content)) break;   // 같은 들여쓰기의 맵 키 → 시퀀스 끝
 
+            std::vector<std::string> itemComments = std::move(m_pending);
+            m_pending.clear();
+            while (!itemComments.empty() && itemComments.front().empty()) {
+                itemComments.erase(itemComments.begin());
+            }
+            while (!itemComments.empty() && itemComments.back().empty()) {
+                itemComments.pop_back();
+            }
+
             const usize lineIdx = m_index;
             Line& line = m_lines[lineIdx];
 
@@ -319,7 +351,9 @@ private:
             if (p >= line.content.size()) {
                 // "-" 만 있는 줄 → 값은 다음 블록에 있다.
                 Advance();
-                seq.Push(ParseNode(indent, depth + 1));
+                Value item = ParseNode(indent, depth + 1);
+                item.comments = std::move(itemComments);
+                seq.Push(std::move(item));
                 continue;
             }
 
@@ -332,15 +366,17 @@ private:
             line.indent        = static_cast<u32>(newInd);
             line.contentColumn = newCol;
 
+            Value item;
             if (IsSeqEntry(rest)) {
-                seq.Push(ParseBlockSeq(newInd, depth + 1));
+                item = ParseBlockSeq(newInd, depth + 1);
             } else if (FindKeyColon(rest) != kNpos) {
-                seq.Push(ParseBlockMap(newInd, depth + 1));
+                item = ParseBlockMap(newInd, depth + 1);
             } else {
-                Value item = ParseFlowOrScalar(rest, m_lines[lineIdx], newCol, depth + 1);
+                item = ParseFlowOrScalar(rest, m_lines[lineIdx], newCol, depth + 1);
                 Advance();
-                seq.Push(std::move(item));
             }
+            item.comments = std::move(itemComments);
+            seq.Push(std::move(item));
         }
         return seq;
     }
@@ -362,6 +398,9 @@ private:
                 continue;
             }
             if (IsSeqEntry(Cur().content)) break;   // 같은 들여쓰기의 시퀀스 → 맵 끝
+
+            std::vector<std::string> entryComments = std::move(m_pending);
+            m_pending.clear();
 
             const usize lineIdx = m_index;
             const Line& line = m_lines[lineIdx];
@@ -419,6 +458,16 @@ private:
                 value = ParseFlowOrScalar(rest, m_lines[lineIdx], restCol, depth + 1);
                 Advance();
             }
+
+            // 주석은 값이 완성된 뒤에 붙인다. 값 파싱 중에 m_pending 이 다시 채워지기 때문이다.
+            while (!entryComments.empty() && entryComments.front().empty()) {
+                entryComments.erase(entryComments.begin());
+            }
+            while (!entryComments.empty() && entryComments.back().empty()) {
+                entryComments.pop_back();
+            }
+            value.comments = std::move(entryComments);
+            if (!line.comment.empty() && !rest.empty()) value.trailingComment = line.comment;
 
             if (map.Has(key)) {
                 if (m_opts.duplicateKeyIsError) {
@@ -816,8 +865,9 @@ private:
     std::string_view        m_text;
     DiagnosticBag&          m_diags;
     const YamlParseOptions& m_opts;
-    std::vector<Line>       m_lines;
-    usize                   m_index = 0;
+    std::vector<Line>        m_lines;
+    usize                    m_index = 0;
+    std::vector<std::string> m_pending;   ///< 아직 값에 붙이지 못한 주석/빈 줄
 };
 
 } // namespace

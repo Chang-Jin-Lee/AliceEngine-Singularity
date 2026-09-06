@@ -23,6 +23,13 @@ struct YamlWriteOptions {
     u32  compactSeqMaxItems = 6;
     /// 여러 줄 문자열을 블록 스칼라(|)로 쓴다. 끄면 "\n" 이스케이프로 나간다.
     bool useBlockScalars = true;
+
+    /// 짧고 스칼라만 있는 맵을 `{a: 1, b: 2}` 한 줄로 쓴다.
+    /// 동작 인자처럼 두세 개짜리 맵이 두 줄씩 차지하면 규칙 목록이 금세 안 읽힌다.
+    bool compactScalarMap = true;
+    u32  compactMapMaxEntries = 3;
+    /// 한 줄로 접었을 때 이 길이를 넘으면 접지 않는다.
+    u32  compactLineLimit = 76;
 };
 
 struct JsonWriteOptions {

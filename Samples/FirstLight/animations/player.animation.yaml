@@ -2,26 +2,13 @@
 # 전이 조건은 behavior 와 같은 식 문법을 쓴다 — 배울 문법이 하나뿐이다.
 schema: alice/animation/1
 name: PlayerLocomotion
-
 clips:
-  - name: Idle
-    asset: anims/player_idle.anim
-    loop: true
-  - name: Run
-    asset: anims/player_run.anim
-    loop: true
-  - name: Jump
-    asset: anims/player_jump.anim
-    loop: false
-  - name: Fall
-    asset: anims/player_fall.anim
-    loop: true
-
+  - { name: Idle, asset: anims/player_idle.anim, loop: true }
+  - { name: Run, asset: anims/player_run.anim, loop: true }
+  - { name: Jump, asset: anims/player_jump.anim, loop: false }
+  - { name: Fall, asset: anims/player_fall.anim, loop: true }
 parameters:
-  speed:
-    type: float
-    default: 0
-    description: 수평 이동 속도(m/s)
+  speed: { type: float, default: 0, description: 수평 이동 속도(m/s) }
   airborne:
     type: bool
     default: false
@@ -29,40 +16,23 @@ parameters:
   jump:
     type: trigger
     description: 점프한 그 프레임에 한 번 켜진다
-
 defaultState: Idle
-
 states:
   - name: Idle
     clip: Idle
     transitions:
-      - to: Run
-        when: speed > 0.1
-        duration: 0.15
-      - to: Jump
-        when: jump
-        duration: 0.05
-
+      - { to: Run, when: speed > 0.1, duration: 0.15 }
+      - { to: Jump, when: jump, duration: 0.05 }
   - name: Run
     clip: Run
     transitions:
-      - to: Idle
-        when: speed <= 0.1
-        duration: 0.2
-      - to: Jump
-        when: jump
-        duration: 0.05
-
+      - { to: Idle, when: speed <= 0.1, duration: 0.2 }
+      - { to: Jump, when: jump, duration: 0.05 }
   - name: Jump
     clip: Jump
     transitions:
-      - to: Fall
-        when: anim.normalizedTime > 0.8
-        duration: 0.1
-
+      - { to: Fall, when: anim.normalizedTime > 0.8, duration: 0.1 }
   - name: Fall
     clip: Fall
     transitions:
-      - to: Idle
-        when: not airborne
-        duration: 0.15
+      - { to: Idle, when: not airborne, duration: 0.15 }

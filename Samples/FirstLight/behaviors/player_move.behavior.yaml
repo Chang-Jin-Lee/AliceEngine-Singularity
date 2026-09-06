@@ -1,22 +1,17 @@
 # 이 파일이 언리얼의 C++ 클래스와 유니티의 MonoBehaviour 자리를 대신한다.
-#
+
 # 규칙은 선언적이다. 순서에 의존하지 않고, 조건이 참이 될 때만 실행된다.
 # 상태를 읽는 일은 when: 의 식이, 상태를 바꾸는 일은 do: 의 동사가 한다.
 # 그 분리가 있어야 규칙들을 어떤 순서로 평가해도 결과가 같다.
 schema: alice/behavior/1
 name: PlayerMovement
-
-variables:
-  jumpCount: 0
-  maxJumps: 2
-
+variables: { jumpCount: 0, maxJumps: 2 }
 rules:
   # 바닥에 닿으면 점프 횟수를 되돌린다.
   - when: physics.grounded and jumpCount > 0
     do:
       - var.set: { name: jumpCount, value: 0 }
       - anim.set: { parameter: airborne, value: false }
-
   # 점프. 공중에서도 한 번 더 뛸 수 있다.
   - when: input.pressed("Jump") and jumpCount < maxJumps
     do:
@@ -29,22 +24,16 @@ rules:
       - log.write:
           event: gameplay.player.jumped
           message: 플레이어가 점프했다
-          fields:
-            jumpCount: 1
-
+          fields: { jumpCount: 1 }
   # 이동. 축 입력을 그대로 속도로 옮긴다.
   - when: math.abs(input.axis("MoveX")) > 0.1
     do:
-      - transform.translate:
-          delta: [1, 0, 0]
-          space: local
+      - transform.translate: { delta: [1, 0, 0], space: local }
       - anim.set: { parameter: speed, value: 4.0 }
-
   # 멈춤.
   - when: math.abs(input.axis("MoveX")) <= 0.1 and physics.grounded
     do:
       - anim.set: { parameter: speed, value: 0.0 }
-
   # 낙사. 씬을 다시 연다.
   - when: physics.velocityY < -25
     once: true

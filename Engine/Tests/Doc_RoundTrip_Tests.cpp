@@ -202,3 +202,108 @@ ALICE_TEST(Document, FormatDetection) {
     ALICE_CHECK(DetectSyntax("noext", "  {\"a\":1}") == Syntax::Json);
     ALICE_CHECK(DetectSyntax("noext", "a: 1") == Syntax::Yaml);
 }
+
+// ── 주석 보존 ──────────────────────────────────────────────────────────────
+//
+// 주석을 잃는 포맷터는 아무도 쓰지 않는다. 그리고 이 엔진의 핵심 주장은
+// "읽고 → 고치고 → 되쓰는" 고리가 닫힌다는 것인데, 그 고리를 한 번 돌 때마다
+// 사람이 남긴 의도가 지워지면 그 주장이 무의미해진다.
+
+ALICE_TEST(Comments, LeadingCommentsSurviveRoundTrip) {
+    const char* src =
+        "# 이 문서가 무엇인지\n"
+        "schema: alice/material/1\n"
+        "\n"
+        "# 표면 파라미터\n"
+        "params:\n"
+        "  # 금속성. 0이면 비금속\n"
+        "  metallic: 1.0\n";
+
+    DiagnosticBag bag;
+    Value v;
+    ALICE_REQUIRE(ParseYaml(src, v, bag));
+
+    const std::string out = ToYaml(v);
+    ALICE_CHECK_MSG(out.find("이 문서가 무엇인지") != std::string::npos,
+                    "문서 머리말 주석이 사라졌다:\n" + out);
+    ALICE_CHECK_MSG(out.find("표면 파라미터") != std::string::npos,
+                    "필드 주석이 사라졌다:\n" + out);
+    ALICE_CHECK_MSG(out.find("금속성") != std::string::npos,
+                    "중첩된 필드의 주석이 사라졌다:\n" + out);
+}
+
+ALICE_TEST(Comments, TrailingCommentsSurvive) {
+    DiagnosticBag bag;
+    Value v;
+    ALICE_REQUIRE(ParseYaml("speed: 4.5  # m/s\nname: X\n", v, bag));
+
+    const std::string out = ToYaml(v);
+    ALICE_CHECK_MSG(out.find("# m/s") != std::string::npos,
+                    "줄 끝 주석이 사라졌다:\n" + out);
+}
+
+ALICE_TEST(Comments, SequenceItemCommentsSurvive) {
+    const char* src =
+        "rules:\n"
+        "  # 첫 번째 규칙\n"
+        "  - when: a\n"
+        "  # 두 번째 규칙\n"
+        "  - when: b\n";
+
+    DiagnosticBag bag;
+    Value v;
+    ALICE_REQUIRE(ParseYaml(src, v, bag));
+
+    const std::string out = ToYaml(v);
+    ALICE_CHECK_MSG(out.find("첫 번째 규칙") != std::string::npos, out);
+    ALICE_CHECK_MSG(out.find("두 번째 규칙") != std::string::npos, out);
+}
+
+ALICE_TEST(Comments, FormattingIsIdempotent) {
+    // 두 번 정리하면 첫 번째와 같은 결과가 나와야 한다.
+    // 그렇지 않으면 `fmt --check` 를 CI 게이트로 쓸 수 없다.
+    const char* src =
+        "# 머리말\n"
+        "schema: alice/behavior/1\n"
+        "rules:\n"
+        "  # 규칙 하나\n"
+        "  - when: physics.grounded\n"
+        "    do:\n"
+        "      - var.set: { name: x, value: 0 }\n"
+        "      - audio.play:\n"
+        "          sound: sounds/a.sound.yaml\n";
+
+    DiagnosticBag bag1;
+    Value first;
+    ALICE_REQUIRE(ParseYaml(src, first, bag1));
+    const std::string once = ToYaml(first);
+
+    DiagnosticBag bag2;
+    Value second;
+    ALICE_REQUIRE_MSG(ParseYaml(once, second, bag2), once + "\n" + bag2.ToPretty());
+    const std::string twice = ToYaml(second);
+
+    ALICE_CHECK_STR(twice, once);
+    ALICE_CHECK_MSG(once.find("머리말") != std::string::npos, once);
+    ALICE_CHECK_MSG(once.find("규칙 하나") != std::string::npos, once);
+}
+
+ALICE_TEST(Comments, CommentsDoNotAffectValueEquality) {
+    // DeepEquals 는 값만 본다. 주석이 달라도 같은 문서다.
+    DiagnosticBag bagA, bagB;
+    Value a, b;
+    ALICE_REQUIRE(ParseYaml("# 주석 있음\nx: 1\n", a, bagA));
+    ALICE_REQUIRE(ParseYaml("x: 1\n", b, bagB));
+    ALICE_CHECK(a.DeepEquals(b));
+}
+
+ALICE_TEST(Comments, ShortArgMapsStayOnOneLine) {
+    // 동작 인자가 두 줄씩 차지하면 규칙 목록이 세 배로 길어져 눈으로 훑을 수 없다.
+    DiagnosticBag bag;
+    Value v;
+    ALICE_REQUIRE(ParseYaml("do:\n  - var.set: { name: x, value: 0 }\n", v, bag));
+
+    const std::string out = ToYaml(v);
+    ALICE_CHECK_MSG(out.find("{ name: x, value: 0 }") != std::string::npos,
+                    "짧은 인자 맵은 한 줄로 유지되어야 한다:\n" + out);
+}

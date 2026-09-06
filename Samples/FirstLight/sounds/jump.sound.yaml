@@ -2,13 +2,10 @@
 schema: alice/sound/1
 name: PlayerJump
 bus: sfx
-
 variations:
-  - asset: sfx/jump_01.wav
-  - asset: sfx/jump_02.wav
-  - asset: sfx/jump_03.wav
-    weight: 0.5
-
+  - { asset: sfx/jump_01.wav }
+  - { asset: sfx/jump_02.wav }
+  - { asset: sfx/jump_03.wav, weight: 0.5 }
 pickMode: randomNoRepeat
 volume: [0.75, 0.95]
 pitch: [0.94, 1.06]

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-component-mesh-1.schema.json",
+  "type": "object",
+  "properties": {
+    "asset": {
+      "type": "string",
+      "x-alice-format": "asset-path",
+      "description": "메시 애셋 경로"
+    },
+    "materials": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "x-alice-format": "asset-path"
+      },
+      "description": "서브메시 순서대로의 머티리얼. 개수가 모자라면 마지막 것이 반복된다"
+    },
+    "castShadow": {
+      "type": "boolean",
+      "description": "그림자를 드리울지",
+      "default": true
+    },
+    "receiveShadow": {
+      "type": "boolean",
+      "description": "그림자를 받을지",
+      "default": true
+    },
+    "visible": {
+      "type": "boolean",
+      "description": "화면에 보일지",
+      "default": true
+    },
+    "lodBias": {
+      "type": "number",
+      "description": "LOD 전환 거리 배율. 1 이 기본",
+      "default": 1.0
+    }
+  },
+  "required": [
+    "asset"
+  ],
+  "additionalProperties": false,
+  "title": "Mesh",
+  "description": "정적/스키닝 메시를 그린다",
+  "x-alice-schema-id": "alice/component/mesh/1"
+}

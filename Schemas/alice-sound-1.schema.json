@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-sound-1.schema.json",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "x-alice-format": "schema-id",
+      "description": "항상 alice/sound/1"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+    },
+    "bus": {
+      "type": "string",
+      "enum": [
+        "master",
+        "music",
+        "sfx",
+        "voice",
+        "ambient",
+        "ui"
+      ],
+      "description": "믹서 버스",
+      "default": "sfx"
+    },
+    "variations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "asset": {
+            "type": "string",
+            "x-alice-format": "asset-path",
+            "description": "오디오 파일 경로"
+          },
+          "weight": {
+            "type": "number",
+            "description": "선택 확률 가중치",
+            "default": 1.0
+          }
+        },
+        "required": [
+          "asset"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "description": "같은 소리의 변주들"
+    },
+    "pickMode": {
+      "type": "string",
+      "enum": [
+        "random",
+        "randomNoRepeat",
+        "sequential",
+        "shuffle"
+      ],
+      "description": "여러 변주 중 고르는 방식",
+      "default": "randomNoRepeat"
+    },
+    "volume": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      ],
+      "description": "단일 값 또는 [최소, 최대] 범위"
+    },
+    "pitch": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        }
+      ],
+      "description": "단일 값 또는 [최소, 최대] 범위"
+    },
+    "loop": {
+      "type": "boolean",
+      "description": "반복 재생",
+      "default": false
+    },
+    "maxInstances": {
+      "type": "integer",
+      "description": "동시에 울릴 수 있는 최대 개수",
+      "default": 8
+    },
+    "cooldown": {
+      "type": "number",
+      "description": "같은 소리의 최소 재생 간격(초)",
+      "default": 0.0
+    }
+  },
+  "required": [
+    "schema",
+    "name",
+    "variations"
+  ],
+  "additionalProperties": false,
+  "title": "Sound",
+  "description": "소리 하나의 정의. 변주와 랜덤화를 값으로 기술해 반복감을 없앤다",
+  "x-alice-schema-id": "alice/sound/1"
+}

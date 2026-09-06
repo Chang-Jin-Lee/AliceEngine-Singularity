@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-scene-1.schema.json",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "x-alice-format": "schema-id",
+      "description": "항상 alice/scene/1"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+    },
+    "environment": {
+      "type": "object",
+      "properties": {
+        "skybox": {
+          "type": "string",
+          "x-alice-format": "asset-path",
+          "description": "HDR 스카이박스 텍스처"
+        },
+        "ambientColor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "x-alice-format": "color-hex",
+              "description": "16진 색상. 예) \"#ff8800\""
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            }
+          ],
+          "description": "색상. \"#rrggbb\" 문자열 또는 [r, g, b, a] 배열(0..1)",
+          "default": "#202028"
+        },
+        "ambientIntensity": {
+          "type": "number",
+          "description": "앰비언트 세기",
+          "default": 1.0
+        },
+        "gravity": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "중력 가속도(m/s²)",
+          "default": [
+            0.0,
+            -9.81,
+            0.0
+          ]
+        },
+        "fogEnabled": {
+          "type": "boolean",
+          "description": "안개를 쓸지",
+          "default": false
+        },
+        "fogColor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "x-alice-format": "color-hex",
+              "description": "16진 색상. 예) \"#ff8800\""
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            }
+          ],
+          "description": "색상. \"#rrggbb\" 문자열 또는 [r, g, b, a] 배열(0..1)",
+          "default": "#8090a0"
+        },
+        "fogDensity": {
+          "type": "number",
+          "description": "안개 밀도",
+          "default": 0.02
+        }
+      },
+      "additionalProperties": false,
+      "title": "Environment",
+      "description": "씬 전체에 걸리는 설정"
+    },
+    "actors": {
+      "type": "array",
+      "items": {
+        "$ref": "./alice-actor-1.schema.json",
+        "description": "장면에 놓이는 개체 하나. 트랜스폼과 컴포넌트, 그리고 행동으로 이루어진다"
+      },
+      "description": "이 씬의 액터들"
+    },
+    "preload": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "x-alice-format": "asset-path"
+      },
+      "description": "씬 진입 전에 미리 올려둘 애셋. 첫 프레임 히칭을 막는다"
+    }
+  },
+  "required": [
+    "schema",
+    "name"
+  ],
+  "additionalProperties": false,
+  "title": "Scene",
+  "description": "액터들이 놓인 하나의 세계. 게임은 씬의 연속이다",
+  "x-alice-schema-id": "alice/scene/1"
+}

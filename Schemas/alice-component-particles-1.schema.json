@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-component-particles-1.schema.json",
+  "type": "object",
+  "properties": {
+    "effect": {
+      "type": "string",
+      "x-alice-format": "asset-path",
+      "description": "effect 문서 경로"
+    },
+    "playOnStart": {
+      "type": "boolean",
+      "description": "액터가 살아날 때 바로 재생",
+      "default": true
+    },
+    "loop": {
+      "type": "boolean",
+      "description": "끝나면 다시 시작",
+      "default": false
+    }
+  },
+  "required": [
+    "effect"
+  ],
+  "additionalProperties": false,
+  "title": "Particles",
+  "description": "effect 문서를 이 액터 위치에서 재생한다",
+  "x-alice-schema-id": "alice/component/particles/1"
+}

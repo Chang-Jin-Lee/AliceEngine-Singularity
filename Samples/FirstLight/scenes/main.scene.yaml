@@ -1,76 +1,61 @@
 schema: alice/scene/1
 name: MainLevel
-
 environment:
-  ambientColor: "#2a2f3a"      # 색상은 반드시 따옴표. 안 그러면 YAML 이 주석으로 먹는다
+  ambientColor: "#2a2f3a"  # 색상은 반드시 따옴표. 안 그러면 YAML 이 주석으로 먹는다
   ambientIntensity: 0.8
   gravity: [0, -9.81, 0]
   fogEnabled: true
   fogColor: "#7d8fa6"
   fogDensity: 0.015
-
 # 첫 프레임 히칭을 막으려고 미리 올려둔다.
 preload:
   - materials/steel.material.yaml
   - sounds/jump.sound.yaml
   - effects/dust.effect.yaml
-
 actors:
   - name: Sun
-    transform:
-      rotation: [-50, -30, 0]
+    transform: { rotation: [-50, -30, 0] }
     components:
       light:
         type: directional
         color: "#fff4e0"
         intensity: 3.2
         castShadow: true
-
   - name: Ground
-    transform:
-      position: [0, 0, 0]
-      scale: [40, 1, 40]
+    transform: { position: [0, 0, 0], scale: [40, 1, 40] }
     components:
       mesh:
         asset: meshes/plane.mesh
-        materials: [materials/steel.material.yaml]
+        materials:
+          - materials/steel.material.yaml
         castShadow: false
-      collider:
-        shape: box
-        size: [40, 0.1, 40]
+      collider: { shape: box, size: [40, 0.1, 40] }
       rigidbody:
         mass: 0.001
-        kinematic: true          # 바닥은 힘을 받지 않는다
+        kinematic: true  # 바닥은 힘을 받지 않는다
         useGravity: false
-
   - name: Player
-    tags: [player, damageable]
-    transform:
-      position: [0, 1, 0]
+    tags:
+      - player
+      - damageable
+    transform: { position: [0, 1, 0] }
     components:
       mesh:
         asset: meshes/capsule.mesh
-        materials: [materials/steel.material.yaml]
-      rigidbody:
-        mass: 70
-        freezeRotation: [true, false, true]
+        materials:
+          - materials/steel.material.yaml
+      rigidbody: { mass: 70, freezeRotation: [true, false, true] }
       collider:
         shape: capsule
         radius: 0.35
         height: 1.8
         center: [0, 0.9, 0]
-      animator:
-        animation: animations/player.animation.yaml
-      audioSource:
-        sound: sounds/jump.sound.yaml
-        spatial: true
+      animator: { animation: animations/player.animation.yaml }
+      audioSource: { sound: sounds/jump.sound.yaml, spatial: true }
     behaviors:
       - behaviors/player_move.behavior.yaml
-
   - name: MainCamera
-    transform:
-      position: [0, 3, -7]
-      rotation: [12, 0, 0]
+    transform: { position: [0, 3, -7], rotation: [12, 0, 0] }
     components:
       camera:
         projection: perspective

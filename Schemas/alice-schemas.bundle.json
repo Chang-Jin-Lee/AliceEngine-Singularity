@@ -1,0 +1,1860 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-schemas.json",
+  "title": "AliceEngine-Singularity content schemas",
+  "description": "이 엔진이 아는 모든 문서 타입. 각 항목의 키가 문서의 schema: 필드 값이다",
+  "$defs": {
+    "alice/actor/1": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "type": "string",
+          "x-alice-format": "schema-id",
+          "description": "독립 파일일 때는 alice/actor/1. 씬에 인라인이면 생략"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "질의용 태그. 예) [player, damageable]"
+        },
+        "active": {
+          "type": "boolean",
+          "description": "처음부터 켜져 있을지",
+          "default": true
+        },
+        "transform": {
+          "$ref": "./alice-component-transform-1.schema.json",
+          "description": "월드 공간에서의 위치·회전·크기. 모든 액터가 암묵적으로 하나 가진다"
+        },
+        "components": {
+          "type": "object",
+          "properties": {
+            "mesh": {
+              "$ref": "./alice-component-mesh-1.schema.json",
+              "description": "정적/스키닝 메시를 그린다"
+            },
+            "camera": {
+              "$ref": "./alice-component-camera-1.schema.json",
+              "description": "장면을 촬영한다. priority 가 가장 높은 카메라가 화면을 담당한다"
+            },
+            "light": {
+              "$ref": "./alice-component-light-1.schema.json",
+              "description": "장면을 밝힌다"
+            },
+            "rigidbody": {
+              "$ref": "./alice-component-rigidbody-1.schema.json",
+              "description": "물리 시뮬레이션에 참여한다. Collider 가 함께 있어야 의미가 있다"
+            },
+            "collider": {
+              "$ref": "./alice-component-collider-1.schema.json",
+              "description": "충돌 형상. 모양에 따라 쓰는 필드가 다르다"
+            },
+            "audioSource": {
+              "$ref": "./alice-component-audioSource-1.schema.json",
+              "description": "이 액터의 위치에서 소리를 낸다"
+            },
+            "particles": {
+              "$ref": "./alice-component-particles-1.schema.json",
+              "description": "effect 문서를 이 액터 위치에서 재생한다"
+            },
+            "animator": {
+              "$ref": "./alice-component-animator-1.schema.json",
+              "description": "animation 문서의 상태 그래프를 이 액터의 스키닝 메시에 적용한다"
+            }
+          },
+          "additionalProperties": false,
+          "title": "Components",
+          "description": "액터에 붙은 기능들. 키가 컴포넌트 종류다"
+        },
+        "behaviors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "x-alice-format": "asset-path"
+          },
+          "description": "적용할 behavior 문서 경로 목록"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "./alice-actor-1.schema.json",
+            "description": "장면에 놓이는 개체 하나. 트랜스폼과 컴포넌트, 그리고 행동으로 이루어진다"
+          },
+          "description": "부모-자식 계층. 자식 트랜스폼은 부모 기준이다"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false,
+      "title": "Actor",
+      "description": "장면에 놓이는 개체 하나. 트랜스폼과 컴포넌트, 그리고 행동으로 이루어진다",
+      "x-alice-schema-id": "alice/actor/1"
+    },
+    "alice/animation/1": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "type": "string",
+          "x-alice-format": "schema-id",
+          "description": "항상 alice/animation/1"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+        },
+        "clips": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+              },
+              "asset": {
+                "type": "string",
+                "x-alice-format": "asset-path",
+                "description": "애니메이션 애셋 경로"
+              },
+              "loop": {
+                "type": "boolean",
+                "description": "반복할지",
+                "default": true
+              },
+              "speed": {
+                "type": "number",
+                "description": "재생 속도 배율",
+                "default": 1.0
+              }
+            },
+            "required": [
+              "name",
+              "asset"
+            ],
+            "additionalProperties": false,
+            "title": "Animation Clip"
+          },
+          "minItems": 1,
+          "description": "쓸 클립들"
+        },
+        "parameters": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "float",
+                  "int",
+                  "bool",
+                  "trigger"
+                ],
+                "description": "파라미터 타입"
+              },
+              "default": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  }
+                ],
+                "description": "초깃값"
+              },
+              "description": {
+                "type": "string",
+                "description": "무엇을 뜻하는 값인지"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false,
+            "title": "Parameter"
+          },
+          "description": "전이 조건에서 참조할 파라미터들"
+        },
+        "states": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+              },
+              "clip": {
+                "type": "string",
+                "description": "재생할 클립 이름"
+              },
+              "transitions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "to": {
+                      "type": "string",
+                      "description": "이동할 상태 이름"
+                    },
+                    "when": {
+                      "type": "string",
+                      "x-alice-format": "expression",
+                      "description": "전이 조건식. 예) speed > 0.1"
+                    },
+                    "duration": {
+                      "type": "number",
+                      "description": "블렌드 시간(초)",
+                      "default": 0.2
+                    },
+                    "exitTime": {
+                      "type": "number",
+                      "description": "0..1. 현재 클립의 이 지점 이후에만 전이"
+                    }
+                  },
+                  "required": [
+                    "to",
+                    "when"
+                  ],
+                  "additionalProperties": false,
+                  "title": "Transition"
+                },
+                "description": "나가는 전이들"
+              }
+            },
+            "required": [
+              "name",
+              "clip"
+            ],
+            "additionalProperties": false,
+            "title": "State"
+          },
+          "minItems": 1,
+          "description": "상태 그래프"
+        },
+        "defaultState": {
+          "type": "string",
+          "description": "시작 상태 이름"
+        }
+      },
+      "required": [
+        "schema",
+        "name",
+        "clips",
+        "states",
+        "defaultState"
+      ],
+      "additionalProperties": false,
+      "title": "Animation",
+      "description": "클립과 상태 그래프. 블렌드와 전이를 값으로 기술한다",
+      "x-alice-schema-id": "alice/animation/1"
+    },
+    "alice/behavior/1": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "type": "string",
+          "x-alice-format": "schema-id",
+          "description": "항상 alice/behavior/1"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "when": {
+                "type": "string",
+                "x-alice-format": "expression",
+                "description": "조건식. 예) input.pressed(\"Jump\") and physics.grounded"
+              },
+              "do": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true,
+                  "title": "Action",
+                  "description": "동사 하나와 그 인자. 예) audio.play: { sound: sounds/jump.sound.yaml }"
+                },
+                "minItems": 1,
+                "description": "실행할 동작 목록"
+              },
+              "once": {
+                "type": "boolean",
+                "description": "한 번만 실행하고 다시는 하지 않을지",
+                "default": false
+              },
+              "cooldown": {
+                "type": "number",
+                "description": "재실행까지의 최소 간격(초)",
+                "default": 0.0
+              }
+            },
+            "required": [
+              "when",
+              "do"
+            ],
+            "additionalProperties": false,
+            "title": "Rule",
+            "description": "조건이 참이 되는 순간 동작들을 순서대로 실행한다"
+          },
+          "minItems": 1,
+          "description": "규칙 목록"
+        },
+        "variables": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "이 행동이 쓰는 지역 변수와 초깃값"
+        }
+      },
+      "required": [
+        "schema",
+        "name",
+        "rules"
+      ],
+      "additionalProperties": false,
+      "title": "Behavior",
+      "description": "액터의 동작을 규칙으로 적는다. **이 엔진에는 게임플레이 스크립트 언어가 없다.** 언리얼의 C++/블루프린트, 유니티의 C# 이 있던 자리를 이 문서가 대신한다. 규칙은 선언적이고, 순서에 의존하지 않으며, 조건이 참이 될 때만 실행된다",
+      "examples": [
+        {
+          "when": "input.pressed(\"Jump\") and physics.grounded"
+        }
+      ],
+      "x-alice-pitfalls": [
+        {
+          "wrong": "do: audio.play",
+          "right": "do:\n  - audio.play: { sound: ... }",
+          "why": "do 는 항상 목록이고, 각 항목은 동사 하나를 키로 갖는 맵이다"
+        }
+      ],
+      "x-alice-schema-id": "alice/behavior/1"
+    },
+    "alice/component/animator/1": {
+      "type": "object",
+      "properties": {
+        "animation": {
+          "type": "string",
+          "x-alice-format": "asset-path",
+          "description": "animation 문서 경로"
+        },
+        "playbackSpeed": {
+          "type": "number",
+          "description": "재생 속도 배율",
+          "default": 1.0
+        },
+        "applyRootMotion": {
+          "type": "boolean",
+          "description": "루트 본의 이동을 액터 트랜스폼에 반영할지",
+          "default": false
+        }
+      },
+      "required": [
+        "animation"
+      ],
+      "additionalProperties": false,
+      "title": "Animator",
+      "description": "animation 문서의 상태 그래프를 이 액터의 스키닝 메시에 적용한다",
+      "x-alice-schema-id": "alice/component/animator/1"
+    },
+    "alice/component/audioSource/1": {
+      "type": "object",
+      "properties": {
+        "sound": {
+          "type": "string",
+          "x-alice-format": "asset-path",
+          "description": "재생할 sound 문서"
+        },
+        "autoPlay": {
+          "type": "boolean",
+          "description": "액터가 살아날 때 바로 재생할지",
+          "default": false
+        },
+        "loop": {
+          "type": "boolean",
+          "description": "반복 재생",
+          "default": false
+        },
+        "volume": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "0..1",
+          "default": 1.0
+        },
+        "pitch": {
+          "type": "number",
+          "description": "재생 속도 배율",
+          "default": 1.0
+        },
+        "spatial": {
+          "type": "boolean",
+          "description": "3D 위치 기반으로 들릴지",
+          "default": true
+        },
+        "minDistance": {
+          "type": "number",
+          "description": "이 거리 안에서는 감쇠 없음(미터)",
+          "default": 1.0
+        },
+        "maxDistance": {
+          "type": "number",
+          "description": "이 거리 밖에서는 들리지 않음(미터)",
+          "default": 50.0
+        }
+      },
+      "required": [
+        "sound"
+      ],
+      "additionalProperties": false,
+      "title": "Audio Source",
+      "description": "이 액터의 위치에서 소리를 낸다",
+      "x-alice-schema-id": "alice/component/audioSource/1"
+    },
+    "alice/component/camera/1": {
+      "type": "object",
+      "properties": {
+        "projection": {
+          "type": "string",
+          "enum": [
+            "perspective",
+            "orthographic"
+          ],
+          "description": "투영 방식",
+          "default": "perspective"
+        },
+        "fieldOfView": {
+          "type": "number",
+          "description": "수직 화각(도). perspective 일 때만 쓴다",
+          "default": 60.0
+        },
+        "orthographicSize": {
+          "type": "number",
+          "description": "세로 절반 크기(미터). orthographic 일 때만",
+          "default": 5.0
+        },
+        "nearClip": {
+          "type": "number",
+          "description": "근평면 거리(미터)",
+          "default": 0.1
+        },
+        "farClip": {
+          "type": "number",
+          "description": "원평면 거리(미터)",
+          "default": 1000.0
+        },
+        "priority": {
+          "type": "integer",
+          "description": "여러 카메라 중 우선순위. 큰 쪽이 이긴다",
+          "default": 0
+        },
+        "clearColor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "x-alice-format": "color-hex",
+              "description": "16진 색상. 예) \"#ff8800\""
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            }
+          ],
+          "description": "색상. \"#rrggbb\" 문자열 또는 [r, g, b, a] 배열(0..1)"
+        }
+      },
+      "additionalProperties": false,
+      "title": "Camera",
+      "description": "장면을 촬영한다. priority 가 가장 높은 카메라가 화면을 담당한다",
+      "x-alice-pitfalls": [
+        {
+          "wrong": "fieldOfView: 120",
+          "right": "fieldOfView: 60",
+          "why": "화각을 100도 이상으로 올리면 원근 왜곡이 심해지고 컬링 효율이 급락한다"
+        }
+      ],
+      "x-alice-schema-id": "alice/component/camera/1"
+    },
+    "alice/component/collider/1": {
+      "type": "object",
+      "properties": {
+        "shape": {
+          "type": "string",
+          "enum": [
+            "box",
+            "sphere",
+            "capsule",
+            "mesh"
+          ],
+          "description": "충돌 형상"
+        },
+        "size": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "box 의 각 축 크기(미터)",
+          "default": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "radius": {
+          "type": "number",
+          "description": "sphere/capsule 반지름(미터)",
+          "default": 0.5
+        },
+        "height": {
+          "type": "number",
+          "description": "capsule 전체 높이(미터)",
+          "default": 2.0
+        },
+        "asset": {
+          "type": "string",
+          "x-alice-format": "asset-path",
+          "description": "mesh 형상일 때의 충돌 메시"
+        },
+        "center": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "액터 원점 기준 오프셋",
+          "default": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "isTrigger": {
+          "type": "boolean",
+          "description": "겹침만 감지하고 밀어내지 않을지",
+          "default": false
+        },
+        "layer": {
+          "type": "string",
+          "description": "충돌 레이어 이름",
+          "default": "default"
+        }
+      },
+      "required": [
+        "shape"
+      ],
+      "additionalProperties": false,
+      "title": "Collider",
+      "description": "충돌 형상. 모양에 따라 쓰는 필드가 다르다",
+      "x-alice-schema-id": "alice/component/collider/1"
+    },
+    "alice/component/light/1": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "directional",
+            "point",
+            "spot"
+          ],
+          "description": "광원 종류"
+        },
+        "color": {
+          "anyOf": [
+            {
+              "type": "string",
+              "x-alice-format": "color-hex",
+              "description": "16진 색상. 예) \"#ff8800\""
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            }
+          ],
+          "description": "색상. \"#rrggbb\" 문자열 또는 [r, g, b, a] 배열(0..1)",
+          "default": "#ffffff"
+        },
+        "intensity": {
+          "type": "number",
+          "description": "세기. directional 은 lux, 나머지는 lumen 기준",
+          "default": 1.0
+        },
+        "range": {
+          "type": "number",
+          "description": "도달 거리(미터). point/spot 전용",
+          "default": 10.0
+        },
+        "spotAngle": {
+          "type": "number",
+          "description": "스팟 원뿔 각도(도). spot 전용",
+          "default": 45.0
+        },
+        "castShadow": {
+          "type": "boolean",
+          "description": "그림자를 만들지. 켤수록 비싸다",
+          "default": false
+        },
+        "shadowBias": {
+          "type": "number",
+          "description": "그림자 여드름을 줄이는 오프셋",
+          "default": 0.005
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "title": "Light",
+      "description": "장면을 밝힌다",
+      "x-alice-schema-id": "alice/component/light/1"
+    },
+    "alice/component/mesh/1": {
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "x-alice-format": "asset-path",
+          "description": "메시 애셋 경로"
+        },
+        "materials": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "x-alice-format": "asset-path"
+          },
+          "description": "서브메시 순서대로의 머티리얼. 개수가 모자라면 마지막 것이 반복된다"
+        },
+        "castShadow": {
+          "type": "boolean",
+          "description": "그림자를 드리울지",
+          "default": true
+        },
+        "receiveShadow": {
+          "type": "boolean",
+          "description": "그림자를 받을지",
+          "default": true
+        },
+        "visible": {
+          "type": "boolean",
+          "description": "화면에 보일지",
+          "default": true
+        },
+        "lodBias": {
+          "type": "number",
+          "description": "LOD 전환 거리 배율. 1 이 기본",
+          "default": 1.0
+        }
+      },
+      "required": [
+        "asset"
+      ],
+      "additionalProperties": false,
+      "title": "Mesh",
+      "description": "정적/스키닝 메시를 그린다",
+      "x-alice-schema-id": "alice/component/mesh/1"
+    },
+    "alice/component/particles/1": {
+      "type": "object",
+      "properties": {
+        "effect": {
+          "type": "string",
+          "x-alice-format": "asset-path",
+          "description": "effect 문서 경로"
+        },
+        "playOnStart": {
+          "type": "boolean",
+          "description": "액터가 살아날 때 바로 재생",
+          "default": true
+        },
+        "loop": {
+          "type": "boolean",
+          "description": "끝나면 다시 시작",
+          "default": false
+        }
+      },
+      "required": [
+        "effect"
+      ],
+      "additionalProperties": false,
+      "title": "Particles",
+      "description": "effect 문서를 이 액터 위치에서 재생한다",
+      "x-alice-schema-id": "alice/component/particles/1"
+    },
+    "alice/component/rigidbody/1": {
+      "type": "object",
+      "properties": {
+        "mass": {
+          "type": "number",
+          "minimum": 0.0,
+          "description": "질량(kg). kinematic 이면 무시된다",
+          "default": 1.0
+        },
+        "kinematic": {
+          "type": "boolean",
+          "description": "직접 움직이고 힘을 받지 않을지",
+          "default": false
+        },
+        "useGravity": {
+          "type": "boolean",
+          "description": "중력을 받을지",
+          "default": true
+        },
+        "linearDamping": {
+          "type": "number",
+          "description": "선형 감쇠",
+          "default": 0.0
+        },
+        "angularDamping": {
+          "type": "number",
+          "description": "각 감쇠",
+          "default": 0.05
+        },
+        "freezePosition": {
+          "type": "array",
+          "items": {
+            "type": "boolean"
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "축별 위치 고정 [x, y, z]"
+        },
+        "freezeRotation": {
+          "type": "array",
+          "items": {
+            "type": "boolean"
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "축별 회전 고정 [x, y, z]"
+        },
+        "physicsMaterial": {
+          "type": "string",
+          "x-alice-format": "asset-path",
+          "description": "마찰·반발 계수를 담은 physics 문서"
+        }
+      },
+      "additionalProperties": false,
+      "title": "Rigidbody",
+      "description": "물리 시뮬레이션에 참여한다. Collider 가 함께 있어야 의미가 있다",
+      "x-alice-pitfalls": [
+        {
+          "wrong": "mass: 0",
+          "right": "kinematic: true",
+          "why": "질량 0 은 물리적으로 정의되지 않는다. 힘을 받지 않게 하려면 kinematic 을 쓰라"
+        }
+      ],
+      "x-alice-schema-id": "alice/component/rigidbody/1"
+    },
+    "alice/component/transform/1": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "미터 단위 위치 [x, y, z]",
+          "default": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "rotation": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "오일러 각(도) [pitch, yaw, roll]",
+          "default": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "scale": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3,
+          "description": "축별 배율. 1 이 원본 크기",
+          "default": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "title": "Transform",
+      "description": "월드 공간에서의 위치·회전·크기. 모든 액터가 암묵적으로 하나 가진다",
+      "x-alice-pitfalls": [
+        {
+          "wrong": "position: 0",
+          "right": "position: [0, 0, 0]",
+          "why": "위치는 항상 3개짜리 배열이다. 숫자 하나로 줄여 쓸 수 없다"
+        }
+      ],
+      "x-alice-schema-id": "alice/component/transform/1"
+    },
+    "alice/effect/1": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "type": "string",
+          "x-alice-format": "schema-id",
+          "description": "항상 alice/effect/1"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+        },
+        "duration": {
+          "type": "number",
+          "description": "전체 길이(초). 0 이면 무한",
+          "default": 1.0
+        },
+        "loop": {
+          "type": "boolean",
+          "description": "끝나면 다시 시작",
+          "default": false
+        },
+        "emitters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+              },
+              "rate": {
+                "type": "number",
+                "description": "초당 방출 개수",
+                "default": 100.0
+              },
+              "burst": {
+                "type": "integer",
+                "description": "시작 시 한 번에 뿜을 개수",
+                "default": 0
+              },
+              "maxParticles": {
+                "type": "integer",
+                "description": "동시 최대 개수. 성능 상한이다",
+                "default": 1000
+              },
+              "lifetime": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                ],
+                "description": "단일 값 또는 [최소, 최대] 범위"
+              },
+              "shape": {
+                "type": "string",
+                "enum": [
+                  "point",
+                  "sphere",
+                  "cone",
+                  "box",
+                  "circle"
+                ],
+                "description": "방출 형상",
+                "default": "point"
+              },
+              "radius": {
+                "type": "number",
+                "description": "sphere/circle/cone 반지름",
+                "default": 1.0
+              },
+              "angle": {
+                "type": "number",
+                "description": "cone 각도(도)",
+                "default": 25.0
+              },
+              "speed": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                ],
+                "description": "단일 값 또는 [최소, 최대] 범위"
+              },
+              "size": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                ],
+                "description": "단일 값 또는 [최소, 최대] 범위"
+              },
+              "rotationSpeed": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                ],
+                "description": "단일 값 또는 [최소, 최대] 범위"
+              },
+              "gravity": {
+                "type": "number",
+                "description": "중력 배율",
+                "default": 0.0
+              },
+              "drag": {
+                "type": "number",
+                "description": "공기 저항",
+                "default": 0.0
+              },
+              "colorOverLife": {
+                "type": "array",
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "x-alice-format": "color-hex",
+                      "description": "16진 색상. 예) \"#ff8800\""
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 4,
+                      "maxItems": 4
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 3,
+                      "maxItems": 3
+                    }
+                  ],
+                  "description": "색상. \"#rrggbb\" 문자열 또는 [r, g, b, a] 배열(0..1)"
+                },
+                "description": "수명에 따라 보간할 색 목록. 앞이 태어날 때, 뒤가 사라질 때"
+              },
+              "sizeOverLife": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "description": "수명에 따른 크기 배율"
+              },
+              "material": {
+                "type": "string",
+                "x-alice-format": "asset-path",
+                "description": "파티클 머티리얼"
+              },
+              "renderMode": {
+                "type": "string",
+                "enum": [
+                  "billboard",
+                  "stretched",
+                  "mesh",
+                  "trail"
+                ],
+                "description": "그리는 방식",
+                "default": "billboard"
+              },
+              "mesh": {
+                "type": "string",
+                "x-alice-format": "asset-path",
+                "description": "renderMode 가 mesh 일 때의 메시"
+              }
+            },
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false,
+            "title": "Emitter",
+            "description": "파티클을 뿜는 단위"
+          },
+          "minItems": 1,
+          "description": "에미터들"
+        },
+        "budget": {
+          "type": "object",
+          "properties": {
+            "maxParticles": {
+              "type": "integer",
+              "description": "이 이펙트 전체의 파티클 상한"
+            },
+            "maxDrawCalls": {
+              "type": "integer",
+              "description": "허용 드로우콜 수"
+            }
+          },
+          "additionalProperties": false,
+          "title": "Effect Budget",
+          "description": "성능 상한. 넘으면 perf.budget.exceeded 로그가 나간다"
+        }
+      },
+      "required": [
+        "schema",
+        "name",
+        "emitters"
+      ],
+      "additionalProperties": false,
+      "title": "Effect",
+      "description": "파티클 이펙트. 에미터를 겹쳐 하나의 연출을 만든다",
+      "x-alice-schema-id": "alice/effect/1"
+    },
+    "alice/input/1": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "type": "string",
+          "x-alice-format": "schema-id",
+          "description": "항상 alice/input/1"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "button",
+                  "axis",
+                  "axis2"
+                ],
+                "description": "값의 모양"
+              },
+              "bindings": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "description": "물리 입력. 예) [key.space, gamepad.a, touch.tap]"
+              },
+              "deadzone": {
+                "type": "number",
+                "description": "축 입력의 데드존",
+                "default": 0.15
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "bindings"
+            ],
+            "additionalProperties": false,
+            "title": "Input Action"
+          },
+          "minItems": 1,
+          "description": "행동 목록"
+        }
+      },
+      "required": [
+        "schema",
+        "name",
+        "actions"
+      ],
+      "additionalProperties": false,
+      "title": "Input Map",
+      "description": "물리 입력을 이름 있는 행동으로 바꾼다. 행동 문서는 키가 아니라 이름을 참조하므로 PC·패드·터치를 같은 콘텐츠로 지원할 수 있다",
+      "x-alice-schema-id": "alice/input/1"
+    },
+    "alice/material/1": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "type": "string",
+          "x-alice-format": "schema-id",
+          "description": "항상 alice/material/1"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+        },
+        "shader": {
+          "type": "string",
+          "enum": [
+            "pbr",
+            "unlit",
+            "toon",
+            "custom"
+          ],
+          "description": "셰이딩 모델",
+          "default": "pbr"
+        },
+        "customShader": {
+          "type": "string",
+          "x-alice-format": "asset-path",
+          "description": "shader 가 custom 일 때의 셰이더 문서"
+        },
+        "blend": {
+          "type": "string",
+          "enum": [
+            "opaque",
+            "masked",
+            "translucent",
+            "additive"
+          ],
+          "description": "합성 방식. opaque 가 가장 빠르다",
+          "default": "opaque"
+        },
+        "doubleSided": {
+          "type": "boolean",
+          "description": "뒷면도 그릴지. 켜면 드로우 비용이 는다",
+          "default": false
+        },
+        "params": {
+          "type": "object",
+          "properties": {
+            "baseColor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "x-alice-format": "color-hex",
+                  "description": "16진 색상. 예) \"#ff8800\""
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              ],
+              "description": "색상. \"#rrggbb\" 문자열 또는 [r, g, b, a] 배열(0..1)"
+            },
+            "metallic": {
+              "type": "number",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "description": "0=비금속, 1=금속"
+            },
+            "roughness": {
+              "type": "number",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "description": "0=거울, 1=완전 확산"
+            },
+            "emissive": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "x-alice-format": "color-hex",
+                  "description": "16진 색상. 예) \"#ff8800\""
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              ],
+              "description": "색상. \"#rrggbb\" 문자열 또는 [r, g, b, a] 배열(0..1)"
+            },
+            "emissiveIntensity": {
+              "type": "number",
+              "description": "발광 세기"
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "description": "불투명도"
+            },
+            "alphaCutoff": {
+              "type": "number",
+              "minimum": 0.0,
+              "maximum": 1.0,
+              "description": "masked 일 때의 컷오프"
+            },
+            "normalStrength": {
+              "type": "number",
+              "description": "노멀맵 강도"
+            }
+          },
+          "additionalProperties": false,
+          "title": "Material Params",
+          "description": "셰이딩 파라미터"
+        },
+        "textures": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "slot": {
+                "type": "string",
+                "enum": [
+                  "baseColor",
+                  "normal",
+                  "metallicRoughness",
+                  "occlusion",
+                  "emissive",
+                  "opacity",
+                  "custom0",
+                  "custom1"
+                ],
+                "description": "셰이더의 어느 슬롯에 꽂을지"
+              },
+              "asset": {
+                "type": "string",
+                "x-alice-format": "asset-path",
+                "description": "텍스처 애셋 경로"
+              },
+              "wrap": {
+                "type": "string",
+                "enum": [
+                  "repeat",
+                  "clamp",
+                  "mirror"
+                ],
+                "description": "UV 반복 방식",
+                "default": "repeat"
+              },
+              "filter": {
+                "type": "string",
+                "enum": [
+                  "linear",
+                  "point",
+                  "anisotropic"
+                ],
+                "description": "샘플링 방식",
+                "default": "linear"
+              },
+              "tiling": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2,
+                "description": "UV 배율"
+              },
+              "offset": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2,
+                "description": "UV 오프셋"
+              }
+            },
+            "required": [
+              "slot",
+              "asset"
+            ],
+            "additionalProperties": false,
+            "title": "Texture Binding"
+          },
+          "description": "텍스처 바인딩 목록"
+        }
+      },
+      "required": [
+        "schema",
+        "name"
+      ],
+      "additionalProperties": false,
+      "title": "Material",
+      "description": "표면이 빛에 어떻게 반응하는지. 셰이더 코드를 쓰지 않고 값으로 기술한다",
+      "x-alice-pitfalls": [
+        {
+          "wrong": "baseColor: #ff8800",
+          "right": "baseColor: \"#ff8800\"",
+          "why": "YAML 에서 공백 뒤의 # 는 주석이다. 색상 문자열은 반드시 따옴표로 감싼다"
+        }
+      ],
+      "x-alice-schema-id": "alice/material/1"
+    },
+    "alice/physics/1": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "type": "string",
+          "x-alice-format": "schema-id",
+          "description": "항상 alice/physics/1"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+        },
+        "staticFriction": {
+          "type": "number",
+          "minimum": 0.0,
+          "description": "정지 마찰 계수",
+          "default": 0.6
+        },
+        "dynamicFriction": {
+          "type": "number",
+          "minimum": 0.0,
+          "description": "운동 마찰 계수",
+          "default": 0.6
+        },
+        "restitution": {
+          "type": "number",
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "반발 계수. 1 이면 에너지를 잃지 않는다",
+          "default": 0.0
+        },
+        "density": {
+          "type": "number",
+          "minimum": 0.0,
+          "description": "밀도(kg/m³)",
+          "default": 1000.0
+        },
+        "frictionCombine": {
+          "type": "string",
+          "enum": [
+            "average",
+            "min",
+            "max",
+            "multiply"
+          ],
+          "description": "두 표면이 만났을 때 마찰을 합치는 방식",
+          "default": "average"
+        },
+        "restitutionCombine": {
+          "type": "string",
+          "enum": [
+            "average",
+            "min",
+            "max",
+            "multiply"
+          ],
+          "description": "반발을 합치는 방식",
+          "default": "average"
+        }
+      },
+      "required": [
+        "schema",
+        "name"
+      ],
+      "additionalProperties": false,
+      "title": "Physics Material",
+      "description": "표면의 마찰과 반발. 얼음·고무·금속의 차이가 여기서 온다",
+      "x-alice-schema-id": "alice/physics/1"
+    },
+    "alice/project/1": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "type": "string",
+          "x-alice-format": "schema-id",
+          "description": "항상 alice/project/1"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+        },
+        "version": {
+          "type": "string",
+          "description": "프로젝트 버전 문자열",
+          "default": "0.1.0"
+        },
+        "startScene": {
+          "type": "string",
+          "x-alice-format": "asset-path",
+          "description": "실행 시 처음 여는 씬"
+        },
+        "contentRoot": {
+          "type": "string",
+          "description": "콘텐츠 문서들의 루트 디렉터리",
+          "default": "Content"
+        },
+        "renderer": {
+          "type": "object",
+          "properties": {
+            "backend": {
+              "type": "string",
+              "enum": [
+                "auto",
+                "d3d11",
+                "d3d12",
+                "vulkan",
+                "metal",
+                "null"
+              ],
+              "description": "그래픽 백엔드. auto 면 플랫폼에 맞게 고른다",
+              "default": "auto"
+            },
+            "vsync": {
+              "type": "boolean",
+              "description": "수직동기",
+              "default": true
+            },
+            "targetFrameRate": {
+              "type": "integer",
+              "description": "목표 프레임레이트",
+              "default": 60
+            },
+            "resolution": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2,
+              "description": "기본 창 해상도 [width, height]"
+            },
+            "msaa": {
+              "type": "string",
+              "enum": [
+                "off",
+                "2x",
+                "4x",
+                "8x"
+              ],
+              "description": "멀티샘플링",
+              "default": "off"
+            }
+          },
+          "additionalProperties": false,
+          "title": "Renderer Settings",
+          "description": "렌더링 설정"
+        },
+        "budgets": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "프로파일러 존별 프레임 예산(밀리초). 넘으면 구조화 로그가 나간다. 예) { Frame: 16.6, Render: 8.0, Physics: 2.0 }"
+        },
+        "logging": {
+          "type": "object",
+          "properties": {
+            "level": {
+              "type": "string",
+              "enum": [
+                "trace",
+                "debug",
+                "info",
+                "warn",
+                "error",
+                "fatal",
+                "off"
+              ],
+              "description": "전역 로그 레벨",
+              "default": "info"
+            },
+            "channels": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "채널별 레벨 오버라이드. 예) { rhi: warn }"
+            },
+            "jsonlPath": {
+              "type": "string",
+              "description": "구조화 로그(NDJSON) 출력 경로",
+              "default": "Logs/alice.jsonl"
+            }
+          },
+          "additionalProperties": false,
+          "title": "Logging Settings",
+          "description": "로깅 설정"
+        },
+        "platforms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "windows",
+              "macos",
+              "linux",
+              "ios",
+              "android",
+              "console"
+            ]
+          },
+          "description": "빌드 대상 플랫폼"
+        }
+      },
+      "required": [
+        "schema",
+        "name",
+        "startScene"
+      ],
+      "additionalProperties": false,
+      "title": "Project",
+      "description": "프로젝트 전체 설정. 엔진이 가장 먼저 읽는 문서다",
+      "x-alice-schema-id": "alice/project/1"
+    },
+    "alice/scene/1": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "type": "string",
+          "x-alice-format": "schema-id",
+          "description": "항상 alice/scene/1"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+        },
+        "environment": {
+          "type": "object",
+          "properties": {
+            "skybox": {
+              "type": "string",
+              "x-alice-format": "asset-path",
+              "description": "HDR 스카이박스 텍스처"
+            },
+            "ambientColor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "x-alice-format": "color-hex",
+                  "description": "16진 색상. 예) \"#ff8800\""
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              ],
+              "description": "색상. \"#rrggbb\" 문자열 또는 [r, g, b, a] 배열(0..1)",
+              "default": "#202028"
+            },
+            "ambientIntensity": {
+              "type": "number",
+              "description": "앰비언트 세기",
+              "default": 1.0
+            },
+            "gravity": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3,
+              "description": "중력 가속도(m/s²)",
+              "default": [
+                0.0,
+                -9.81,
+                0.0
+              ]
+            },
+            "fogEnabled": {
+              "type": "boolean",
+              "description": "안개를 쓸지",
+              "default": false
+            },
+            "fogColor": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "x-alice-format": "color-hex",
+                  "description": "16진 색상. 예) \"#ff8800\""
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              ],
+              "description": "색상. \"#rrggbb\" 문자열 또는 [r, g, b, a] 배열(0..1)",
+              "default": "#8090a0"
+            },
+            "fogDensity": {
+              "type": "number",
+              "description": "안개 밀도",
+              "default": 0.02
+            }
+          },
+          "additionalProperties": false,
+          "title": "Environment",
+          "description": "씬 전체에 걸리는 설정"
+        },
+        "actors": {
+          "type": "array",
+          "items": {
+            "$ref": "./alice-actor-1.schema.json",
+            "description": "장면에 놓이는 개체 하나. 트랜스폼과 컴포넌트, 그리고 행동으로 이루어진다"
+          },
+          "description": "이 씬의 액터들"
+        },
+        "preload": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "x-alice-format": "asset-path"
+          },
+          "description": "씬 진입 전에 미리 올려둘 애셋. 첫 프레임 히칭을 막는다"
+        }
+      },
+      "required": [
+        "schema",
+        "name"
+      ],
+      "additionalProperties": false,
+      "title": "Scene",
+      "description": "액터들이 놓인 하나의 세계. 게임은 씬의 연속이다",
+      "x-alice-schema-id": "alice/scene/1"
+    },
+    "alice/sound/1": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "type": "string",
+          "x-alice-format": "schema-id",
+          "description": "항상 alice/sound/1"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+        },
+        "bus": {
+          "type": "string",
+          "enum": [
+            "master",
+            "music",
+            "sfx",
+            "voice",
+            "ambient",
+            "ui"
+          ],
+          "description": "믹서 버스",
+          "default": "sfx"
+        },
+        "variations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "asset": {
+                "type": "string",
+                "x-alice-format": "asset-path",
+                "description": "오디오 파일 경로"
+              },
+              "weight": {
+                "type": "number",
+                "description": "선택 확률 가중치",
+                "default": 1.0
+              }
+            },
+            "required": [
+              "asset"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "description": "같은 소리의 변주들"
+        },
+        "pickMode": {
+          "type": "string",
+          "enum": [
+            "random",
+            "randomNoRepeat",
+            "sequential",
+            "shuffle"
+          ],
+          "description": "여러 변주 중 고르는 방식",
+          "default": "randomNoRepeat"
+        },
+        "volume": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          ],
+          "description": "단일 값 또는 [최소, 최대] 범위"
+        },
+        "pitch": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          ],
+          "description": "단일 값 또는 [최소, 최대] 범위"
+        },
+        "loop": {
+          "type": "boolean",
+          "description": "반복 재생",
+          "default": false
+        },
+        "maxInstances": {
+          "type": "integer",
+          "description": "동시에 울릴 수 있는 최대 개수",
+          "default": 8
+        },
+        "cooldown": {
+          "type": "number",
+          "description": "같은 소리의 최소 재생 간격(초)",
+          "default": 0.0
+        }
+      },
+      "required": [
+        "schema",
+        "name",
+        "variations"
+      ],
+      "additionalProperties": false,
+      "title": "Sound",
+      "description": "소리 하나의 정의. 변주와 랜덤화를 값으로 기술해 반복감을 없앤다",
+      "x-alice-schema-id": "alice/sound/1"
+    }
+  }
+}

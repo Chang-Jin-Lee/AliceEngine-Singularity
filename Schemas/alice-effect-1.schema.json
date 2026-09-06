@@ -1,0 +1,242 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-effect-1.schema.json",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "x-alice-format": "schema-id",
+      "description": "항상 alice/effect/1"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+    },
+    "duration": {
+      "type": "number",
+      "description": "전체 길이(초). 0 이면 무한",
+      "default": 1.0
+    },
+    "loop": {
+      "type": "boolean",
+      "description": "끝나면 다시 시작",
+      "default": false
+    },
+    "emitters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+          },
+          "rate": {
+            "type": "number",
+            "description": "초당 방출 개수",
+            "default": 100.0
+          },
+          "burst": {
+            "type": "integer",
+            "description": "시작 시 한 번에 뿜을 개수",
+            "default": 0
+          },
+          "maxParticles": {
+            "type": "integer",
+            "description": "동시 최대 개수. 성능 상한이다",
+            "default": 1000
+          },
+          "lifetime": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              }
+            ],
+            "description": "단일 값 또는 [최소, 최대] 범위"
+          },
+          "shape": {
+            "type": "string",
+            "enum": [
+              "point",
+              "sphere",
+              "cone",
+              "box",
+              "circle"
+            ],
+            "description": "방출 형상",
+            "default": "point"
+          },
+          "radius": {
+            "type": "number",
+            "description": "sphere/circle/cone 반지름",
+            "default": 1.0
+          },
+          "angle": {
+            "type": "number",
+            "description": "cone 각도(도)",
+            "default": 25.0
+          },
+          "speed": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              }
+            ],
+            "description": "단일 값 또는 [최소, 최대] 범위"
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              }
+            ],
+            "description": "단일 값 또는 [최소, 최대] 범위"
+          },
+          "rotationSpeed": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 2,
+                "maxItems": 2
+              }
+            ],
+            "description": "단일 값 또는 [최소, 최대] 범위"
+          },
+          "gravity": {
+            "type": "number",
+            "description": "중력 배율",
+            "default": 0.0
+          },
+          "drag": {
+            "type": "number",
+            "description": "공기 저항",
+            "default": 0.0
+          },
+          "colorOverLife": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "x-alice-format": "color-hex",
+                  "description": "16진 색상. 예) \"#ff8800\""
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 4,
+                  "maxItems": 4
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  },
+                  "minItems": 3,
+                  "maxItems": 3
+                }
+              ],
+              "description": "색상. \"#rrggbb\" 문자열 또는 [r, g, b, a] 배열(0..1)"
+            },
+            "description": "수명에 따라 보간할 색 목록. 앞이 태어날 때, 뒤가 사라질 때"
+          },
+          "sizeOverLife": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "description": "수명에 따른 크기 배율"
+          },
+          "material": {
+            "type": "string",
+            "x-alice-format": "asset-path",
+            "description": "파티클 머티리얼"
+          },
+          "renderMode": {
+            "type": "string",
+            "enum": [
+              "billboard",
+              "stretched",
+              "mesh",
+              "trail"
+            ],
+            "description": "그리는 방식",
+            "default": "billboard"
+          },
+          "mesh": {
+            "type": "string",
+            "x-alice-format": "asset-path",
+            "description": "renderMode 가 mesh 일 때의 메시"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false,
+        "title": "Emitter",
+        "description": "파티클을 뿜는 단위"
+      },
+      "minItems": 1,
+      "description": "에미터들"
+    },
+    "budget": {
+      "type": "object",
+      "properties": {
+        "maxParticles": {
+          "type": "integer",
+          "description": "이 이펙트 전체의 파티클 상한"
+        },
+        "maxDrawCalls": {
+          "type": "integer",
+          "description": "허용 드로우콜 수"
+        }
+      },
+      "additionalProperties": false,
+      "title": "Effect Budget",
+      "description": "성능 상한. 넘으면 perf.budget.exceeded 로그가 나간다"
+    }
+  },
+  "required": [
+    "schema",
+    "name",
+    "emitters"
+  ],
+  "additionalProperties": false,
+  "title": "Effect",
+  "description": "파티클 이펙트. 에미터를 겹쳐 하나의 연출을 만든다",
+  "x-alice-schema-id": "alice/effect/1"
+}

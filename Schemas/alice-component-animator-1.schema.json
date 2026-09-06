@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-component-animator-1.schema.json",
+  "type": "object",
+  "properties": {
+    "animation": {
+      "type": "string",
+      "x-alice-format": "asset-path",
+      "description": "animation 문서 경로"
+    },
+    "playbackSpeed": {
+      "type": "number",
+      "description": "재생 속도 배율",
+      "default": 1.0
+    },
+    "applyRootMotion": {
+      "type": "boolean",
+      "description": "루트 본의 이동을 액터 트랜스폼에 반영할지",
+      "default": false
+    }
+  },
+  "required": [
+    "animation"
+  ],
+  "additionalProperties": false,
+  "title": "Animator",
+  "description": "animation 문서의 상태 그래프를 이 액터의 스키닝 메시에 적용한다",
+  "x-alice-schema-id": "alice/component/animator/1"
+}

@@ -2,7 +2,6 @@ schema: alice/effect/1
 name: JumpDust
 duration: 0.8
 loop: false
-
 emitters:
   - name: Puff
     rate: 0
@@ -16,11 +15,10 @@ emitters:
     rotationSpeed: [-90, 90]
     gravity: -0.4
     drag: 1.2
-    colorOverLife: ["#d9d2c4", "#3a3a3a"]
+    colorOverLife:
+      - "#d9d2c4"
+      - "#3a3a3a"
     material: materials/steel.material.yaml
     renderMode: billboard
-
 # 이펙트에도 예산이 붙는다. 넘으면 로그가 나가고 CI 가 잡는다.
-budget:
-  maxParticles: 64
-  maxDrawCalls: 2
+budget: { maxParticles: 64, maxDrawCalls: 2 }

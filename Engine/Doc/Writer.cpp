@@ -52,6 +52,22 @@ bool IsCompactableSeq(const Value& v, const YamlWriteOptions& opt) {
     return true;
 }
 
+/// 한 줄로 접어도 되는 맵인가.
+/// 조건: 짧고, 스칼라만 있고, 항목마다 주석이 없어야 한다(주석은 줄을 요구한다).
+bool IsCompactableMap(const Value& v, const YamlWriteOptions& opt) {
+    if (!opt.compactScalarMap || !v.IsMap()) return false;
+    if (v.Size() == 0 || v.Size() > opt.compactMapMaxEntries) return false;
+    for (const MapEntry& e : v.Entries()) {
+        // 스칼라, 또는 한 줄로 접히는 짧은 숫자 배열까지 허용한다.
+        // 벡터 인자(direction: [0, 1, 0])가 흔해서 이걸 막으면 대부분의 동작이 여러 줄이 된다.
+        const bool ok = e.value.IsScalar() || IsCompactableSeq(e.value, opt);
+        if (!ok) return false;
+        if (!e.value.comments.empty() || !e.value.trailingComment.empty()) return false;
+        if (e.value.IsString() && e.value.AsString().find('\n') != std::string::npos) return false;
+    }
+    return true;
+}
+
 std::string ScalarToYaml(const Value& v) {
     switch (v.GetKind()) {
         case Kind::Null:   return "null";
@@ -72,6 +88,7 @@ public:
     explicit YamlWriter(const YamlWriteOptions& opt) : m_opt(opt) {}
 
     std::string Run(const Value& root) {
+        WriteComments(root.comments, 0);
         if (root.IsMap()) {
             WriteMapBody(root, 0);
         } else if (root.IsSeq()) {
@@ -84,6 +101,29 @@ public:
     }
 
 private:
+    /// 값 앞에 붙어 있던 주석을 되돌려 쓴다. 빈 문자열은 빈 줄이다.
+    ///
+    /// 이 함수가 있어야 "읽고 → 고치고 → 되쓰기" 고리가 사람의 메모를 지우지 않는다.
+    /// 주석을 잃는 포맷터는 아무도 쓰지 않는다.
+    void WriteComments(const std::vector<std::string>& comments, u32 level) {
+        for (const std::string& line : comments) {
+            if (line.empty()) {
+                m_out += '\n';
+                continue;
+            }
+            AppendIndent(m_out, level, m_opt.indentWidth);
+            m_out += "# ";
+            m_out += line;
+            m_out += '\n';
+        }
+    }
+
+    void WriteTrailing(const Value& v) {
+        if (v.trailingComment.empty()) return;
+        m_out += "  # ";
+        m_out += v.trailingComment;
+    }
+
     void WriteMapBody(const Value& map, u32 level) {
         if (map.Size() == 0) {
             AppendIndent(m_out, level, m_opt.indentWidth);
@@ -91,6 +131,7 @@ private:
             return;
         }
         for (const MapEntry& e : map.Entries()) {
+            WriteComments(e.value.comments, level);
             AppendIndent(m_out, level, m_opt.indentWidth);
             m_out += NeedsYamlQuoting(e.key) ? YamlQuoteDouble(e.key) : e.key;
             m_out += ':';
@@ -101,14 +142,33 @@ private:
     /// "key:" 를 이미 쓴 상태에서 값을 이어 쓴다.
     void WriteValueAfterKey(const Value& v, u32 level) {
         if (v.IsMap()) {
-            if (v.Size() == 0) { m_out += " {}\n"; return; }
+            if (v.Size() == 0) { m_out += " {}"; WriteTrailing(v); m_out += '\n'; return; }
+            // 짧은 인자 맵은 한 줄로 접는다.
+            // `- audio.play: { sound: sounds/jump.sound.yaml }` 가 두 줄이 되면
+            // 규칙 목록이 세 배로 길어지고 눈으로 훑을 수 없게 된다.
+            if (IsCompactableMap(v, m_opt) && CurrentLineLength() + RenderCompactMap(v).size() + 1
+                                                  <= m_opt.compactLineLimit) {
+                m_out += ' ';
+                m_out += RenderCompactMap(v);
+                WriteTrailing(v);
+                m_out += '\n';
+                return;
+            }
+            WriteTrailing(v);
             m_out += '\n';
             WriteMapBody(v, level + 1);
             return;
         }
         if (v.IsSeq()) {
-            if (v.Size() == 0) { m_out += " []\n"; return; }
-            if (IsCompactableSeq(v, m_opt)) { m_out += ' '; WriteCompactSeq(v); m_out += '\n'; return; }
+            if (v.Size() == 0) { m_out += " []"; WriteTrailing(v); m_out += '\n'; return; }
+            if (IsCompactableSeq(v, m_opt)) {
+                m_out += ' ';
+                WriteCompactSeq(v);
+                WriteTrailing(v);
+                m_out += '\n';
+                return;
+            }
+            WriteTrailing(v);
             m_out += '\n';
             WriteSeqBody(v, level + 1);
             return;
@@ -120,20 +180,35 @@ private:
         }
         m_out += ' ';
         m_out += ScalarToYaml(v);
+        WriteTrailing(v);
         m_out += '\n';
     }
 
     void WriteSeqBody(const Value& seq, u32 level) {
         for (const Value& item : seq.Items()) {
+            WriteComments(item.comments, level);
             AppendIndent(m_out, level, m_opt.indentWidth);
             m_out += '-';
 
             if (item.IsMap() && item.Size() > 0) {
+                if (IsCompactableMap(item, m_opt)) {
+                    const std::string inline_ = RenderCompactMap(item);
+                    if (level * m_opt.indentWidth + 2 + inline_.size() <= m_opt.compactLineLimit) {
+                        m_out += ' ';
+                        m_out += inline_;
+                        WriteTrailing(item);
+                        m_out += '\n';
+                        continue;
+                    }
+                }
                 // "- key: v" 로 첫 키를 같은 줄에 붙인다. 줄 수가 눈에 띄게 줄어든다.
                 m_out += ' ';
                 const Map& entries = item.Entries();
                 for (usize i = 0; i < entries.size(); ++i) {
-                    if (i > 0) AppendIndent(m_out, level + 1, m_opt.indentWidth);
+                    if (i > 0) {
+                        WriteComments(entries[i].value.comments, level + 1);
+                        AppendIndent(m_out, level + 1, m_opt.indentWidth);
+                    }
                     m_out += NeedsYamlQuoting(entries[i].key) ? YamlQuoteDouble(entries[i].key)
                                                               : entries[i].key;
                     m_out += ':';
@@ -164,6 +239,36 @@ private:
             m_out += ScalarToYaml(item);
             m_out += '\n';
         }
+    }
+
+    /// 지금 쓰고 있는 줄의 길이. 한 줄로 접을지 판단할 때 쓴다.
+    usize CurrentLineLength() const {
+        const usize nl = m_out.rfind('\n');
+        return nl == std::string::npos ? m_out.size() : m_out.size() - nl - 1;
+    }
+
+    std::string RenderCompactMap(const Value& map) {
+        // 안쪽에 공백을 준다. `{ a: 1, b: 2 }` 가 `{a: 1, b: 2}` 보다 눈에 덜 빡빡하다.
+        std::string out = "{ ";
+        bool first = true;
+        for (const MapEntry& e : map.Entries()) {
+            if (!first) out += ", ";
+            first = false;
+            out += NeedsYamlQuoting(e.key) ? YamlQuoteDouble(e.key) : e.key;
+            out += ": ";
+            if (e.value.IsSeq()) {
+                out += '[';
+                for (usize i = 0; i < e.value.Size(); ++i) {
+                    if (i) out += ", ";
+                    out += ScalarToYaml(e.value.At(i));
+                }
+                out += ']';
+            } else {
+                out += ScalarToYaml(e.value);
+            }
+        }
+        out += " }";
+        return out;
     }
 
     void WriteCompactSeq(const Value& seq) {
