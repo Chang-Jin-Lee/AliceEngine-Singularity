@@ -20,4 +20,3 @@
 alice schema show alice/scene/1
 alice new scene MyThing
 ```
-

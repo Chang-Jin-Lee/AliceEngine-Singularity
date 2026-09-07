@@ -13,5 +13,3 @@
 | `amplitude` | `number` | ✓ |  | 흔들림 크기(미터) |
 | `duration` | `number` | ✓ |  | 지속 시간(초) |
 | `frequency` | `number` |  | `20` | 초당 흔들림 횟수 |
-
-

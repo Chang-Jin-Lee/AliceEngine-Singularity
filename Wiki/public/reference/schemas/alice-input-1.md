@@ -18,4 +18,3 @@
 alice schema show alice/input/1
 alice new input MyThing
 ```
-

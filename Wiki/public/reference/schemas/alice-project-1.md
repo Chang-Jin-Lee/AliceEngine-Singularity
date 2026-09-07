@@ -24,4 +24,3 @@
 alice schema show alice/project/1
 alice new project MyThing
 ```
-

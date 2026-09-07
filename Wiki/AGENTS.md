@@ -34,7 +34,7 @@ order: 3
 본문
 ```
 
-`Docs/` 의 문서 여섯 개는 `scripts/generate.mjs` 가 `content/guide/` 로 동기화합니다.
+`Docs/` 의 문서 여덟 개는 `scripts/generate.mjs` 가 `content/guide/` 로 동기화합니다.
 그것들도 손대지 말고 `Docs/` 원본을 고치십시오.
 
 ## 왜 .md 미러와 llms.txt 가 있는가
@@ -58,14 +58,16 @@ AI 가 문서 사이트를 읽으려면 보통 HTML 을 파싱해야 합니다.
 
 ```bash
 cd Wiki
-npm install
+npm ci
 npm run dev        # generate 후 http://localhost:3000
 npm run build      # generate 후 정적 빌드 → out/
+npm start          # out/ 로컬 미리보기 → http://localhost:3000
+npm test           # 생성·미리보기 회귀 검사
 ```
 
 `generate` 는 `../build/bin/alice` 를 찾아 호출합니다.
-없으면 저장소의 `Schemas/` 로 대체하지만, 동사·심볼·진단 페이지는 빠집니다.
-**엔진을 먼저 빌드하십시오.**
+없으면 저장소의 `Schemas/` 및 `public/api/` 스냅샷으로 전체 레퍼런스를 재생성합니다.
+엔진을 변경했다면 **엔진을 먼저 빌드하십시오.** 위키만 보는 환경은 스냅샷으로 빌드할 수 있습니다.
 
 ## 커밋 전
 

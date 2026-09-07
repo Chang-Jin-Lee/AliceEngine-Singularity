@@ -18,5 +18,3 @@
 do:
   - "physics.impulse":{"direction":[0,1,0],"force":5}
 ```
-
-

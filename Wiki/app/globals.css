@@ -141,6 +141,7 @@ body {
 }
 .sidebar a:hover { background: var(--code-bg); color: var(--accent); }
 .navgroup { margin-bottom: 0.5rem; }
+.mobile-menu { display: none; }
 
 main { min-width: 0; padding: 2rem 0 5rem; }
 
@@ -242,6 +243,15 @@ main { min-width: 0; padding: 2rem 0 5rem; }
 /* ── 홈 ──────────────────────────────────────────────────────────── */
 .hero { padding: 1.5rem 0 0.5rem; }
 .hero h1 { font-size: 2.6rem; }
+.phase-label { display: inline-block; margin-bottom: 1rem; color: var(--accent); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; }
+.status-note { border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; padding: 1.1rem 1.3rem; background: var(--code-bg); margin: 1.5rem 0; }
+.status-note p { margin: 0.4rem 0; }
+.status-note > a { font-size: 0.9rem; }
+.quick-links { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; margin: 1.5rem 0 2rem; }
+.doc .primary-link { background: var(--accent); color: var(--bg); border-radius: 6px; padding: 0.65rem 1.1rem; font-weight: 600; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); border-block: 1px solid var(--line); padding: 1.25rem 0; gap: 1rem; }
+.stats strong { display: block; font-size: 1.65rem; line-height: 1.3; }
+.stats span { color: var(--dim); font-size: 0.8rem; }
 .lede { font-size: 1.15rem; color: var(--dim); line-height: 1.75; }
 .lede strong { color: var(--fg); }
 
@@ -306,7 +316,22 @@ main { min-width: 0; padding: 2rem 0 5rem; }
     padding: 1rem 0;
     border-bottom: 1px solid var(--line);
   }
+  .desktop-menu { display: none; }
+  .mobile-menu { display: block; }
+  .mobile-menu summary { cursor: pointer; font-weight: 600; padding: 0.35rem 0; }
+  .mobile-menu nav { padding-top: 1rem; }
   .sidebar ul { display: flex; flex-wrap: wrap; gap: 0.25rem; }
   .sidebar a { border: 1px solid var(--line); border-radius: 999px; padding: 0.15rem 0.7rem; }
   .hero h1 { font-size: 2rem; }
+}
+
+@media (max-width: 520px) {
+  .topbar { flex-wrap: wrap; padding: 0.75rem 1rem; gap: 0.4rem; }
+  .topnav { gap: 1rem; }
+  .shell { padding-inline: 1rem; }
+  .hero { padding-top: 0.5rem; }
+  .hero h1 { font-size: 1.65rem; overflow-wrap: anywhere; }
+  .lede { font-size: 1rem; }
+  .stats { gap: 0.5rem; }
+  .stats span { font-size: 0.72rem; }
 }

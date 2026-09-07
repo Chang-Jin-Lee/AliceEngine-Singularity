@@ -180,7 +180,7 @@ Task: SID-02"
 - **완료 기준** — 체크박스 전부를 만족시켜야 끝입니다
 - **건드리는 파일** / **건드리면 안 되는 것** — 경계
 
-막히면 [`AGENTS.md`](../AGENTS.md) 의 "절대 규칙 다섯"을 다시 보십시오.
+막히면 [`AGENTS.md`](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/AGENTS.md) 의 "절대 규칙 다섯"을 다시 보십시오.
 
 ---
 
@@ -232,9 +232,9 @@ alice explain <진단코드>
 **Q. 남의 영역을 건드려야 합니다**
 
 구현(.cpp)이면 그 역할의 담당입니다. 공개 헤더를 바꿔야 한다면
-[인터페이스 변경 이슈](../.github/ISSUE_TEMPLATE/interface_change.md)를 열어 Alice 의 판단을 받으십시오.
+[인터페이스 변경 이슈](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/.github/ISSUE_TEMPLATE/interface_change.md)를 열어 Alice 의 판단을 받으십시오.
 
 **Q. 서드파티를 쓰고 싶습니다**
 
-[ADR-0002](adr/0002-no-third-party.md) 를 먼저 읽으십시오.
-그래도 필요하다면 PR 에서 [Alice 의 판단 기준 넷](../Agents/Alice.md)에 답하십시오.
+[ADR-0002](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/Docs/adr/0002-no-third-party.md) 를 먼저 읽으십시오.
+그래도 필요하다면 PR 에서 [Alice 의 판단 기준 넷](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/Agents/Alice.md)에 답하십시오.

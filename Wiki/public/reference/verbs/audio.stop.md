@@ -11,5 +11,3 @@
 | `sound` | `string` |  |  | 멈출 sound 문서. 비우면 대상의 모든 소리 |
 | `target` | `string` |  |  | 대상 액터 이름. 비우면 이 행동이 붙은 액터 자신 |
 | `fadeOut` | `number` |  | `0` | 페이드아웃 시간(초) |
-
-

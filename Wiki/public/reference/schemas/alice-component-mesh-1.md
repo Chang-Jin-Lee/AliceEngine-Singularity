@@ -21,4 +21,3 @@
 alice schema show alice/component/mesh/1
 alice new mesh MyThing
 ```
-

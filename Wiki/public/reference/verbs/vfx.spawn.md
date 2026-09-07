@@ -15,5 +15,3 @@ effect 문서를 한 번 재생한다
 | `target` | `string` |  |  | 대상 액터 이름. 비우면 이 행동이 붙은 액터 자신 |
 | `attach` | `boolean` |  | `false` | 대상을 따라다닐지 |
 | `scale` | `number` |  | `1` | 전체 크기 배율 |
-
-

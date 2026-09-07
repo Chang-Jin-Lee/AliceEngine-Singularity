@@ -21,5 +21,3 @@
 do:
   - "log.write":{"event":"gameplay.player.jumped","fields":{"height":2.4}}
 ```
-
-

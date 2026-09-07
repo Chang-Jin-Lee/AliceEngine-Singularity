@@ -34,4 +34,3 @@ fieldOfView: 60
 alice schema show alice/component/camera/1
 alice new camera MyThing
 ```
-

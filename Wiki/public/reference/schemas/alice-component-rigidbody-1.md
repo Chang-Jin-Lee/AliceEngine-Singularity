@@ -35,4 +35,3 @@ kinematic: true
 alice schema show alice/component/rigidbody/1
 alice new rigidbody MyThing
 ```
-

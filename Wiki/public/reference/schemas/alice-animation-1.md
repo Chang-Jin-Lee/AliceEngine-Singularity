@@ -21,4 +21,3 @@
 alice schema show alice/animation/1
 alice new animation MyThing
 ```
-

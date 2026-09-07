@@ -22,4 +22,3 @@
 alice schema show alice/component/light/1
 alice new light MyThing
 ```
-

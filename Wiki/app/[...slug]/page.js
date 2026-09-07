@@ -8,8 +8,9 @@ export function generateStaticParams() {
   return listDocs().map((doc) => ({ slug: doc.slug }));
 }
 
-export function generateMetadata({ params }) {
-  const doc = getDoc(params.slug);
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const doc = getDoc(slug);
   if (!doc) return {};
   return {
     title: doc.meta.title,
@@ -17,11 +18,12 @@ export function generateMetadata({ params }) {
   };
 }
 
-export default function DocPage({ params }) {
-  const doc = getDoc(params.slug);
+export default async function DocPage({ params }) {
+  const { slug } = await params;
+  const doc = getDoc(slug);
   if (!doc) notFound();
 
-  const mdHref = '/' + params.slug.join('/') + '.md';
+  const mdHref = '/' + slug.join('/') + '.md';
   const html = marked.parse(doc.body);
 
   return (

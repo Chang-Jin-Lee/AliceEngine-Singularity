@@ -42,8 +42,11 @@ function Find-VsDevShell {
 if ($IsWindows -or $env:OS -eq 'Windows_NT') {
     if (-not $env:VSCMD_VER) {
         Write-Host '  Visual Studio 개발자 환경으로 들어간다...' -ForegroundColor DarkGray
-        Import-Module (Find-VsDevShell)
-        Enter-VsDevShell -VsInstallPath (Split-Path -Parent (Split-Path -Parent (Find-VsDevShell))) `
+        $devShell = Find-VsDevShell
+        Import-Module $devShell
+        # DevShell.dll은 <VS>/Common7/Tools 아래에 있다. VS 설치 루트까지 세 단계 올라간다.
+        $vsInstall = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $devShell))
+        Enter-VsDevShell -VsInstallPath $vsInstall `
             -SkipAutomaticLocation -DevCmdArguments '-arch=x64 -host_arch=x64' | Out-Null
         Set-Location $repo
     }

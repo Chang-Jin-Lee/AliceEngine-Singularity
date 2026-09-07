@@ -4,7 +4,8 @@
 > 콘텐츠는 코드가 아니라 스키마로 검증되는 텍스트 문서이고,
 > 게임플레이는 스크립트가 아니라 선언적 규칙이다.
 
-이 사이트의 모든 페이지는 URL 끝에 `.md` 를 붙이면 마크다운 원문이 나온다.
+현재 Phase 0: 콘텐츠 CLI와 Null RHI를 제공한다. 게임 런타임·에디터·실제 렌더 백엔드는 개발 중이다.
+문서 페이지 URL의 마지막 `/`를 `.md`로 바꾸면 마크다운 원문이 나온다.
 HTML 을 파싱할 필요가 없다.
 
 ## 기계용 데이터
@@ -23,9 +24,10 @@ HTML 을 파싱할 필요가 없다.
 - [애셋 파이프라인](/guide/asset-pipeline.md)
 - [콘텐츠 문서 문법](/guide/content-format.md)
 - [참고 엔진 조사](/guide/engine-survey.md)
-- [시작하기](/guide/index.md): 5분 안에 첫 콘텐츠를 만든다
+- [시작하기](/guide/index.md): alice CLI로 샘플을 검사하고 첫 콘텐츠 문서를 만든다
 - [새 세션 시작하기](/guide/onboarding.md)
 - [성능 — 로깅 · 프로파일링 · 예산](/guide/performance.md)
+- [현재 실행 상태와 개발 순서](/guide/status.md)
 - [왜 이렇게 만들었나](/guide/why.md): AI 친화가 형식이 아니라 구조의 문제인 이유
 
 ## 레퍼런스

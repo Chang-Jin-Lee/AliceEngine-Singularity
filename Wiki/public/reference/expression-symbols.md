@@ -40,4 +40,3 @@
 | `time.frame` | 값 | `int` | 프레임 번호 |
 | `time.now` | 값 | `float` | 게임 시작으로부터의 초 |
 | `time.since` | 함수(1~1) | `float` | 인자로 준 시각 이후 흐른 초 |
-

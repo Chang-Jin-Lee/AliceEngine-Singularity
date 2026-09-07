@@ -16,5 +16,3 @@
 | `text` | `string` |  |  | text 도형의 내용 |
 | `color` | `string | [number x4] | [number x3]` |  | `"#00ff00"` | 색상. "#rrggbb" 문자열 또는 [r, g, b, a] 배열(0..1) |
 | `duration` | `number` |  | `0` | 표시 시간(초). 0 이면 한 프레임 |
-
-

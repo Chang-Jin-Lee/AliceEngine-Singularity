@@ -23,4 +23,3 @@
 alice schema show alice/actor/1
 alice new actor MyThing
 ```
-

@@ -11,5 +11,3 @@
 | `target` | `string` |  |  | 대상 액터 이름. 비우면 이 행동이 붙은 액터 자신 |
 | `direction` | `[number x3]` | ✓ |  | 방향 벡터 |
 | `force` | `number` | ✓ |  | 힘의 크기(N) |
-
-

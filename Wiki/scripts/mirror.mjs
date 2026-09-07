@@ -62,7 +62,7 @@ for (const doc of docs) {
   fs.mkdirSync(path.dirname(target), { recursive: true });
   // 프론트매터를 벗기고 본문만 낸다. AI 에게는 본문이 필요하고,
   // 제목과 설명은 이미 llms.txt 에 있다.
-  fs.writeFileSync(target, doc.body.trimStart() + '\n', 'utf8');
+  fs.writeFileSync(target, doc.body.trim() + '\n', 'utf8');
   mirrored++;
 }
 
@@ -78,7 +78,8 @@ llms += '> AI가 다룰 수 있게 처음부터 설계한 게임 엔진.\n';
 llms += '> 콘텐츠는 코드가 아니라 스키마로 검증되는 텍스트 문서이고,\n';
 llms += '> 게임플레이는 스크립트가 아니라 선언적 규칙이다.\n\n';
 
-llms += '이 사이트의 모든 페이지는 URL 끝에 `.md` 를 붙이면 마크다운 원문이 나온다.\n';
+llms += '현재 Phase 0: 콘텐츠 CLI와 Null RHI를 제공한다. 게임 런타임·에디터·실제 렌더 백엔드는 개발 중이다.\n';
+llms += '문서 페이지 URL의 마지막 `/`를 `.md`로 바꾸면 마크다운 원문이 나온다.\n';
 llms += 'HTML 을 파싱할 필요가 없다.\n\n';
 
 llms += '## 기계용 데이터\n\n';

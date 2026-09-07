@@ -18,4 +18,3 @@ animation 문서의 상태 그래프를 이 액터의 스키닝 메시에 적용
 alice schema show alice/component/animator/1
 alice new animator MyThing
 ```
-

@@ -6,6 +6,8 @@
 
 여러 자체엔진을 하나로 통합하고, 처음부터 AI가 다룰 수 있게 설계한 게임 엔진
 
+[시작하기](#빌드) · [위키 실행](#위키-만들고-보기) · [현재 상태와 다음 작업](Docs/STATUS.md)
+
 [![tests](https://img.shields.io/badge/tests-137%20passing-brightgreen)](Engine/Tests)
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-blue)](CMakeLists.txt)
 [![license](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
@@ -16,19 +18,8 @@
 
 ## 이 엔진이 다른 이유
 
-게임 엔진에서 콘텐츠를 만드는 일은 지금까지 이랬습니다.
-
-| | 언리얼 | 유니티 |
-|---|---|---|
-| 게임플레이 | C++ 작성 → UHT → 블루프린트 | C# 스크립트 |
-| 애셋 | 바이너리 `.uasset` | 바이너리 + `.meta` |
-| 검증 | 에디터를 켜고 실행해야 안다 | 에디터를 켜고 실행해야 안다 |
-| 상태 읽기 | 불가능 (엔진 메모리 안) | 불가능 |
-
-AI가 이 구조에서 일하기 어려운 진짜 이유는 "코드를 못 짜서"가 아닙니다.
-**자기가 만든 것이 맞는지 확인할 방법이 없어서**입니다. 검증 없이 반복하면 오류가 쌓입니다.
-
-이 엔진은 반대로 갑니다.
+AI가 콘텐츠를 만들려면 사용할 수 있는 기능을 조회하고, 변경 결과를 검증하고,
+오류 위치와 수정 방법을 읽을 수 있어야 합니다. 이 프로젝트는 그 과정을 엔진의 기본 작업 흐름으로 만듭니다.
 
 ```
 콘텐츠 = 텍스트 문서.   게임플레이 = 선언적 규칙.   확인 = 명령 한 줄.
@@ -74,7 +65,8 @@ rules:
 ```
 
 `when:` 은 **상태를 읽기만** 하고, `do:` 의 동사만 **상태를 바꿉니다.**
-그래서 규칙을 어떤 순서로 평가해도 결과가 같습니다. 순서 의존 버그가 원천적으로 없습니다.
+현재는 조건식과 동사 인자를 정적으로 검사합니다. 실제 평가·적용 순서와 충돌 처리는
+후속 Runtime 구현에서 정하고 테스트할 계약입니다.
 
 실행하기 전에 이미 확인된 것:
 
@@ -99,53 +91,98 @@ player.behavior.yaml:12:9: error[verb.unknown]: 'audio.paly' 는 없는 동사�
 
 ## 지금 되는 것 / 안 되는 것
 
-정직하게 적습니다. 이 프로젝트는 Phase 0 을 막 끝냈습니다.
+**Phase 0 · `alice` CLI는 실행 가능하며, 게임 창과 에디터는 아직 없습니다.**
+`Samples/FirstLight`는 검증 가능한 콘텐츠 샘플입니다. 현재 플레이할 수 있는 게임은 아닙니다.
+자세한 실행 상태와 개발 순서는 [Docs/STATUS.md](Docs/STATUS.md)에 있습니다.
 
 **된다**
 
-- 콘텐츠 문서 19종 정의 · 검증 · 정규화 · YAML↔JSON 왕복
+- 스키마 19개(문서 10종 + 컴포넌트 9종) 정의 · 검증 · 정규화 · YAML↔JSON 왕복
 - 진단 품질: 줄·열·문서 경로 + 오타 제안 + 수정 예시. 첫 에러에서 멈추지 않고 전부 보고
-- 동사 32개 + 조건식 파서/검사기 + 식 심볼 36개
+- 동사 **정의** 32개 + 조건식 파서/검사기 + 식 심볼 36개 (실제 동사 실행은 Runtime에서 구현 예정)
 - 구조화 로깅(NDJSON) · 계층 프로파일러 · 프레임 예산 초과 자동 감지
 - 백엔드 중립 RHI 인터페이스 + 검증기를 겸하는 Null 백엔드
 - `alice` CLI 10개 명령, 전부 `--json` 지원
 - JSON Schema 자동 생성 (에디터 자동완성)
 - 테스트 137개
+- 위키 정적 빌드와 로컬 미리보기, Markdown 원문과 AI용 JSON 레퍼런스
 
 **아직 안 된다 (백로그에 있습니다)**
 
 - 런타임: ECS/World/Scene 로딩, 규칙 평가기 → [`Agents/Backlog/sidney/`](Agents/Backlog/sidney)
 - 렌더러: D3D11/D3D12/Vulkan/Metal 백엔드 → [`Agents/Backlog/monday/`](Agents/Backlog/monday)
 - 애셋 파이프라인: 임포터, 캐시 → [`Agents/Backlog/chrono/`](Agents/Backlog/chrono)
-- 엔진 내장 AI 대화창 → [`Agents/Backlog/chrono/CHR-01.md`](Agents/Backlog/chrono)
-- 에디터 UI, 위키 사이트 배포
+- 엔진 내장 AI 대화창 → [`CHR-01`](Agents/Backlog/chrono/CHR-01.md)
+- 에디터 UI, 위키 공개 배포·검색·영어 번역
+
+다음 엔진 작업은 **ALI-02(Runtime 인터페이스) → SID-02(ECS) → SID-03(씬 로더) → SID-04(규칙 평가기)**입니다.
+화면 출력에는 실제 그래픽 백엔드와 플랫폼 창·입력 구현도 필요합니다.
 
 ---
 
 ## 빌드
 
 ```bash
-git clone https://github.com/<org>/AliceEngine-Singularity
+git clone https://github.com/Chang-Jin-Lee/AliceEngine-Singularity.git
 cd AliceEngine-Singularity
-
-# Windows
-Scripts\build.ps1
-
-# macOS / Linux
-./Scripts/build.sh
 ```
 
-필요한 것: **CMake 3.24+, C++20 컴파일러.** 그게 전부입니다.
+Windows / PowerShell:
 
-> 서드파티 의존성이 **0개**입니다. 클론하면 바로 빌드됩니다.
+```powershell
+pwsh -NoProfile -File .\Scripts\build.ps1
+.\build\bin\alice.exe doctor --json
+.\build\bin\alice.exe check Samples --json
+.\build\bin\Alice.Tests.exe
+pwsh -NoProfile -File .\Scripts\verify.ps1
+```
+
+macOS / Linux:
+
+```bash
+./Scripts/build.sh
+./build/bin/alice doctor --json
+./build/bin/alice check Samples --json
+./Scripts/verify.sh
+```
+
+필요한 것: **CMake 3.24+, C++20 컴파일러.** 전체 검증의 백로그 검사에는 Python 3도 필요합니다.
+Windows 스크립트는 Visual Studio의 C++ 개발자 환경을 자동으로 불러옵니다.
+PowerShell 실행 정책 오류의 대처 방법은 [실행 가이드](Docs/STATUS.md#엔진-실행해-보기)에 있습니다.
+
+> C++ 코어의 서드파티 의존성은 **0개**입니다. 위키의 npm 패키지는 별도입니다.
 > 참고한 오픈소스 엔진 10개 중 6개가 첫 빌드에서 서드파티 때문에 막혔습니다.
 > 그 경험이 이 결정의 근거입니다. → [`Docs/ENGINE_SURVEY.md`](Docs/ENGINE_SURVEY.md)
 
-```bash
-./build/bin/alice doctor              # 환경 확인
-./build/bin/alice check Samples/FirstLight
-./Scripts/verify.sh                   # 커밋 전 검증 전체 (Windows: .\Scripts\verify.ps1)
+`doctor`의 `backends`가 `["null"]`이면 화면을 그리는 백엔드가 없는 현재 구성이 맞습니다.
+`aiCli`는 PATH에서 CLI를 찾았는지 표시하며, 계정 로그인이나 엔진 내 AI 대화창의 완성을 뜻하지 않습니다.
+
+---
+
+## 위키 만들고 보기
+
+**Node.js 22+와 npm**이 필요합니다. 저장소 루트에서:
+
+```powershell
+cd Wiki
+npm ci
+npm run build
+npm start
 ```
+
+브라우저에서 **[http://localhost:3000](http://localhost:3000)**을 엽니다.
+`npm start`는 `Wiki/out/`의 정적 빌드 결과를 제공합니다. 종료는 `Ctrl+C`입니다.
+
+- 편집하면서 확인: `npm run dev`
+- 다른 포트: `npm start -- --port 3001`
+- 생성·미리보기 회귀 검사: `npm test`
+- 현재 기능 안내: `/guide/status/`
+- AI용 목록: `/llms.txt` · 전체 문서: `/llms-full.txt`
+- 원문 예시: `/guide/status.md` · 기계용 데이터: `/api/verbs.json`
+
+엔진을 빌드했다면 최신 `alice`에서 레퍼런스를 생성합니다. 엔진 실행 파일이 없으면
+커밋된 `Schemas/`와 `Wiki/public/api/` 스냅샷에서 재생성합니다.
+공개 사이트는 아직 배포하지 않았습니다. Vercel 연결 방법은 [Wiki/README.md](Wiki/README.md)를 보십시오.
 
 ---
 
@@ -153,6 +190,7 @@ Scripts\build.ps1
 
 | 문서 | 내용 |
 |---|---|
+| [`Docs/STATUS.md`](Docs/STATUS.md) | **지금 실행되는 것, 위키 열기, 다음 엔진 개발 순서** |
 | [`AGENTS.md`](AGENTS.md) | **AI 에이전트 진입점.** Codex·Claude Code 가 자동으로 읽는다 |
 | [`Docs/ONBOARDING.md`](Docs/ONBOARDING.md) | **새 세션 시작하기.** 복사해서 붙여넣을 프롬프트 |
 | [`Docs/ARCHITECTURE.md`](Docs/ARCHITECTURE.md) | 모듈 경계와 의존성 규칙 |
@@ -291,5 +329,5 @@ Codex 는 [`AGENTS.md`](AGENTS.md) 를, Claude Code 는 [`CLAUDE.md`](CLAUDE.md)
 - 참고한 오픈소스 엔진 20개에서 무엇을 가져왔는지 → [`Docs/ENGINE_SURVEY.md`](Docs/ENGINE_SURVEY.md)
 
 <p align="center">
-  <sub>C++20 · 서드파티 의존성 0 · DX11 / DX12 / Vulkan / Metal</sub>
+  <sub>C++20 · 코어 서드파티 의존성 0 · 현재 Null RHI · 목표 DX11 / DX12 / Vulkan / Metal</sub>
 </p>

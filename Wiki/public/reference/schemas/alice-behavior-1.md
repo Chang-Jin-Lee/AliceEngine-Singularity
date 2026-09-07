@@ -40,4 +40,3 @@ do:
 alice schema show alice/behavior/1
 alice new behavior MyThing
 ```
-

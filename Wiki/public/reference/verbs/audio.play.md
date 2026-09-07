@@ -23,5 +23,3 @@ sound 문서의 pickMode 에 따라 변주를 고르므로 결과가 매번 다�
 do:
   - "audio.play":{"sound":"sounds/jump.sound.yaml"}
 ```
-
-

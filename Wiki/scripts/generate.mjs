@@ -18,6 +18,36 @@ const WIKI = path.resolve(HERE, '..');
 const REPO = path.resolve(WIKI, '..');
 const OUT_REF = path.join(WIKI, 'content', 'reference');
 const OUT_API = path.join(WIKI, 'public', 'api');
+const GITHUB = 'https://github.com/Chang-Jin-Lee/AliceEngine-Singularity';
+const docMap = {
+  'Docs/STATUS.md': 'guide/status.md',
+  'Docs/ONBOARDING.md': 'guide/onboarding.md',
+  'Docs/CONTENT_FORMAT.md': 'guide/content-format.md',
+  'Docs/ARCHITECTURE.md': 'guide/architecture.md',
+  'Docs/PERFORMANCE.md': 'guide/performance.md',
+  'Docs/ASSET_PIPELINE.md': 'guide/asset-pipeline.md',
+  'Docs/AI_BRIDGE.md': 'guide/ai-bridge.md',
+  'Docs/ENGINE_SURVEY.md': 'guide/engine-survey.md',
+};
+
+function savedApi(name) {
+  const file = path.join(OUT_API, name + '.json');
+  if (!fs.existsSync(file)) throw new Error(`Missing ${file}. Build alice and run npm run generate first.`);
+  return JSON.parse(fs.readFileSync(file, 'utf8'));
+}
+
+function wikiLinks(body, source) {
+  return body.replace(/\]\(([^\s)]+)\)/g, (match, target) => {
+    if (/^(?:[a-z]+:|\/|#)/i.test(target)) return match;
+    const [file, ...fragment] = target.split('#');
+    const resolved = path.posix.normalize(path.posix.join(path.posix.dirname(source), file));
+    const anchor = fragment.length ? '#' + fragment.join('#') : '';
+    if (docMap[resolved]) return `](/${docMap[resolved].replace(/\.md$/, '')}/${anchor})`;
+    const local = path.join(REPO, resolved);
+    const kind = fs.existsSync(local) && fs.statSync(local).isDirectory() ? 'tree' : 'blob';
+    return `](${GITHUB}/${kind}/main/${resolved}${anchor})`;
+  });
+}
 
 function findAlice() {
   const names = process.platform === 'win32' ? ['alice.exe'] : ['alice'];
@@ -168,8 +198,19 @@ console.log('레퍼런스 생성 중...');
 
 const alice = findAlice();
 if (alice) console.log(`  alice: ${path.relative(REPO, alice)}`);
-else console.log('  alice 를 찾지 못했다. Schemas/ 로 대체한다.');
+else console.log('  alice 없음: 저장소의 Schemas/ 및 public/api/ 스냅샷으로 재생성한다.');
 
+// Read saved inputs before replacing generated pages. Engine-free hosts must retain the full reference.
+const verbs = alice ? runAlice(alice, ['verbs']) : savedApi('verbs');
+const symbols = alice ? runAlice(alice, ['verbs', '--symbols']) : savedApi('symbols');
+const codes = alice ? runAlice(alice, ['explain', '--list']) : savedApi('diagnostics');
+if (!verbs?.verbs || !symbols?.symbols || !codes?.codes) {
+  throw new Error('Incomplete engine reference data. Fix alice or restore the committed public/api snapshots.');
+}
+
+if (path.relative(WIKI, path.resolve(OUT_REF)) !== path.join('content', 'reference')) {
+  throw new Error('Refusing to replace a reference directory outside Wiki/content/reference.');
+}
 fs.rmSync(OUT_REF, { recursive: true, force: true });
 fs.mkdirSync(OUT_REF, { recursive: true });
 fs.mkdirSync(OUT_API, { recursive: true });
@@ -202,7 +243,6 @@ if (schemaIndex) {
 }
 
 // 동사
-let verbs = alice ? runAlice(alice, ['verbs']) : null;
 let verbCount = 0;
 if (verbs && verbs.verbs) {
   for (const verb of verbs.verbs) {
@@ -213,7 +253,6 @@ if (verbs && verbs.verbs) {
 }
 
 // 식 심볼
-let symbols = alice ? runAlice(alice, ['verbs', '--symbols']) : null;
 if (symbols && symbols.symbols) {
   let md = '---\ntitle: 조건식 심볼\ndescription: when 에서 읽을 수 있는 이름 전부\ngenerated: true\n---\n\n';
   md += '# 조건식 심볼\n\n';
@@ -228,7 +267,6 @@ if (symbols && symbols.symbols) {
 }
 
 // 진단 코드
-let codes = alice ? runAlice(alice, ['explain', '--list']) : null;
 if (codes && codes.codes) {
   let md = '---\ntitle: 진단 코드\ndescription: 왜 그 규칙이 있는가\ngenerated: true\n---\n\n';
   md += '# 진단 코드\n\n';
@@ -242,21 +280,13 @@ if (codes && codes.codes) {
 }
 
 // 저장소 문서를 위키로 복사
-const docMap = {
-  'Docs/ONBOARDING.md': 'guide/onboarding.md',
-  'Docs/CONTENT_FORMAT.md': 'guide/content-format.md',
-  'Docs/ARCHITECTURE.md': 'guide/architecture.md',
-  'Docs/PERFORMANCE.md': 'guide/performance.md',
-  'Docs/ASSET_PIPELINE.md': 'guide/asset-pipeline.md',
-  'Docs/AI_BRIDGE.md': 'guide/ai-bridge.md',
-  'Docs/ENGINE_SURVEY.md': 'guide/engine-survey.md',
-};
 for (const [src, dst] of Object.entries(docMap)) {
   const from = path.join(REPO, src);
   if (!fs.existsSync(from)) continue;
-  const body = fs.readFileSync(from, 'utf8');
+  const body = wikiLinks(fs.readFileSync(from, 'utf8'), src);
   const title = (body.match(/^#\s+(.+)$/m) || [, path.basename(dst, '.md')])[1];
-  write(path.join(WIKI, 'content', dst), `---\ntitle: ${title}\nsynced: ${src}\n---\n\n${body}`);
+  const order = src === 'Docs/STATUS.md' ? 'order: 1\n' : '';
+  write(path.join(WIKI, 'content', dst), `---\ntitle: ${title}\nsynced: ${src}\n${order}---\n\n${body}`);
 }
 
 console.log(`  스키마 ${schemaCount} · 동사 ${verbCount}`);

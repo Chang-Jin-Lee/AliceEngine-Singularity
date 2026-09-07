@@ -11,5 +11,3 @@
 | `target` | `string` |  |  | 대상 액터 이름. 비우면 이 행동이 붙은 액터 자신 |
 | `position` | `[number x3]` | ✓ |  | 월드 좌표 |
 | `resetVelocity` | `boolean` |  | `true` | 속도를 0 으로 만들지 |
-
-

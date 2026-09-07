@@ -230,4 +230,3 @@ alice engine profile --json               # 지금 뭐가 비싼가
 alice engine logs --level=warn --json     # 최근 경고
 alice engine trace --frames=60 -o f.json  # Perfetto 로 열 트레이스
 ```
-

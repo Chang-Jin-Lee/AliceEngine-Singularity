@@ -8,7 +8,9 @@
     "dev": "next dev",
     "prebuild": "npm run generate",
     "build": "next build",
-    "start": "next start",
+    "start": "node scripts/serve.mjs",
+    "preview": "node scripts/serve.mjs",
+    "test": "node --test scripts/*.test.mjs",
     "generate": "node scripts/generate.mjs && node scripts/mirror.mjs"
   },
   "dependencies": {

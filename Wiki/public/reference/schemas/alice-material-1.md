@@ -35,4 +35,3 @@ baseColor: "#ff8800"
 alice schema show alice/material/1
 alice new material MyThing
 ```
-

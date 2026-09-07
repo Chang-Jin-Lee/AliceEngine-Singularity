@@ -21,4 +21,3 @@
 alice schema show alice/effect/1
 alice new effect MyThing
 ```
-

@@ -23,4 +23,3 @@
 alice schema show alice/physics/1
 alice new physics MyThing
 ```
-

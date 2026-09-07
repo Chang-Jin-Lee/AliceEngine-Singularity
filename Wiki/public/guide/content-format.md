@@ -244,4 +244,3 @@ alice schema emit Schemas
 `.vscode/settings.json` 이 이미 생성된 스키마를 파일 패턴에 물려 두었습니다.
 VS Code 에 [YAML 확장](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)을
 설치하면 필드 자동완성과 실시간 오타 검사가 동작합니다.
-

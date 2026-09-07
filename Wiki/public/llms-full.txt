@@ -4,7 +4,8 @@
 > 콘텐츠는 코드가 아니라 스키마로 검증되는 텍스트 문서이고,
 > 게임플레이는 스크립트가 아니라 선언적 규칙이다.
 
-이 사이트의 모든 페이지는 URL 끝에 `.md` 를 붙이면 마크다운 원문이 나온다.
+현재 Phase 0: 콘텐츠 CLI와 Null RHI를 제공한다. 게임 런타임·에디터·실제 렌더 백엔드는 개발 중이다.
+문서 페이지 URL의 마지막 `/`를 `.md`로 바꾸면 마크다운 원문이 나온다.
 HTML 을 파싱할 필요가 없다.
 
 ## 기계용 데이터
@@ -23,9 +24,10 @@ HTML 을 파싱할 필요가 없다.
 - [애셋 파이프라인](/guide/asset-pipeline.md)
 - [콘텐츠 문서 문법](/guide/content-format.md)
 - [참고 엔진 조사](/guide/engine-survey.md)
-- [시작하기](/guide/index.md): 5분 안에 첫 콘텐츠를 만든다
+- [시작하기](/guide/index.md): alice CLI로 샘플을 검사하고 첫 콘텐츠 문서를 만든다
 - [새 세션 시작하기](/guide/onboarding.md)
 - [성능 — 로깅 · 프로파일링 · 예산](/guide/performance.md)
+- [현재 실행 상태와 개발 순서](/guide/status.md)
 - [왜 이렇게 만들었나](/guide/why.md): AI 친화가 형식이 아니라 구조의 문제인 이유
 
 ## 레퍼런스
@@ -1021,28 +1023,40 @@ set(CMAKE_SYSTEM_VERSION "10.0.26100.0" CACHE STRING "...")
 
 # 시작하기
 
+**현재 실행 가능한 것은 콘텐츠 도구 `alice`입니다.** 게임 창과 에디터는 아직 없습니다.
+이 가이드에서는 문서를 만들고 검사합니다. 전체 구현 상태는 [현재 상태](/guide/status/)를 보십시오.
+
 ## 빌드
 
 ```bash
-git clone https://github.com/<org>/AliceEngine-Singularity
+git clone https://github.com/Chang-Jin-Lee/AliceEngine-Singularity.git
 cd AliceEngine-Singularity
-./Scripts/build.sh          # Windows: Scripts\build.ps1
 ```
 
-필요한 것은 **CMake 3.24+ 와 C++20 컴파일러**뿐입니다. 서드파티 의존성이 없습니다.
+필요한 것은 **CMake 3.24+ 와 C++20 컴파일러**입니다. C++ 코어의 서드파티 의존성은 없습니다.
+
+Windows / PowerShell:
+
+```powershell
+pwsh -NoProfile -File .\Scripts\build.ps1
+.\build\bin\alice.exe doctor --json
+.\build\bin\alice.exe check Samples --json
+# 이 터미널에서 아래 예시의 짧은 명령을 사용한다
+Set-Alias alice (Resolve-Path .\build\bin\alice.exe).Path
+```
+
+macOS / Linux:
 
 ```bash
-./build/bin/alice doctor
+./Scripts/build.sh
+./build/bin/alice doctor --json
+./build/bin/alice check Samples --json
+export PATH="$PWD/build/bin:$PATH"
 ```
 
-```
-AliceEngine-Singularity 0.1.0
-
-  플랫폼      windows
-  콘텐츠 모델 19개 문서 타입 · 32개 동사 · 36개 식 심볼
-  렌더 백엔드 null
-  AI CLI      claude 있음  ·  codex 있음
-```
+`doctor`는 스키마 19개, 동사 정의 32개, 심볼 36개와 `null` 백엔드를 보고합니다.
+`aiCli` 항목은 각 PC의 PATH에 따라 달라지며 로그인 상태를 검사하지 않습니다.
+샘플 검증에서 문서 10개가 오류·경고 없이 통과하면 콘텐츠 도구를 사용할 준비가 된 것입니다.
 
 ## 엔진에게 물어보기
 
@@ -1145,6 +1159,7 @@ AI 에게 줄 것은 이 JSON 하나입니다.
 
 ## 다음
 
+- [현재 상태와 개발 순서](/guide/status/) — CLI·위키 실행과 아직 없는 기능
 - [콘텐츠 문서 문법](/guide/content-format/) — 문법과 흔한 실수
 - [조건식 심볼](/reference/expression-symbols/) — `when:` 에서 쓸 수 있는 이름
 - [동사 목록](/api/verbs.json) — 할 수 있는 동작 전부
@@ -1330,7 +1345,7 @@ Task: SID-02"
 - **완료 기준** — 체크박스 전부를 만족시켜야 끝입니다
 - **건드리는 파일** / **건드리면 안 되는 것** — 경계
 
-막히면 [`AGENTS.md`](../AGENTS.md) 의 "절대 규칙 다섯"을 다시 보십시오.
+막히면 [`AGENTS.md`](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/AGENTS.md) 의 "절대 규칙 다섯"을 다시 보십시오.
 
 ---
 
@@ -1382,12 +1397,12 @@ alice explain <진단코드>
 **Q. 남의 영역을 건드려야 합니다**
 
 구현(.cpp)이면 그 역할의 담당입니다. 공개 헤더를 바꿔야 한다면
-[인터페이스 변경 이슈](../.github/ISSUE_TEMPLATE/interface_change.md)를 열어 Alice 의 판단을 받으십시오.
+[인터페이스 변경 이슈](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/.github/ISSUE_TEMPLATE/interface_change.md)를 열어 Alice 의 판단을 받으십시오.
 
 **Q. 서드파티를 쓰고 싶습니다**
 
-[ADR-0002](adr/0002-no-third-party.md) 를 먼저 읽으십시오.
-그래도 필요하다면 PR 에서 [Alice 의 판단 기준 넷](../Agents/Alice.md)에 답하십시오.
+[ADR-0002](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/Docs/adr/0002-no-third-party.md) 를 먼저 읽으십시오.
+그래도 필요하다면 PR 에서 [Alice 의 판단 기준 넷](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/Agents/Alice.md)에 답하십시오.
 
 
 
@@ -1628,20 +1643,126 @@ alice engine trace --frames=60 -o f.json  # Perfetto 로 열 트레이스
 
 
 
+<!-- /guide/status.md -->
+
+# 현재 실행 상태와 개발 순서
+
+> 기준: 2026-09-07 · Phase 0 · 엔진 버전 0.1.0
+
+**지금 실행할 수 있는 것은 `alice` 콘텐츠 도구입니다.** YAML/JSON 문서를 만들고,
+검증하고, 정리할 수 있습니다. 게임 창을 띄우는 실행 파일이나 에디터는 아직 없습니다.
+`Samples/FirstLight`는 검증 가능한 콘텐츠 샘플이며, 현재 플레이할 수 있는 게임은 아닙니다.
+
+## 지금 할 수 있는 것
+
+| 기능 | 현재 상태 | 확인 방법 |
+|---|---|---|
+| 문서 모델 | 스키마 19개: 문서 10종 + 컴포넌트 9종 | `alice schema list --json` |
+| 게임플레이 문법 | 동사 정의 32개, 조건식 심볼 36개, 정적 검사 | `alice verbs --json` |
+| 콘텐츠 검증 | 위치·진단 코드·수정 힌트를 함께 출력 | `alice check Samples --json` |
+| 문서 편집 | 뼈대 생성, YAML/JSON 변환, 주석을 보존하는 정규화 | `alice new`, `alice convert`, `alice fmt` |
+| 계측 | 코어의 구조화 로그, CPU 프로파일러, 프레임 예산 | `Engine/Foundation/` 및 테스트 |
+| 그래픽 추상화 | RHI 인터페이스와 검증용 Null 백엔드 | `alice doctor --json` |
+| 위키 | 정적 사이트, 문서 원문, JSON 레퍼런스, AI용 문서 목록 | `Wiki/`에서 `npm run build` 후 `npm start` |
+
+**동사가 목록에 있다는 것은 문법과 인자를 검증한다는 뜻입니다.** 예를 들어
+`physics.impulse`와 `audio.play`의 실제 물리·오디오 실행은 후속 런타임 작업입니다.
+`doctor`의 AI CLI 항목은 PATH에서 프로그램을 찾은 결과이며 로그인 확인은 아닙니다.
+
+## 엔진 실행해 보기
+
+Windows에서 저장소 루트를 기준으로 실행합니다. CMake 3.24+와 C++20 컴파일러가 필요합니다.
+
+```powershell
+pwsh -NoProfile -File .\Scripts\build.ps1
+.\build\bin\alice.exe doctor --json
+.\build\bin\alice.exe check Samples --json
+.\build\bin\alice.exe verbs --json
+.\build\bin\Alice.Tests.exe
+```
+
+PowerShell이 스크립트 실행 정책 오류를 표시하는 개인 개발 환경에서는 해당 실행에만
+적용되는 `pwsh -NoProfile -ExecutionPolicy Bypass -File .\Scripts\build.ps1`을 사용할 수 있습니다.
+관리되는 PC에서는 조직의 정책을 따릅니다.
+
+macOS / Linux에서는 다음을 사용합니다. 이번 작업의 실행 검증은 Windows에서 수행했습니다.
+
+```bash
+./Scripts/build.sh
+./build/bin/alice doctor --json
+./build/bin/alice check Samples --json
+```
+
+## 위키 열기
+
+Node.js 22 이상과 npm이 필요합니다. C++ 코어의 서드파티 0 원칙과 별개로,
+위키는 Next.js·React 등 `Wiki/package-lock.json`에 기록된 패키지를 사용합니다.
+
+```powershell
+cd Wiki
+npm ci
+npm run build
+npm start
+```
+
+브라우저에서 [http://localhost:3000](http://localhost:3000)을 엽니다.
+수정할 때 자동으로 다시 보고 싶으면 `npm run dev`를 사용합니다.
+3000번 포트를 이미 사용 중이면 `npm start -- --port 3001`로 실행합니다.
+
+`build`는 레퍼런스를 재생성하고 `Wiki/out/`에 정적 사이트를 만듭니다.
+`start`는 이 결과를 로컬에서 제공합니다. 엔진 실행 파일이 없을 때는 저장소에 포함된
+스키마와 API 스냅샷을 사용하므로, 위키만 먼저 빌드할 수도 있습니다.
+
+## 아직 개발 중인 것
+
+| 영역 | 남은 작업 | 백로그 |
+|---|---|---|
+| Runtime | 공개 인터페이스, ECS, 씬 로딩, 규칙 실행, 상태 덤프, 프레임 루프 | [ALI-02](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/Agents/Backlog/alice/ALI-02.md), [Sidney](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/tree/main/Agents/Backlog/sidney/) |
+| 그래픽 | D3D11, D3D12, Vulkan, 셰이더, RenderGraph. Metal도 목표이며 현재 구현 없음 | [Monday](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/tree/main/Agents/Backlog/monday/) |
+| 애셋 | 참조 해석, 임포터·캐시, AI 변환 | [ALI-03](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/Agents/Backlog/alice/ALI-03.md), [CHR-05](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/Agents/Backlog/chrono/CHR-05.md), [CHR-06](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/Agents/Backlog/chrono/CHR-06.md) |
+| AI 연동 | 엔진 내 대화창, 실행 중 엔진 질의, MCP | [CHR-01](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/Agents/Backlog/chrono/CHR-01.md), [CHR-09](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/Agents/Backlog/chrono/CHR-09.md) |
+| 위키 후속 | 공개 Vercel 배포, 검색, 영어 번역 | [CHR-07](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/Agents/Backlog/chrono/CHR-07.md) |
+
+## 다음 엔진 작업
+
+1. **Alice / ALI-02** — World와 컴포넌트 등록, 렌더 데이터 추출, 규칙 실행의 경계를 정합니다.
+2. **Sidney / SID-02** — ECS와 엔티티 수명·세대 검사를 구현합니다.
+3. **Sidney / SID-03** — FirstLight 문서를 World로 로딩합니다.
+4. **Sidney / SID-04** — 조건식을 평가하고 동사를 실행합니다.
+
+화면 출력은 Monday의 실제 렌더 백엔드와 플랫폼 창·입력 구현이 추가로 필요합니다.
+Runtime 검증은 우선 Null 백엔드에서 진행할 수 있습니다.
+
+역할별 작업 절차는 [온보딩](/guide/onboarding/), 모듈 경계는 [아키텍처](/guide/architecture/)를 보십시오.
+
+## 이번 검증 기록
+
+2026-09-07, Windows에서 다음을 확인했습니다.
+
+- 공식 `Scripts/verify.ps1`: 경고 0 빌드, 테스트 137개, 샘플 10개 검증,
+  문서 정규화, JSON Schema 최신 여부, 백로그 표 검사 통과
+- 위키 `npm run build`: 정적 내보내기 성공
+- `npm test`: 엔진 없는 환경의 레퍼런스 재생성과 로컬 미리보기 HTTP 동작 통과
+- 브라우저: 데스크톱·모바일 화면, 문서 이동, 목차 펼치기, HTML·Markdown·JSON 접근 확인
+
+공개 배포와 macOS/Linux 빌드는 이번 확인에 포함하지 않았습니다.
+
+
+
 <!-- /guide/why.md -->
 
 # 왜 이렇게 만들었나
 
-## AI 가 게임 엔진에서 막히는 진짜 이유
+## AI 에게 필요한 콘텐츠 작업 흐름
 
-"AI 가 코드를 못 짜서"가 아닙니다. **자기가 만든 것이 맞는지 확인할 방법이 없어서**입니다.
+AI가 콘텐츠를 고치려면 **무엇을 만들 수 있는지 조회하고, 변경 결과를 확인하는 방법**이 필요합니다.
 
-| | 언리얼 | 유니티 | 여기 |
-|---|---|---|---|
-| 게임플레이 | C++ → UHT → 블루프린트 | C# 스크립트 | 선언적 규칙 문서 |
-| 애셋 | 바이너리 `.uasset` | 바이너리 + `.meta` | 텍스트 문서 |
-| **맞는지 확인** | **에디터를 켜고 실행** | **에디터를 켜고 실행** | **`alice check`** |
-| **현재 상태 읽기** | **불가능** | **불가능** | **문서로 덤프** |
+| 작업 | 이 엔진의 방식 | 현재 상태 |
+|---|---|---|
+| 게임플레이 작성 | 선언적 규칙 문서 | 문법·인자 검증 가능, 실행기는 개발 예정 |
+| 콘텐츠 정의 | 스키마가 있는 YAML/JSON | 구현됨 |
+| 변경 결과 확인 | `alice check`의 구조화 진단 | 구현됨 |
+| 실행 중인 세계 읽기 | World를 문서로 덤프 | SID-05에서 구현 예정 |
 
 검증 없이 반복하면 오류가 쌓입니다. 확인이 왕복 한 번에 끝나야 AI 가 일할 수 있습니다.
 
@@ -1684,9 +1805,10 @@ rules:
 
 ### 이 분리가 주는 것
 
-**순서 의존이 사라집니다.** 같은 프레임의 규칙들을 어떤 순서로 평가해도 결과가 같습니다.
-스크립트 언어라면 규칙 A 가 상태를 바꿔서 규칙 B 의 조건이 달라질 수 있습니다.
-그런 버그는 재현이 안 되고 6개월 뒤에 돌아옵니다.
+**조건 판단과 상태 변경을 분리합니다.** 같은 프레임의 조건을 같은 상태에서 판단한 다음
+동작을 적용하는 것이 Runtime의 목표입니다. 조건식이 읽기 전용이라는 사실만으로
+여러 동작의 실행 순서까지 독립적이 되는 것은 아닙니다. 서로 다른 규칙이 같은 값을 쓰는 경우의
+적용 순서와 충돌 정책은 Runtime에서 정하고 테스트해야 합니다.
 
 **정적으로 전부 검사됩니다.** 실행 전에 이미 압니다.
 
@@ -1734,7 +1856,7 @@ player.actor.yaml:12:5: error[schema.unknown_field]: 'positon' 은 Transform 에
 |---|---|
 | 표현력이 스크립트 언어보다 낮다 | 못 하는 것이 나오면 **동사를 추가**한다. 그러면 AI 도 그 능력을 즉시 얻는다 |
 | YAML 전체 명세를 지원하지 않는다 | 앵커·태그·복합키는 게임 콘텐츠에 필요 없고, 있으면 AI 가 헷갈린다 |
-| 텍스트라 로딩이 바이너리보다 느리다 | 배포 빌드는 사전 컴파일한다. 개발 중의 반복 속도가 더 중요하다 |
+| 텍스트 파싱에는 비용이 든다 | 우선 개발 중의 반복 속도를 중시한다. 런타임과 애셋 캐시는 후속 작업이다 |
 | 파서를 직접 유지해야 한다 | 대신 진단 품질을 완전히 통제한다. 이 엔진에서는 그게 제품이다 |
 | 동사 목록이 유한하다 | 그게 요점이다. 무한하면 AI 가 추측하기 시작한다 |
 

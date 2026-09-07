@@ -30,4 +30,3 @@ position: [0, 0, 0]
 alice schema show alice/component/transform/1
 alice new transform MyThing
 ```
-

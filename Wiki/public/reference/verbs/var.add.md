@@ -12,5 +12,3 @@
 | `amount` | `number` | ✓ |  | 더할 값. 음수면 뺀다 |
 | `min` | `number` |  |  | 결과의 하한 |
 | `max` | `number` |  |  | 결과의 상한 |
-
-

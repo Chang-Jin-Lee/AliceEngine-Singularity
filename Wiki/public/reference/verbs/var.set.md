@@ -12,5 +12,3 @@
 |---|---|:---:|---|---|
 | `name` | `string` | ✓ |  | 변수 이름 |
 | `value` | `number | boolean | string` | ✓ |  | 새 값 |
-
-

@@ -18,4 +18,3 @@ effect 문서를 이 액터 위치에서 재생한다
 alice schema show alice/component/particles/1
 alice new particles MyThing
 ```
-

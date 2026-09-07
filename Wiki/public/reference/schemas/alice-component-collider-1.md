@@ -23,4 +23,3 @@
 alice schema show alice/component/collider/1
 alice new collider MyThing
 ```
-

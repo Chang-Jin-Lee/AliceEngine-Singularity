@@ -266,9 +266,9 @@ ALICE_TEST(Profiler, BudgetViolationIsLogged) {
         ALICE_PROFILE_ZONE("Slow");
         // 존이 측정 가능한 시간을 쓰게 만든다. 빈 스코프는 시계 분해능 안에서 0ms 로
         // 나올 수 있고, 그러면 예산 0.0 을 "초과하지 않은" 것이 되어 테스트가 흔들린다.
-        volatile u64 sink = 0;
-        for (int i = 0; i < 200000; ++i) sink += static_cast<u64>(i);
-        ALICE_UNUSED(sink);
+        volatile u64 workSum = 0;
+        for (int i = 0; i < 200000; ++i) workSum += static_cast<u64>(i);
+        ALICE_UNUSED(workSum);
     }
     Profiler::EndFrame();
 

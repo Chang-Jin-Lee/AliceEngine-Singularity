@@ -10,5 +10,3 @@
 |---|---|:---:|---|---|
 | `scene` | `string` | ✓ |  | scene 문서 경로 |
 | `mode` | `replace | additive` |  | `"replace"` | 기존 씬을 대체할지 겹칠지 |
-
-

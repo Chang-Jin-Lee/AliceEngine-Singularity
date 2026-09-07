@@ -224,5 +224,3 @@ device->CreateBuffer(...)  // Destroy 없음
 # 이렇게 쓴다
 device->CreateBuffer(...); ... device->Destroy(handle);
 ```
-
-

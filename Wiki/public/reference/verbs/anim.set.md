@@ -11,5 +11,3 @@
 | `target` | `string` |  |  | 대상 액터 이름. 비우면 이 행동이 붙은 액터 자신 |
 | `parameter` | `string` | ✓ |  | 파라미터 이름 |
 | `value` | `number | boolean` | ✓ |  | 새 값 |
-
-

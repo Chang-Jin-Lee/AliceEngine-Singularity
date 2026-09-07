@@ -25,4 +25,3 @@
 alice schema show alice/sound/1
 alice new sound MyThing
 ```
-

@@ -11,5 +11,3 @@
 | `bus` | `master | music | sfx | voice | ambient | ui` | ✓ |  | 대상 버스 |
 | `volume` | `number` | ✓ |  | 0..1 |
 | `fade` | `number` |  | `0` | 변화에 걸릴 시간(초) |
-
-

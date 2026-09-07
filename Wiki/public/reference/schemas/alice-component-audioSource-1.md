@@ -23,4 +23,3 @@
 alice schema show alice/component/audioSource/1
 alice new audioSource MyThing
 ```
-

@@ -11,5 +11,3 @@
 | `target` | `string` |  |  | 대상 액터 이름. 비우면 이 행동이 붙은 액터 자신 |
 | `delta` | `[number x3]` | ✓ |  | 이동량 [x, y, z] |
 | `space` | `world | local` |  | `"world"` | 기준 좌표계 |
-
-

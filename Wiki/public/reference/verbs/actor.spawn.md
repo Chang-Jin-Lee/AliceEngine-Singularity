@@ -13,5 +13,3 @@ actor 문서로부터 새 액터를 만든다
 | `position` | `[number x3]` |  |  | 월드 좌표 |
 | `rotation` | `[number x3]` |  |  | 오일러 각(도) |
 | `parent` | `string` |  |  | 부모 액터 이름 |
-
-

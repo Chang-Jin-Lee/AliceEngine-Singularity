@@ -11,5 +11,3 @@
 | `target` | `string` |  |  | 대상 액터 이름. 비우면 이 행동이 붙은 액터 자신 |
 | `tag` | `string` | ✓ |  | 태그 이름 |
 | `value` | `boolean` |  | `true` | true 면 붙이고 false 면 뗀다 |
-
-
