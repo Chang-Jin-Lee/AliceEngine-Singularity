@@ -6,7 +6,7 @@
 
 여러 자체엔진을 하나로 통합하고, 처음부터 AI가 다룰 수 있게 설계한 게임 엔진
 
-[![tests](https://img.shields.io/badge/tests-131%20passing-brightgreen)](Engine/Tests)
+[![tests](https://img.shields.io/badge/tests-137%20passing-brightgreen)](Engine/Tests)
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-blue)](CMakeLists.txt)
 [![license](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
@@ -110,7 +110,7 @@ player.behavior.yaml:12:9: error[verb.unknown]: 'audio.paly' 는 없는 동사�
 - 백엔드 중립 RHI 인터페이스 + 검증기를 겸하는 Null 백엔드
 - `alice` CLI 10개 명령, 전부 `--json` 지원
 - JSON Schema 자동 생성 (에디터 자동완성)
-- 테스트 131개
+- 테스트 137개
 
 **아직 안 된다 (백로그에 있습니다)**
 
@@ -143,8 +143,8 @@ Scripts\build.ps1
 
 ```bash
 ./build/bin/alice doctor              # 환경 확인
-./build/bin/Alice.Tests               # 테스트
 ./build/bin/alice check Samples/FirstLight
+./Scripts/verify.sh                   # 커밋 전 검증 전체 (Windows: .\Scripts\verify.ps1)
 ```
 
 ---
@@ -153,6 +153,8 @@ Scripts\build.ps1
 
 | 문서 | 내용 |
 |---|---|
+| [`AGENTS.md`](AGENTS.md) | **AI 에이전트 진입점.** Codex·Claude Code 가 자동으로 읽는다 |
+| [`Docs/ONBOARDING.md`](Docs/ONBOARDING.md) | **새 세션 시작하기.** 복사해서 붙여넣을 프롬프트 |
 | [`Docs/ARCHITECTURE.md`](Docs/ARCHITECTURE.md) | 모듈 경계와 의존성 규칙 |
 | [`Docs/CONTENT_FORMAT.md`](Docs/CONTENT_FORMAT.md) | 문서 문법과 규칙. **콘텐츠를 만들려면 여기부터** |
 | [`Docs/ENGINE_SURVEY.md`](Docs/ENGINE_SURVEY.md) | 참고 엔진 20개에서 무엇을 가져오고 무엇을 버렸는가 |
@@ -254,13 +256,12 @@ Agent: Monday (Graphics)
 ## 5. 병합 전 통과해야 하는 것
 
 ```bash
-./build/bin/Alice.Tests                        # 131개 전부 통과
-./build/bin/alice check Samples --json         # 오류 0
-./build/bin/alice fmt Samples --check          # 정규화 상태
-cmake --build build                            # 경고 0
+./Scripts/verify.sh          # Windows: .\Scripts\verify.ps1
 ```
 
-CI 가 같은 것을 돌립니다. → [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+이 하나가 빌드(경고 0) · 테스트 · 샘플 검증 · 문서 정규화 · 생성물 최신 여부 ·
+백로그 표를 전부 검사합니다. CI 가 같은 것을 돌립니다.
+→ [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 
 ---
 
@@ -269,14 +270,18 @@ CI 가 같은 것을 돌립니다. → [`.github/workflows/ci.yml`](.github/work
 어느 컴퓨터에서든, 어떤 AI 세션에서든 이렇게 시작할 수 있습니다.
 
 ```
-넌 이제부터 Seeho다. Agents/Seeho.md 를 읽고,
+넌 이제부터 Seeho다.
+AGENTS.md 와 Agents/Seeho.md 를 읽고,
 Agents/Backlog/seeho/ 에서 작업 하나를 골라 진행하라.
 ```
+
+Codex 는 [`AGENTS.md`](AGENTS.md) 를, Claude Code 는 [`CLAUDE.md`](CLAUDE.md)(그 파일을 가리킴)를
+자동으로 읽습니다. 별도 설정이 필요 없습니다.
 
 에이전트 문서에 **책임 범위, 건드려도 되는 파일, 건드리면 안 되는 파일, 완료 기준**이
 적혀 있습니다. 역할만 지키면 서로의 작업이 충돌하지 않습니다.
 
-자세한 절차: [`Agents/README.md`](Agents/README.md)
+자세한 절차: [`Docs/ONBOARDING.md`](Docs/ONBOARDING.md) · [`Agents/README.md`](Agents/README.md)
 
 ---
 

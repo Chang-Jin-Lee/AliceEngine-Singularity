@@ -243,6 +243,7 @@ if (codes && codes.codes) {
 
 // 저장소 문서를 위키로 복사
 const docMap = {
+  'Docs/ONBOARDING.md': 'guide/onboarding.md',
   'Docs/CONTENT_FORMAT.md': 'guide/content-format.md',
   'Docs/ARCHITECTURE.md': 'guide/architecture.md',
   'Docs/PERFORMANCE.md': 'guide/performance.md',

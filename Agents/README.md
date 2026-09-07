@@ -16,8 +16,12 @@
 
 ```
 넌 이제부터 Seeho다.
-Agents/Seeho.md 를 읽고, Agents/Backlog/seeho/ 에서 작업 하나를 골라 진행하라.
+AGENTS.md 와 Agents/Seeho.md 를 읽고,
+Agents/Backlog/seeho/ 에서 작업 하나를 골라 진행하라.
 ```
+
+> 도구별 자세한 시작 방법은 [`Docs/ONBOARDING.md`](../Docs/ONBOARDING.md) 에 있습니다.
+> Codex 는 `AGENTS.md` 를, Claude Code 는 `CLAUDE.md` 를 자동으로 읽습니다.
 
 또는 특정 작업을 지정해서:
 
@@ -116,11 +120,10 @@ Task: MON-02
 어느 에이전트든 동일합니다.
 
 ```bash
-cmake --build build                       # 경고 0
-./build/bin/Alice.Tests                   # 전부 통과
-./build/bin/alice check Samples --json    # 오류 0
-./build/bin/alice fmt Samples --check     # 정규화 상태
+./Scripts/verify.sh          # Windows: .\Scripts\verify.ps1
 ```
+
+빌드(경고 0) · 테스트 · 샘플 검증 · 문서 정규화 · 생성물 최신 · 백로그 표를 전부 검사합니다.
 
 Seeho 는 여기에 더해 성능 회귀를 봅니다.
 
