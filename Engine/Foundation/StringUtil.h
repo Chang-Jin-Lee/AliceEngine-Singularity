@@ -34,7 +34,8 @@ std::string JsonEscape(std::string_view s);
 /// 따옴표까지 붙인 완전한 JSON 문자열.
 std::string JsonQuote(std::string_view s);
 
-/// double 을 왕복 가능(round-trip)하게 찍는다. 정수값이면 ".0" 을 붙여 타입을 보존한다.
+/// 모든 플랫폼에서 std::to_chars의 가장 짧은 왕복 표현을 쓴다(부동소수 overload 필요).
+/// 정수처럼 보이는 유한 값에는 ".0"을 붙여 문서의 실수 타입을 보존한다.
 std::string FormatDouble(f64 v);
 
 /// 숫자 파싱. 전체 문자열이 소비되어야 성공.
