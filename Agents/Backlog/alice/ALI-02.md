@@ -1,7 +1,7 @@
 # ALI-02 · Runtime 모듈 인터페이스 설계
 
 ```
-상태: 진행중
+상태: 리뷰
 크기: M
 선행: 없음
 담당: Codex (Alice)
@@ -66,3 +66,7 @@ Wiki/ 생성물 (설계·상태 문서 동기화)
 
 후속 구현은 `Docs/ARCHITECTURE.md`의 수명·실패·정렬 계약을 기준으로 SID-02부터 진행한다.
 World 호출이 링크되거나 게임 창이 실행된다는 의미는 아니다.
+
+GitHub [PR #1](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/1)을 열었다.
+기준 브랜치는 `chrono/CHR-10-local-wiki`이며 이 작업의 변경만 비교한다.
+병합 전이므로 상태는 `리뷰`로 유지한다.

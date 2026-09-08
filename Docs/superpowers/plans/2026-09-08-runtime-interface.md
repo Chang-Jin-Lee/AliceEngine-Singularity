@@ -48,5 +48,7 @@ Files: `Docs/STATUS.md`, `Agents/Backlog/alice/ALI-02.md`, `Agents/README.md`, �
 - [x] `Wiki/`에서 `npm test`, `npm run build`를 실행한다.
 - [x] 독립 코드 리뷰에서 컴파일 계약과 후속 구현의 모호한 지점을 점검하고 해결한다.
 - [x] 백로그에 실제 검증 범위와 미구현 범위를 기록한다.
-- [ ] 검증된 변경을 커밋하고 `alice/ALI-02-runtime-interface`에 푸시한다.
+- [x] 검증된 변경을 커밋하고 `alice/ALI-02-runtime-interface`에 푸시한다.
   PR은 기존 기반 브랜치 `chrono/CHR-10-local-wiki`를 대상으로 열어 ALI-02만 비교한다.
+
+결과: 구현 커밋 `f774c17`, [PR #1](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/1).
