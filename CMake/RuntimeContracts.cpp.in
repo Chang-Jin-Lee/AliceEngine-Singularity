@@ -1,0 +1,61 @@
+// SPDX-License-Identifier: MIT
+// Compile real consumer expressions without pretending the runtime already links or runs.
+#include "Runtime/World.h"
+#include "Runtime/RenderExtraction.h"
+#include "Runtime/Rules.h"
+
+#include <type_traits>
+#include <utility>
+
+using namespace alice;
+using namespace alice::runtime;
+
+static_assert(std::is_same_v<decltype(std::declval<const WorldReadView&>().Get<int>(
+    EntityId{}, ComponentId{})), Result<const int*>>);
+static_assert(!std::is_copy_constructible_v<WorldReadView>);
+static_assert(std::is_nothrow_move_constructible_v<WorldReadView>);
+static_assert(!std::is_copy_constructible_v<World>);
+static_assert(std::is_same_v<decltype(std::declval<const World&>().AcquireRead()),
+    Result<WorldReadView>>);
+static_assert(std::is_same_v<decltype(ExtractRenderView(std::declval<const WorldReadView&>())),
+    Result<RenderView>>);
+static_assert(std::is_same_v<decltype(MeshInstance::asset), std::string>);
+static_assert(std::is_same_v<decltype(RenderView::meshes), std::vector<MeshInstance>>);
+static_assert(EntityId{1, 1, 1} != EntityId{2, 1, 1});
+static_assert(EntityId{1, 1, 1} != EntityId{1, 1, 2});
+
+// Bodies force template instantiation, unlike decltype-only checks.
+void CompileReadConsumer(const WorldReadView& view, EntityId entity, ComponentId component) {
+    auto value = view.Get<int>(entity, component);
+    const int* data = value.IsOk() ? value.Value() : nullptr;
+    (void)data;
+    const ComponentId required[] = {component};
+    auto entities = view.Query(required);
+    (void)entities;
+}
+
+void CompileWriteConsumer(World& world, EntityId entity, ComponentId component,
+                          const doc::Value& document, const SourceLocation& source) {
+    auto set = world.SetComponent(entity, component, document, source);
+    auto remove = world.RemoveComponent(entity, component, source);
+    auto destroy = world.DestroyEntity(entity, source);
+    auto commit = world.CommitDestructions();
+    (void)set; (void)remove; (void)destroy; (void)commit;
+}
+
+// World/scene loaders need a public validation route through the frozen schema ownership.
+void CompileValidationConsumer(const ComponentRegistry& registry, ComponentId component,
+                               const doc::Value& document, DiagnosticBag& diagnostics,
+                               const SourceLocation& source) {
+    auto status = registry.Validate(component, document, diagnostics, source);
+    (void)status;
+}
+
+void CompileRulesConsumer(World& world, const WorldReadView& view,
+                          const verbs::Expr& expression, const RuleContext& context,
+                          const IRuleSymbols& symbols, const IVerbExecutor& executor,
+                          std::span<const ActionCommand> commands, DiagnosticBag& diagnostics) {
+    auto condition = EvaluateCondition(expression, view, context, symbols);
+    auto apply = ApplyCommands(world, commands, executor, diagnostics);
+    (void)condition; (void)apply;
+}

@@ -102,6 +102,7 @@ player.behavior.yaml:12:9: error[verb.unknown]: 'audio.paly' 는 없는 동사�
 - 동사 **정의** 32개 + 조건식 파서/검사기 + 식 심볼 36개 (실제 동사 실행은 Runtime에서 구현 예정)
 - 구조화 로깅(NDJSON) · 계층 프로파일러 · 프레임 예산 초과 자동 감지
 - 백엔드 중립 RHI 인터페이스 + 검증기를 겸하는 Null 백엔드
+- Runtime 공개 헤더 6개와 컴파일 계약 검사 (World 등 함수 구현은 아직 없음)
 - `alice` CLI 10개 명령, 전부 `--json` 지원
 - JSON Schema 자동 생성 (에디터 자동완성)
 - 테스트 137개
@@ -115,7 +116,8 @@ player.behavior.yaml:12:9: error[verb.unknown]: 'audio.paly' 는 없는 동사�
 - 엔진 내장 AI 대화창 → [`CHR-01`](Agents/Backlog/chrono/CHR-01.md)
 - 에디터 UI, 위키 공개 배포·검색·영어 번역
 
-다음 엔진 작업은 **ALI-02(Runtime 인터페이스) → SID-02(ECS) → SID-03(씬 로더) → SID-04(규칙 평가기)**입니다.
+**ALI-02(Runtime 인터페이스)는 작성·컴파일 검증을 마쳤습니다.** 리뷰·병합 후
+**SID-02(ECS) → SID-03(씬 로더) → SID-04(규칙 평가기)** 순서로 구현합니다.
 화면 출력에는 실제 그래픽 백엔드와 플랫폼 창·입력 구현도 필요합니다.
 
 ---
