@@ -149,7 +149,7 @@ Seeho 는 여기에 더해 성능 회귀를 봅니다.
 
 | 에이전트 | 대기 | 진행중 | 완료 |
 |---|---|---|---|
-| [Alice](Backlog/alice) | 3 | 0 | 1 |
+| [Alice](Backlog/alice) | 2 | 1 | 1 |
 | [Sidney](Backlog/sidney) | 5 | 0 | 1 |
 | [Monday](Backlog/monday) | 5 | 0 | 1 |
 | [Chrono](Backlog/chrono) | 6 | 1 | 3 |
