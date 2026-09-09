@@ -248,7 +248,7 @@ Engine/
   Verbs/        동사 · 조건식 · 2차 검사
   RHI/          그래픽 추상화 + Null 백엔드
   Tests/        137개
-  Runtime/      (비어 있음 — SID-02~06)
+  Runtime/      공개 계약 헤더 6개 (구현은 SID-02~06)
 Tools/AliceCLI/ alice 명령
 Samples/        FirstLight — 코드 없는 완전한 프로젝트
 Agents/         역할 정의와 백로그 26건

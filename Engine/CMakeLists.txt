@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 # 엔진 모듈 목록과 **의존성 그래프**.
 #
-# 이 파일이 아키텍처 문서다. 화살표는 아래로만 흐른다. 위로 흐르는 순간 CMake 가 막는다.
+# 명시적 타깃 의존성과 Runtime 공개 헤더 경계 검사가 모듈 계약을 기록한다.
 #
 #   Foundation                 로그 · 프로파일러 · 진단 · 파일시스템   (의존 없음)
 #      ├─ Doc                  문서 값 모델 · YAML/JSON 파서 · 직렬화
@@ -9,7 +9,7 @@
 #      │         └─ Verbs      동사 레지스트리 · 조건식 · 2차 검사
 #      └─ RHI                  그래픽 추상화 (백엔드 중립 인터페이스)
 #
-# 아직 없는 모듈(Runtime / Asset / Bridge / Editor)은 백로그에 있다 → Agents/Backlog/
+# Runtime은 공개 계약만 있다. Asset / Bridge / Editor 구현은 백로그에 있다.
 
 set(ALICE_ENGINE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE INTERNAL "엔진 소스 루트")
 
@@ -87,3 +87,49 @@ alice_module(Alice.Verbs
 # ── RHI ─────────────────────────────────────────────────────────────────────
 # 백엔드 중립 그래픽 인터페이스.
 add_subdirectory(RHI)
+
+# ALI-02: declarations only. Compile each header even with ALICE_BUILD_TESTS=OFF.
+set(alice_runtime_headers
+    Runtime/RuntimeTypes.h
+    Runtime/ComponentRegistry.h
+    Runtime/World.h
+    Runtime/RenderView.h
+    Runtime/RenderExtraction.h
+    Runtime/Rules.h
+)
+alice_module(Alice.Runtime INTERFACE
+    FOLDER "Engine"
+    DEPS Alice.Verbs
+    SOURCES ${alice_runtime_headers}
+)
+set(alice_runtime_probes)
+foreach(header IN LISTS alice_runtime_headers)
+    # Only the new Runtime public surface is checked here; this is not a whole-engine include linter.
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${header}")
+    file(STRINGS "${header}" includes REGEX "^[ \t]*#[ \t]*include[ \t]*[\"<]")
+    foreach(include IN LISTS includes)
+        string(REGEX REPLACE "^[ \t]*#[ \t]*include[ \t]*[\"<]([^\">]+)[\">].*$" "\\1" dependency "${include}")
+        if(dependency MATCHES "[/\\\\]")
+            if(header STREQUAL "Runtime/RenderView.h")
+                if(NOT dependency MATCHES "^Foundation/[A-Za-z0-9_]+[.]h$")
+                    message(FATAL_ERROR "RenderView must be independent of ECS/RHI: ${dependency}")
+                endif()
+            elseif(NOT dependency MATCHES "^(Foundation|Doc|Schema|Verbs|Runtime)/[A-Za-z0-9_]+[.]h$")
+                message(FATAL_ERROR "Runtime public dependency is not allowed: ${dependency}")
+            endif()
+        elseif(include MATCHES "\"")
+            message(FATAL_ERROR "Runtime project includes must start with a module: ${dependency}")
+        endif()
+    endforeach()
+    get_filename_component(stem "${header}" NAME_WE)
+    set(probe "${CMAKE_CURRENT_BINARY_DIR}/RuntimeContracts/${stem}.cpp")
+    file(GENERATE OUTPUT "${probe}" CONTENT "#include \"${header}\"\n")
+    list(APPEND alice_runtime_probes "${probe}")
+endforeach()
+configure_file("${PROJECT_SOURCE_DIR}/CMake/RuntimeContracts.cpp.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/RuntimeContracts/Consumers.cpp" COPYONLY)
+add_library(Alice.Runtime.Contracts OBJECT ${alice_runtime_probes}
+    "${CMAKE_CURRENT_BINARY_DIR}/RuntimeContracts/Consumers.cpp")
+alice_apply_common_settings(Alice.Runtime.Contracts)
+target_link_libraries(Alice.Runtime.Contracts PRIVATE Alice.Runtime)
+set_target_properties(Alice.Runtime.Contracts PROPERTIES FOLDER "Tests/Contracts")

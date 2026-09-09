@@ -139,13 +139,10 @@ std::string FormatDouble(f64 v) {
 
     char buf[64];
     std::string out;
-#if defined(_MSC_VER)
+    // One shortest-round-trip policy keeps canonical documents identical across platforms.
+    // %.17g expanded values such as 0.35 on Linux/macOS and changed otherwise normalized samples.
     const auto res = std::to_chars(buf, buf + sizeof(buf), v);
     out.assign(buf, res.ptr);
-#else
-    const int n = std::snprintf(buf, sizeof(buf), "%.17g", v);
-    out.assign(buf, buf + (n > 0 ? n : 0));
-#endif
     // 정수처럼 보이면 ".0" 을 붙인다. 그래야 JSON 왕복에서 실수 타입이 정수로 무너지지 않는다.
     if (out.find_first_of(".eEnN") == std::string::npos) out += ".0";
     return out;

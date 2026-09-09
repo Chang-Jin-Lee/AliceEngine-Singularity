@@ -149,10 +149,13 @@ Seeho 는 여기에 더해 성능 회귀를 봅니다.
 
 | 에이전트 | 대기 | 진행중 | 완료 |
 |---|---|---|---|
-| [Alice](Backlog/alice) | 3 | 0 | 1 |
+| [Alice](Backlog/alice) | 2 | 0 | 1 |
 | [Sidney](Backlog/sidney) | 5 | 0 | 1 |
 | [Monday](Backlog/monday) | 5 | 0 | 1 |
 | [Chrono](Backlog/chrono) | 6 | 1 | 3 |
 | [Seeho](Backlog/seeho) | 4 | 0 | 1 |
 
 > 이 표는 손으로 갱신합니다. 자동화는 [`SEE-03`](Backlog/seeho/SEE-03.md) 에 있습니다.
+
+리뷰 중: [ALI-02](Backlog/alice/ALI-02.md) — [PR #1](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/1).
+리뷰 중: [ALI-05](Backlog/alice/ALI-05.md) — [PR #2](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/2).
