@@ -106,3 +106,13 @@ Runtime 검증은 우선 Null 백엔드에서 진행할 수 있습니다.
 정적 어설션 실패, RenderView에 World include 추가는 CMake 설정 실패로 검출했습니다.
 결함을 되돌린 후 공식 검증 6단계가 다시 통과했습니다. 실행 테스트 수는 137개로
 유지되며 이번에 추가한 검사는 런타임 동작 테스트가 아닌 컴파일 계약 검사입니다.
+
+ALI-02의 첫 GitHub CI에서 세 플랫폼의 빌드·테스트는 통과했지만 Linux·macOS의
+샘플 정규화가 실패했습니다. 기존 실수 출력의 `to_chars`/`%.17g` 분기가 원인이었습니다.
+별도 ALI-05에서 출력 경로를 통일하고 소수·부호 있는 0·극단값 왕복 회귀 검사를 보강했습니다.
+수정 커밋 `80710f4`의 [CI run 34228935631](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/actions/runs/34228935631)에서
+Windows·Ubuntu·macOS, 위키, 개발 규칙이 모두 통과했습니다. 샘플 값과 미디어 애셋은 변경하지 않았습니다.
+
+현재 [PR #1](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/1)은 Runtime 공개 계약,
+[PR #2](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/2)는 그 위의 실수 정규화 수정입니다.
+PR #1 단독의 정규화 실패는 PR #2가 적용되어야 해소됩니다. 둘 다 리뷰 단계이며 main 병합은 남아 있습니다.

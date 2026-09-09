@@ -8,6 +8,10 @@
 #include "Foundation/Result.h"
 #include "Foundation/StringUtil.h"
 
+#include <bit>
+#include <cmath>
+#include <limits>
+
 using namespace alice;
 
 // ── StringUtil ─────────────────────────────────────────────────────────────
@@ -35,6 +39,26 @@ ALICE_TEST(StringUtil, NumberRoundTrip) {
     // 실수는 정수처럼 보여도 ".0" 을 달아 타입을 지켜야 한다.
     ALICE_CHECK_STR(FormatDouble(3.0), "3.0");
     ALICE_CHECK_STR(FormatDouble(0.5), "0.5");
+    // These decimals exposed the platform split: %.17g expanded samples saved by to_chars.
+    ALICE_CHECK_STR(FormatDouble(0.1), "0.1");
+    ALICE_CHECK_STR(FormatDouble(0.35), "0.35");
+    ALICE_CHECK_STR(FormatDouble(0.05), "0.05");
+    ALICE_CHECK_STR(FormatDouble(-9.81), "-9.81");
+    ALICE_CHECK_STR(FormatDouble(-0.0), "-0.0");
+
+    const f64 roundTrips[] = {
+        0.0, -0.0, 0.1, 0.35, -9.81, 1e20, 1e-20,
+        std::nextafter(1.0, 2.0), std::numeric_limits<f64>::min(),
+        std::numeric_limits<f64>::denorm_min(), std::numeric_limits<f64>::max(),
+        -std::numeric_limits<f64>::max(),
+    };
+    for (f64 value : roundTrips) {
+        f64 parsed = 0;
+        const std::string text = FormatDouble(value);
+        ALICE_REQUIRE(ParseF64(text, parsed));
+        ALICE_CHECK(std::bit_cast<u64>(parsed) == std::bit_cast<u64>(value));
+        ALICE_CHECK(text.find_first_of(".eE") != std::string::npos);
+    }
 
     i64 i = 0;
     ALICE_CHECK(ParseI64("42", i) && i == 42);

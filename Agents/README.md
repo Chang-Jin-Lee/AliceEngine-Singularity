@@ -158,3 +158,4 @@ Seeho 는 여기에 더해 성능 회귀를 봅니다.
 > 이 표는 손으로 갱신합니다. 자동화는 [`SEE-03`](Backlog/seeho/SEE-03.md) 에 있습니다.
 
 리뷰 중: [ALI-02](Backlog/alice/ALI-02.md) — [PR #1](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/1).
+리뷰 중: [ALI-05](Backlog/alice/ALI-05.md) — [PR #2](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/2).
