@@ -1,7 +1,7 @@
 # ALI-05 · 플랫폼별 실수 정규화 차이 제거
 
 ```
-상태: 리뷰
+상태: 완료
 크기: S
 선행: 없음
 담당: Codex (Alice)
@@ -54,4 +54,4 @@ C++ 표준 라이브러리의 부동소수 to_chars를 모든 플랫폼에서 �
 GitHub [PR #2](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/2),
 [CI run 34228935631](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/actions/runs/34228935631):
 Windows·Ubuntu·macOS, 위키, 개발 규칙 5개 작업 전부 통과했다 (`80710f4`).
-ALI-02를 기준으로 한 별도 수정 PR이며 아직 병합하지 않았다.
+2026-09-09, ALI-02 브랜치에 병합했고 (`20813fb`), PR #1과 함께 위키 기반 브랜치에도 반영됐다.

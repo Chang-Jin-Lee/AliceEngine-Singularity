@@ -1,7 +1,7 @@
 # ALI-02 · Runtime 모듈 인터페이스 설계
 
 ```
-상태: 리뷰
+상태: 완료
 크기: M
 선행: 없음
 담당: Codex (Alice)
@@ -69,4 +69,4 @@ World 호출이 링크되거나 게임 창이 실행된다는 의미는 아니�
 
 GitHub [PR #1](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/1)을 열었다.
 기준 브랜치는 `chrono/CHR-10-local-wiki`이며 이 작업의 변경만 비교한다.
-병합 전이므로 상태는 `리뷰`로 유지한다.
+2026-09-09, CI 통과 후 기준 브랜치에 병합했다 (`6eb4306`).
