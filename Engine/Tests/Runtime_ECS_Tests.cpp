@@ -142,7 +142,7 @@ ALICE_TEST(RuntimeECS, ValidationAppendsDiagnosticsAndPreservesLocations) {
     DiagnosticBag bag;
     bag.Add(MakeError("test.previous", "earlier error", "earlier hint"));
     ALICE_CHECK(f.registry->Validate(f.a, Data(4), bag, kSource).IsOk());
-    ALICE_CHECK_EQ(bag.Size(), 1u);
+    ALICE_CHECK_EQ(static_cast<u64>(bag.Size()), 1u);
     Value bad = Data(4); bad["value"] = Value{"wrong"}; bad["value"].mark = Mark{27, 8, 102};
     bad["label"] = Value{static_cast<i64>(7)}; bad["label"].mark = Mark{28, 9, 123};
     const auto result = f.registry->Validate(f.a, bad, bag, kSource);
@@ -182,7 +182,7 @@ ALICE_TEST(RuntimeECS, ValidationAppendsDiagnosticsAndPreservesLocations) {
     DiagnosticBag all;
     const auto validated = registry->Validate(component, document, all, kSource);
     ALICE_CHECK(validated.IsErr());
-    ALICE_CHECK_EQ(all.Size(), 201u);
+    ALICE_CHECK_EQ(static_cast<u64>(all.Size()), 201u);
     if (validated.IsErr()) {
         ALICE_CHECK_STR(validated.Error().path, "actors[3].components.a.items[200]");
         ALICE_CHECK_STR(validated.Error().file, kSource.file);
@@ -240,12 +240,13 @@ ALICE_TEST(RuntimeECS, NativeStorageIsContiguousAlignedAndSurvivesSwapErase) {
             auto value = view->Get<Native<1>>(entities[i], f.a);
             ALICE_REQUIRE(value.IsOk());
             ALICE_CHECK_EQ(value.Value()->value, static_cast<i64>(i));
-            ALICE_CHECK_STR(value.Value()->label, Fmt("label {}", i));
+            ALICE_CHECK_STR(value.Value()->label, Fmt("label {}", static_cast<u64>(i)));
             addresses.push_back(reinterpret_cast<std::uintptr_t>(value.Value()));
-            ALICE_CHECK_EQ(addresses.back() % alignof(Native<1>), 0u);
+            ALICE_CHECK_EQ(static_cast<u64>(addresses.back() % alignof(Native<1>)), 0u);
         }
         std::sort(addresses.begin(), addresses.end());
-        for (usize i = 1; i < addresses.size(); ++i) ALICE_CHECK_EQ(addresses[i] - addresses[i - 1], sizeof(Native<1>));
+        for (usize i = 1; i < addresses.size(); ++i)
+            ALICE_CHECK_EQ(static_cast<u64>(addresses[i] - addresses[i - 1]), static_cast<u64>(sizeof(Native<1>)));
     }
     ALICE_CHECK_EQ(Native<1>::live, 0);
 }
@@ -263,7 +264,7 @@ ALICE_TEST(RuntimeECS, QueryMatchesIntersectionAndValidatesEveryRequirement) {
     const ComponentId required[] = {f.b, f.a, f.a};
     auto found = view->Query(required);
     ALICE_REQUIRE(found.IsOk()); ALICE_CHECK(found.Value() == expected);
-    ALICE_CHECK_EQ(view->Query({}).Value().size(), 128u);
+    ALICE_CHECK_EQ(static_cast<u64>(view->Query({}).Value().size()), 128u);
     ALICE_CHECK(view->FindComponent("a").Value() == f.a);
     Fixture empty;
     auto emptyView = empty.world->AcquireRead();
@@ -350,7 +351,7 @@ ALICE_TEST(RuntimeECS, BatchDestroyKeepsSurvivorsAndReusedSlotsIndependent) {
     auto view = f.world->AcquireRead();
     const ComponentId both[] = {f.a, f.b};
     auto survivors = view->Query(both).Value();
-    ALICE_CHECK_EQ(survivors.size(), 40u);
+    ALICE_CHECK_EQ(static_cast<u64>(survivors.size()), 40u);
     for (usize i = 0; i < survivors.size(); ++i) {
         ALICE_CHECK(survivors[i] == ids[i * 2 + 1]);
         ALICE_CHECK_EQ(view->Get<Native<1>>(survivors[i], f.a).Value()->value, static_cast<i64>(i * 2 + 1));

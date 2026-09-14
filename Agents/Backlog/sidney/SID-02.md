@@ -1,11 +1,14 @@
 # SID-02 · ECS World — 컴포넌트 저장소
 
 ```
-상태: 진행중
+상태: 리뷰
 크기: L
 선행: ALI-02
 담당: Codex (Sidney)
 ```
+
+PR: [#3](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/3)
+기반 브랜치: `chrono/CHR-10-local-wiki`
 
 ## 무엇을
 
