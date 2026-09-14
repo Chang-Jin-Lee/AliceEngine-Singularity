@@ -1982,6 +1982,12 @@ main 병합은 아직 남아 있습니다.
 - 독립 리뷰에서 발견한 경고 200개 뒤의 검증 누락을 재현 테스트로 확인하고 수정
 - 외부 의존성과 미디어 애셋 추가 없음
 
+위키 테스트 2개와 정적 페이지 67개 빌드를 통과했고, 로컬 미리보기에서 HTML·Markdown을
+HTTP 200으로 확인했습니다. 구현은 [PR #3](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/3)에서
+리뷰 중입니다. macOS 테스트 출력의 `size_t` 타입 차이를 수정한 `e1cbfb5`의
+[GitHub CI](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/actions/runs/34814297441)에서
+Windows·Ubuntu·macOS, 위키, 개발 규칙이 모두 통과했습니다. main 병합과 공개 위키 배포는 남아 있습니다.
+
 
 
 <!-- /guide/why.md -->

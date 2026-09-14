@@ -61,6 +61,9 @@ Wiki/app/page.js (현황) · Wiki 생성 문서
   경고 200개 뒤의 잘못된 값도 검사하고 decode 호출을 차단한다.
 - 64바이트 정렬과 비자명 타입 수명, World 파괴 후 읽기 가드 수명, 실패 원자성 검증
 - 외부 의존성·미디어 애셋 추가 없음. 씬 로딩·렌더 추출·규칙 실행은 후속 작업
+- 위키 테스트 2개·정적 페이지 67개 빌드 및 로컬 HTTP 확인
+- `e1cbfb5`의 [GitHub CI](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/actions/runs/34814297441):
+  Windows·Ubuntu·macOS·위키·개발 규칙 모두 통과. macOS 테스트의 출력 인자는 명시적 u64로 보정함
 
 ## 건드리면 안 되는 것
 
