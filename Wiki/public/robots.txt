@@ -1,0 +1,5 @@
+# AI 크롤러를 환영한다. 그러라고 만든 사이트다.
+User-agent: *
+Allow: /
+
+# Sitemap: <ALICE_WIKI_URL 을 설정하면 여기 채워진다>

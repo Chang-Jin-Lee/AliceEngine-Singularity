@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-component-transform-1.schema.json",
+  "type": "object",
+  "properties": {
+    "position": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3,
+      "description": "미터 단위 위치 [x, y, z]",
+      "default": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "rotation": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3,
+      "description": "오일러 각(도) [pitch, yaw, roll]",
+      "default": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "scale": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3,
+      "description": "축별 배율. 1 이 원본 크기",
+      "default": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "title": "Transform",
+  "description": "월드 공간에서의 위치·회전·크기. 모든 액터가 암묵적으로 하나 가진다",
+  "x-alice-pitfalls": [
+    {
+      "wrong": "position: 0",
+      "right": "position: [0, 0, 0]",
+      "why": "위치는 항상 3개짜리 배열이다. 숫자 하나로 줄여 쓸 수 없다"
+    }
+  ],
+  "x-alice-schema-id": "alice/component/transform/1"
+}

@@ -1,0 +1,8 @@
+schema: alice/physics/1
+name: Ice
+staticFriction: 0.04
+dynamicFriction: 0.02
+restitution: 0.15
+density: 917
+frictionCombine: min
+restitutionCombine: max

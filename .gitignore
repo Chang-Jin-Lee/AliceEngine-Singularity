@@ -1,0 +1,50 @@
+# 빌드 산출물
+build/
+out/
+bin/
+lib/
+!Wiki/lib/
+!Wiki/lib/**
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.dll
+*.exe
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+
+# IDE
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.user
+*.sln
+*.slnx
+*.vcxproj*
+
+# 로그와 프로파일 산출물
+Logs/
+*.log
+*.jsonl
+*.trace.json
+
+# 생성물 — 소스에서 다시 만들 수 있는 것은 커밋하지 않는다.
+# 예외: Schemas/ 는 커밋한다. 에디터 자동완성이 클론 직후에 동작해야 하기 때문이다.
+Wiki/.next/
+Wiki/node_modules/
+Wiki/out/
+Wiki/.vercel/
+node_modules/
+
+# 임시
+AliceTestTmp/
+.DS_Store
+Thumbs.db

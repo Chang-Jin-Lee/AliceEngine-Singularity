@@ -1,0 +1,135 @@
+# SPDX-License-Identifier: MIT
+# 세 플랫폼에서 경고 0으로 빌드되고, 테스트가 통과하고, 샘플이 검증되는지 본다.
+#
+# 이 파이프라인이 지키는 것:
+#   1. "클론하면 바로 빌드된다"  — 서드파티 설치 단계가 없다
+#   2. "경고 0"                 — -Werror 로 강제
+#   3. "콘텐츠가 항상 유효하다"   — alice check 가 샘플을 검사
+#   4. "PR 에 역할이 적혀 있다"   — 개발 규칙의 1번
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: >
+          cmake -S . -B build
+          -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          -DALICE_WARNINGS_AS_ERRORS=ON
+
+      - name: Build
+        run: cmake --build build --config RelWithDebInfo --parallel
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure -C RelWithDebInfo
+
+      - name: Test (JSON, 기계용 결과)
+        shell: bash
+        run: |
+          BIN=$(find build -name 'Alice.Tests*' -type f -perm -u+x | head -1)
+          "$BIN" --json > test-results.json
+          python -c "import json,sys; d=json.load(open('test-results.json')); sys.exit(0 if d['failed']==0 else 1)"
+
+      - name: 샘플 콘텐츠 검증
+        shell: bash
+        run: |
+          ALICE=$(find build -name 'alice*' -type f -perm -u+x | head -1)
+          "$ALICE" doctor
+          "$ALICE" check Samples --json > check-results.json
+          python -c "import json,sys; d=json.load(open('check-results.json')); sys.exit(0 if d['errors']==0 else 1)"
+          "$ALICE" fmt Samples --check
+
+      - name: 생성된 JSON Schema 가 최신인지
+        shell: bash
+        run: |
+          ALICE=$(find build -name 'alice*' -type f -perm -u+x | head -1)
+          "$ALICE" schema emit Schemas
+          git diff --exit-code Schemas/ || {
+            echo "::error::Schemas/ 가 코드와 어긋났다. 'alice schema emit Schemas' 를 돌리고 커밋하라."
+            exit 1
+          }
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: results-${{ matrix.os }}
+          path: |
+            test-results.json
+            check-results.json
+
+  wiki:
+    name: 위키
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: 'npm', cache-dependency-path: Wiki/package-lock.json }
+
+      - name: 엔진 빌드 (레퍼런스 생성에 alice 가 필요하다)
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --parallel --target alice
+
+      - name: 위키 빌드
+        working-directory: Wiki
+        run: |
+          npm ci
+          npm run build
+
+      - name: 생성된 레퍼런스가 최신인지
+        run: |
+          git diff --exit-code Wiki/content/reference Wiki/public || {
+            echo "::error::위키 레퍼런스가 코드와 어긋났다. 'cd Wiki && npm run generate' 후 커밋하라."
+            exit 1
+          }
+
+      - uses: actions/upload-artifact@v4
+        with: { name: wiki, path: Wiki/out }
+
+  conventions:
+    name: 개발 규칙
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: PR 에 Agent 가 적혀 있는가
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          if ! echo "$BODY" | grep -qiE '^\s*Agent:\s*(Alice|Sidney|Monday|Chrono|Seeho)'; then
+            echo "::error::PR 본문에 'Agent: <역할>' 이 없다."
+            echo "개발 규칙 1번이다. README.md 의 '개발 규칙' 을 보라."
+            exit 1
+          fi
+
+      - name: 필수 항목이 채워져 있는가
+        env:
+          BODY: ${{ github.event.pull_request.body }}
+        run: |
+          missing=""
+          for section in "왜 이렇게 만들었는가" "다르게 만들 방법은 없었는가" "장점과 단점" "이전과 무엇이 달라졌는가"; do
+            # 제목 다음에 실질적인 내용이 있는지 대략 확인한다.
+            if ! echo "$BODY" | grep -q "$section"; then
+              missing="$missing\n  - $section"
+            fi
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::PR 에 다음 항목이 없다:$missing"
+            exit 1
+          fi

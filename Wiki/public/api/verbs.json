@@ -1,0 +1,1223 @@
+{
+  "engine": "AliceEngine-Singularity",
+  "count": 32,
+  "note": "콘텐츠 문서의 do: 목록에서 쓸 수 있는 동사 전부. 각 항목의 args 는 JSON Schema 이다",
+  "verbs": [
+    {
+      "id": "actor.destroy",
+      "summary": "액터를 제거한다",
+      "tags": [
+        "actor"
+      ],
+      "deterministic": true,
+      "cost": "cheap",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "delay": {
+            "type": "number",
+            "description": "지연 시간(초)",
+            "default": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "actor.setActive",
+      "summary": "액터를 켜거나 끈다",
+      "tags": [
+        "actor"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "active": {
+            "type": "boolean",
+            "description": "켤지 끌지"
+          }
+        },
+        "required": [
+          "active"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "actor.setTag",
+      "summary": "액터에 태그를 붙이거나 뗀다",
+      "tags": [
+        "actor"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "tag": {
+            "type": "string",
+            "x-alice-format": "identifier",
+            "description": "태그 이름"
+          },
+          "value": {
+            "type": "boolean",
+            "description": "true 면 붙이고 false 면 뗀다",
+            "default": true
+          }
+        },
+        "required": [
+          "tag"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "actor.spawn",
+      "summary": "actor 문서로부터 새 액터를 만든다",
+      "tags": [
+        "actor",
+        "scene"
+      ],
+      "deterministic": true,
+      "cost": "expensive",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "actor": {
+            "type": "string",
+            "x-alice-format": "asset-path",
+            "description": "actor 문서 경로"
+          },
+          "name": {
+            "type": "string",
+            "description": "새 액터의 이름. 비우면 자동 생성"
+          },
+          "position": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "월드 좌표"
+          },
+          "rotation": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "오일러 각(도)"
+          },
+          "parent": {
+            "type": "string",
+            "description": "부모 액터 이름"
+          }
+        },
+        "required": [
+          "actor"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "anim.play",
+      "summary": "상태 그래프의 특정 상태로 즉시 전환한다",
+      "tags": [
+        "animation"
+      ],
+      "deterministic": true,
+      "cost": "cheap",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "state": {
+            "type": "string",
+            "description": "animation 문서의 상태 이름"
+          },
+          "blend": {
+            "type": "number",
+            "description": "블렌드 시간(초)",
+            "default": 0.15
+          }
+        },
+        "required": [
+          "state"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "anim.set",
+      "summary": "애니메이션 파라미터 값을 설정한다",
+      "tags": [
+        "animation"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "parameter": {
+            "type": "string",
+            "x-alice-format": "identifier",
+            "description": "파라미터 이름"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ],
+            "description": "새 값"
+          }
+        },
+        "required": [
+          "parameter",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "anim.setSpeed",
+      "summary": "재생 속도 배율을 바꾼다",
+      "tags": [
+        "animation"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "speed": {
+            "type": "number",
+            "description": "1 이 원래 속도"
+          }
+        },
+        "required": [
+          "speed"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "anim.trigger",
+      "summary": "trigger 타입 파라미터를 한 프레임 켠다",
+      "tags": [
+        "animation"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "parameter": {
+            "type": "string",
+            "x-alice-format": "identifier",
+            "description": "트리거 이름"
+          }
+        },
+        "required": [
+          "parameter"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "audio.play",
+      "summary": "sound 문서를 재생한다",
+      "description": "sound 문서의 pickMode 에 따라 변주를 고르므로 결과가 매번 다를 수 있다. 결정적 재생이 필요하면 변주가 하나뿐인 문서를 쓰라",
+      "tags": [
+        "audio"
+      ],
+      "deterministic": false,
+      "cost": "cheap",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "sound": {
+            "type": "string",
+            "x-alice-format": "asset-path",
+            "description": "sound 문서 경로"
+          },
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "volume": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "0..1. 문서의 값에 곱해진다",
+            "default": 1
+          },
+          "pitch": {
+            "type": "number",
+            "description": "재생 속도 배율",
+            "default": 1
+          }
+        },
+        "required": [
+          "sound"
+        ],
+        "additionalProperties": false
+      },
+      "examples": [
+        {
+          "audio.play": {
+            "sound": "sounds/jump.sound.yaml"
+          }
+        }
+      ]
+    },
+    {
+      "id": "audio.setBusVolume",
+      "summary": "믹서 버스의 음량을 바꾼다",
+      "tags": [
+        "audio"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "bus": {
+            "type": "string",
+            "enum": [
+              "master",
+              "music",
+              "sfx",
+              "voice",
+              "ambient",
+              "ui"
+            ],
+            "description": "대상 버스"
+          },
+          "volume": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "0..1"
+          },
+          "fade": {
+            "type": "number",
+            "description": "변화에 걸릴 시간(초)",
+            "default": 0
+          }
+        },
+        "required": [
+          "bus",
+          "volume"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "audio.stop",
+      "summary": "재생 중인 소리를 멈춘다",
+      "tags": [
+        "audio"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "sound": {
+            "type": "string",
+            "x-alice-format": "asset-path",
+            "description": "멈출 sound 문서. 비우면 대상의 모든 소리"
+          },
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "fadeOut": {
+            "type": "number",
+            "description": "페이드아웃 시간(초)",
+            "default": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "camera.activate",
+      "summary": "이 카메라를 화면 담당으로 만든다",
+      "tags": [
+        "camera"
+      ],
+      "deterministic": true,
+      "cost": "cheap",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "blend": {
+            "type": "number",
+            "description": "전환에 걸릴 시간(초)",
+            "default": 0
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "camera.shake",
+      "summary": "카메라를 흔든다",
+      "tags": [
+        "camera"
+      ],
+      "deterministic": false,
+      "cost": "cheap",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "amplitude": {
+            "type": "number",
+            "description": "흔들림 크기(미터)"
+          },
+          "duration": {
+            "type": "number",
+            "description": "지속 시간(초)"
+          },
+          "frequency": {
+            "type": "number",
+            "description": "초당 흔들림 횟수",
+            "default": 20
+          }
+        },
+        "required": [
+          "amplitude",
+          "duration"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "debug.draw",
+      "summary": "디버그 도형을 한 프레임 그린다",
+      "tags": [
+        "diagnostics"
+      ],
+      "deterministic": true,
+      "cost": "cheap",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "shape": {
+            "type": "string",
+            "enum": [
+              "line",
+              "sphere",
+              "box",
+              "arrow",
+              "text"
+            ],
+            "description": "도형"
+          },
+          "from": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "시작점 또는 중심"
+          },
+          "to": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "끝점. line/arrow 전용"
+          },
+          "size": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "box 크기"
+          },
+          "radius": {
+            "type": "number",
+            "description": "sphere 반지름"
+          },
+          "text": {
+            "type": "string",
+            "description": "text 도형의 내용"
+          },
+          "color": {
+            "anyOf": [
+              {
+                "type": "string",
+                "x-alice-format": "color-hex",
+                "description": "16진 색상. 예) \"#ff8800\""
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 4,
+                "maxItems": 4
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              }
+            ],
+            "description": "색상. \"#rrggbb\" 문자열 또는 [r, g, b, a] 배열(0..1)",
+            "default": "#00ff00"
+          },
+          "duration": {
+            "type": "number",
+            "description": "표시 시간(초). 0 이면 한 프레임",
+            "default": 0
+          }
+        },
+        "required": [
+          "shape"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "log.write",
+      "summary": "구조화 로그를 남긴다",
+      "description": "콘텐츠가 남긴 로그도 엔진 로그와 같은 NDJSON 스트림으로 나간다. 그래서 AI 가 '이 규칙이 언제 몇 번 발동했나'를 엔진 이벤트와 나란히 놓고 볼 수 있다. 게임플레이 버그를 쫓을 때 이게 가장 빠른 길이다",
+      "tags": [
+        "diagnostics"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": [
+              "trace",
+              "debug",
+              "info",
+              "warn",
+              "error"
+            ],
+            "description": "로그 레벨",
+            "default": "info"
+          },
+          "event": {
+            "type": "string",
+            "x-alice-format": "verb-id",
+            "description": "안정 이벤트 id. 예) gameplay.player.died"
+          },
+          "message": {
+            "type": "string",
+            "description": "사람이 읽을 한 문장"
+          },
+          "fields": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": true,
+            "description": "기계가 읽을 키-값. 숫자는 숫자로 남겨라"
+          }
+        },
+        "required": [
+          "event"
+        ],
+        "additionalProperties": false
+      },
+      "examples": [
+        {
+          "log.write": {
+            "event": "gameplay.player.jumped",
+            "fields": {
+              "height": 2.4
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "physics.force",
+      "summary": "매 프레임 지속되는 힘을 가한다",
+      "tags": [
+        "physics"
+      ],
+      "deterministic": true,
+      "cost": "cheap",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "direction": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "방향 벡터"
+          },
+          "force": {
+            "type": "number",
+            "description": "힘의 크기(N)"
+          }
+        },
+        "required": [
+          "direction",
+          "force"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "physics.impulse",
+      "summary": "강체에 순간적인 충격을 준다",
+      "tags": [
+        "physics"
+      ],
+      "deterministic": true,
+      "cost": "cheap",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "direction": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "방향 벡터. 자동으로 정규화된다"
+          },
+          "force": {
+            "type": "number",
+            "description": "충격 크기(N·s)"
+          }
+        },
+        "required": [
+          "direction",
+          "force"
+        ],
+        "additionalProperties": false
+      },
+      "examples": [
+        {
+          "physics.impulse": {
+            "direction": [
+              0,
+              1,
+              0
+            ],
+            "force": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "physics.setVelocity",
+      "summary": "속도를 직접 지정한다",
+      "tags": [
+        "physics"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "velocity": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "m/s"
+          }
+        },
+        "required": [
+          "velocity"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "physics.teleport",
+      "summary": "물리 보간 없이 즉시 이동시킨다. 순간이동에는 setPosition 대신 이것을 쓴다",
+      "tags": [
+        "physics"
+      ],
+      "deterministic": true,
+      "cost": "cheap",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "position": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "월드 좌표"
+          },
+          "resetVelocity": {
+            "type": "boolean",
+            "description": "속도를 0 으로 만들지",
+            "default": true
+          }
+        },
+        "required": [
+          "position"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "profile.zone",
+      "summary": "이 동작 묶음을 프로파일러 존으로 감싼다",
+      "description": "콘텐츠가 만든 비용도 프로파일러에서 엔진 비용과 같은 축에 보이게 한다. budgetMs 를 주면 초과 시 perf.budget.exceeded 가 나가므로 회귀를 CI 에서 잡을 수 있다",
+      "tags": [
+        "diagnostics"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "프로파일러에 표시될 이름"
+          },
+          "budgetMs": {
+            "type": "number",
+            "description": "프레임 예산(밀리초). 넘으면 경고 로그가 나간다"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "scene.load",
+      "summary": "다른 씬으로 전환한다",
+      "tags": [
+        "scene"
+      ],
+      "deterministic": true,
+      "cost": "expensive",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "scene": {
+            "type": "string",
+            "x-alice-format": "asset-path",
+            "description": "scene 문서 경로"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "replace",
+              "additive"
+            ],
+            "description": "기존 씬을 대체할지 겹칠지",
+            "default": "replace"
+          }
+        },
+        "required": [
+          "scene"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "transform.lookAt",
+      "summary": "대상을 바라보게 회전시킨다",
+      "tags": [
+        "transform"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "at": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "description": "바라볼 좌표 또는 액터 이름"
+          },
+          "up": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "위쪽 방향"
+          }
+        },
+        "required": [
+          "at"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "transform.rotate",
+      "summary": "현재 회전에서 상대적으로 돌린다",
+      "tags": [
+        "transform"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "delta": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "회전량(도)"
+          },
+          "space": {
+            "type": "string",
+            "enum": [
+              "world",
+              "local"
+            ],
+            "description": "기준 좌표계",
+            "default": "local"
+          }
+        },
+        "required": [
+          "delta"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "transform.setPosition",
+      "summary": "액터를 특정 위치로 옮긴다",
+      "tags": [
+        "transform"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "position": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "월드 좌표 [x, y, z]"
+          }
+        },
+        "required": [
+          "position"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "transform.setRotation",
+      "summary": "회전을 설정한다",
+      "tags": [
+        "transform"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "rotation": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "오일러 각(도) [pitch, yaw, roll]"
+          }
+        },
+        "required": [
+          "rotation"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "transform.setScale",
+      "summary": "크기를 설정한다",
+      "tags": [
+        "transform"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "scale": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "축별 배율"
+          }
+        },
+        "required": [
+          "scale"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "transform.translate",
+      "summary": "현재 위치에서 상대적으로 움직인다",
+      "tags": [
+        "transform"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "delta": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "이동량 [x, y, z]"
+          },
+          "space": {
+            "type": "string",
+            "enum": [
+              "world",
+              "local"
+            ],
+            "description": "기준 좌표계",
+            "default": "world"
+          }
+        },
+        "required": [
+          "delta"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "var.add",
+      "summary": "숫자 변수에 값을 더한다",
+      "tags": [
+        "flow"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "x-alice-format": "identifier",
+            "description": "변수 이름"
+          },
+          "amount": {
+            "type": "number",
+            "description": "더할 값. 음수면 뺀다"
+          },
+          "min": {
+            "type": "number",
+            "description": "결과의 하한"
+          },
+          "max": {
+            "type": "number",
+            "description": "결과의 상한"
+          }
+        },
+        "required": [
+          "name",
+          "amount"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "var.set",
+      "summary": "행동의 지역 변수 값을 바꾼다",
+      "description": "식(when:)에서는 값을 바꿀 수 없다. 상태를 바꾸는 일은 전부 동사가 한다. 그 규칙이 있어야 규칙들의 평가 순서가 결과에 영향을 주지 않는다",
+      "tags": [
+        "flow"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "x-alice-format": "identifier",
+            "description": "변수 이름"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "description": "새 값"
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "vfx.spawn",
+      "summary": "effect 문서를 한 번 재생한다",
+      "tags": [
+        "vfx"
+      ],
+      "deterministic": false,
+      "cost": "moderate",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "effect": {
+            "type": "string",
+            "x-alice-format": "asset-path",
+            "description": "effect 문서 경로"
+          },
+          "position": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 3,
+            "maxItems": 3,
+            "description": "월드 좌표. 비우면 target 위치"
+          },
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "attach": {
+            "type": "boolean",
+            "description": "대상을 따라다닐지",
+            "default": false
+          },
+          "scale": {
+            "type": "number",
+            "description": "전체 크기 배율",
+            "default": 1
+          }
+        },
+        "required": [
+          "effect"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "vfx.stop",
+      "summary": "재생 중인 이펙트를 멈춘다",
+      "tags": [
+        "vfx"
+      ],
+      "deterministic": true,
+      "cost": "cheap",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "effect": {
+            "type": "string",
+            "x-alice-format": "asset-path",
+            "description": "멈출 effect 문서"
+          },
+          "target": {
+            "type": "string",
+            "description": "대상 액터 이름. 비우면 이 행동이 붙은 액터 자신"
+          },
+          "immediate": {
+            "type": "boolean",
+            "description": "남은 파티클까지 즉시 지울지",
+            "default": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "wait",
+      "summary": "다음 동작까지 기다린다",
+      "tags": [
+        "flow"
+      ],
+      "deterministic": true,
+      "cost": "trivial",
+      "args": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "seconds": {
+            "type": "number",
+            "minimum": 0,
+            "description": "대기 시간(초)"
+          }
+        },
+        "required": [
+          "seconds"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+---
+title: camera.activate
+description: 이 카메라를 화면 담당으로 만든다
+verbId: camera.activate
+generated: true
+---
+
+# `camera.activate`
+
+이 카메라를 화면 담당으로 만든다
+
+분류: `camera` · 비용: `cheap`
+
+## 인자
+
+| 인자 | 타입 | 필수 | 기본값 | 설명 |
+|---|---|:---:|---|---|
+| `target` | `string` |  |  | 대상 액터 이름. 비우면 이 행동이 붙은 액터 자신 |
+| `blend` | `number` |  | `0` | 전환에 걸릴 시간(초) |
+

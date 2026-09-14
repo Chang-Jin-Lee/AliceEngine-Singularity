@@ -1,0 +1,16 @@
+# 씬에 인라인으로 두는 대신 파일로 분리한 액터.
+# actor.spawn 동사가 이 경로를 참조해 런타임에 복제할 수 있다.
+schema: alice/actor/1
+name: Crate
+tags:
+  - pickup
+  - physics
+transform: { position: [0, 3, 0], scale: [0.5, 0.5, 0.5] }
+components:
+  mesh:
+    asset: meshes/cube.mesh
+    materials:
+      - materials/steel.material.yaml
+  rigidbody: { mass: 12, physicsMaterial: physics/ice.physics.yaml }
+  collider: { shape: box, size: [1, 1, 1] }
+  particles: { effect: effects/dust.effect.yaml, playOnStart: false }

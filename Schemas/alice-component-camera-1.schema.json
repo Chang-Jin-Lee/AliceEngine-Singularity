@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-component-camera-1.schema.json",
+  "type": "object",
+  "properties": {
+    "projection": {
+      "type": "string",
+      "enum": [
+        "perspective",
+        "orthographic"
+      ],
+      "description": "투영 방식",
+      "default": "perspective"
+    },
+    "fieldOfView": {
+      "type": "number",
+      "description": "수직 화각(도). perspective 일 때만 쓴다",
+      "default": 60.0
+    },
+    "orthographicSize": {
+      "type": "number",
+      "description": "세로 절반 크기(미터). orthographic 일 때만",
+      "default": 5.0
+    },
+    "nearClip": {
+      "type": "number",
+      "description": "근평면 거리(미터)",
+      "default": 0.1
+    },
+    "farClip": {
+      "type": "number",
+      "description": "원평면 거리(미터)",
+      "default": 1000.0
+    },
+    "priority": {
+      "type": "integer",
+      "description": "여러 카메라 중 우선순위. 큰 쪽이 이긴다",
+      "default": 0
+    },
+    "clearColor": {
+      "anyOf": [
+        {
+          "type": "string",
+          "x-alice-format": "color-hex",
+          "description": "16진 색상. 예) \"#ff8800\""
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 3,
+          "maxItems": 3
+        }
+      ],
+      "description": "색상. \"#rrggbb\" 문자열 또는 [r, g, b, a] 배열(0..1)"
+    }
+  },
+  "additionalProperties": false,
+  "title": "Camera",
+  "description": "장면을 촬영한다. priority 가 가장 높은 카메라가 화면을 담당한다",
+  "x-alice-pitfalls": [
+    {
+      "wrong": "fieldOfView: 120",
+      "right": "fieldOfView: 60",
+      "why": "화각을 100도 이상으로 올리면 원근 왜곡이 심해지고 컬링 효율이 급락한다"
+    }
+  ],
+  "x-alice-schema-id": "alice/component/camera/1"
+}

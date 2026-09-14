@@ -1,0 +1,20 @@
+---
+title: actor.destroy
+description: 액터를 제거한다
+verbId: actor.destroy
+generated: true
+---
+
+# `actor.destroy`
+
+액터를 제거한다
+
+분류: `actor` · 비용: `cheap`
+
+## 인자
+
+| 인자 | 타입 | 필수 | 기본값 | 설명 |
+|---|---|:---:|---|---|
+| `target` | `string` |  |  | 대상 액터 이름. 비우면 이 행동이 붙은 액터 자신 |
+| `delay` | `number` |  | `0` | 지연 시간(초) |
+

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-component-rigidbody-1.schema.json",
+  "type": "object",
+  "properties": {
+    "mass": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "질량(kg). kinematic 이면 무시된다",
+      "default": 1.0
+    },
+    "kinematic": {
+      "type": "boolean",
+      "description": "직접 움직이고 힘을 받지 않을지",
+      "default": false
+    },
+    "useGravity": {
+      "type": "boolean",
+      "description": "중력을 받을지",
+      "default": true
+    },
+    "linearDamping": {
+      "type": "number",
+      "description": "선형 감쇠",
+      "default": 0.0
+    },
+    "angularDamping": {
+      "type": "number",
+      "description": "각 감쇠",
+      "default": 0.05
+    },
+    "freezePosition": {
+      "type": "array",
+      "items": {
+        "type": "boolean"
+      },
+      "minItems": 3,
+      "maxItems": 3,
+      "description": "축별 위치 고정 [x, y, z]"
+    },
+    "freezeRotation": {
+      "type": "array",
+      "items": {
+        "type": "boolean"
+      },
+      "minItems": 3,
+      "maxItems": 3,
+      "description": "축별 회전 고정 [x, y, z]"
+    },
+    "physicsMaterial": {
+      "type": "string",
+      "x-alice-format": "asset-path",
+      "description": "마찰·반발 계수를 담은 physics 문서"
+    }
+  },
+  "additionalProperties": false,
+  "title": "Rigidbody",
+  "description": "물리 시뮬레이션에 참여한다. Collider 가 함께 있어야 의미가 있다",
+  "x-alice-pitfalls": [
+    {
+      "wrong": "mass: 0",
+      "right": "kinematic: true",
+      "why": "질량 0 은 물리적으로 정의되지 않는다. 힘을 받지 않게 하려면 kinematic 을 쓰라"
+    }
+  ],
+  "x-alice-schema-id": "alice/component/rigidbody/1"
+}

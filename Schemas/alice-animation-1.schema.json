@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-animation-1.schema.json",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "x-alice-format": "schema-id",
+      "description": "항상 alice/animation/1"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+    },
+    "clips": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+          },
+          "asset": {
+            "type": "string",
+            "x-alice-format": "asset-path",
+            "description": "애니메이션 애셋 경로"
+          },
+          "loop": {
+            "type": "boolean",
+            "description": "반복할지",
+            "default": true
+          },
+          "speed": {
+            "type": "number",
+            "description": "재생 속도 배율",
+            "default": 1.0
+          }
+        },
+        "required": [
+          "name",
+          "asset"
+        ],
+        "additionalProperties": false,
+        "title": "Animation Clip"
+      },
+      "minItems": 1,
+      "description": "쓸 클립들"
+    },
+    "parameters": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "float",
+              "int",
+              "bool",
+              "trigger"
+            ],
+            "description": "파라미터 타입"
+          },
+          "default": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ],
+            "description": "초깃값"
+          },
+          "description": {
+            "type": "string",
+            "description": "무엇을 뜻하는 값인지"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false,
+        "title": "Parameter"
+      },
+      "description": "전이 조건에서 참조할 파라미터들"
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+          },
+          "clip": {
+            "type": "string",
+            "description": "재생할 클립 이름"
+          },
+          "transitions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "to": {
+                  "type": "string",
+                  "description": "이동할 상태 이름"
+                },
+                "when": {
+                  "type": "string",
+                  "x-alice-format": "expression",
+                  "description": "전이 조건식. 예) speed > 0.1"
+                },
+                "duration": {
+                  "type": "number",
+                  "description": "블렌드 시간(초)",
+                  "default": 0.2
+                },
+                "exitTime": {
+                  "type": "number",
+                  "description": "0..1. 현재 클립의 이 지점 이후에만 전이"
+                }
+              },
+              "required": [
+                "to",
+                "when"
+              ],
+              "additionalProperties": false,
+              "title": "Transition"
+            },
+            "description": "나가는 전이들"
+          }
+        },
+        "required": [
+          "name",
+          "clip"
+        ],
+        "additionalProperties": false,
+        "title": "State"
+      },
+      "minItems": 1,
+      "description": "상태 그래프"
+    },
+    "defaultState": {
+      "type": "string",
+      "description": "시작 상태 이름"
+    }
+  },
+  "required": [
+    "schema",
+    "name",
+    "clips",
+    "states",
+    "defaultState"
+  ],
+  "additionalProperties": false,
+  "title": "Animation",
+  "description": "클립과 상태 그래프. 블렌드와 전이를 값으로 기술한다",
+  "x-alice-schema-id": "alice/animation/1"
+}

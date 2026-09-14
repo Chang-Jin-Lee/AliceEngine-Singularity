@@ -1,0 +1,19 @@
+schema: alice/material/1
+name: Steel
+shader: pbr
+blend: opaque
+doubleSided: false
+params:
+  baseColor: "#b0b4bd"  # 따옴표가 없으면 YAML 이 주석으로 먹는다
+  metallic: 1.0
+  roughness: 0.35
+  emissive: "#000000"
+  normalStrength: 1.0
+textures:
+  - slot: baseColor
+    asset: textures/steel_basecolor.png
+    wrap: repeat
+    filter: anisotropic
+    tiling: [2, 2]
+  - { slot: normal, asset: textures/steel_normal.png }
+  - { slot: metallicRoughness, asset: textures/steel_orm.png }

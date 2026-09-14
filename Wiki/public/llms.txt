@@ -1,0 +1,106 @@
+# AliceEngine-Singularity
+
+> AI가 다룰 수 있게 처음부터 설계한 게임 엔진.
+> 콘텐츠는 코드가 아니라 스키마로 검증되는 텍스트 문서이고,
+> 게임플레이는 스크립트가 아니라 선언적 규칙이다.
+
+현재 Phase 0: 콘텐츠 CLI와 Null RHI를 제공한다. 게임 런타임·에디터·실제 렌더 백엔드는 개발 중이다.
+문서 페이지 URL의 마지막 `/`를 `.md`로 바꾸면 마크다운 원문이 나온다.
+HTML 을 파싱할 필요가 없다.
+
+## 기계용 데이터
+
+엔진이 손에 있다면 웹을 거칠 필요가 없다. 괄호 안이 같은 것을 주는 로컬 명령이다.
+
+- [/api/schemas.json](/api/schemas.json): 만들 수 있는 문서 타입 전부 (`alice schema list --json`)
+- [/api/verbs.json](/api/verbs.json): 콘텐츠가 쓸 수 있는 동사 전부와 인자 스키마 (`alice verbs --json`)
+- [/api/symbols.json](/api/symbols.json): 조건식에서 읽을 수 있는 이름 (`alice verbs --symbols --json`)
+- [/api/diagnostics.json](/api/diagnostics.json): 진단 코드와 설명 (`alice explain --list --json`)
+
+## 가이드
+
+- [엔진 내장 AI 대화창](/guide/ai-bridge.md)
+- [아키텍처](/guide/architecture.md)
+- [애셋 파이프라인](/guide/asset-pipeline.md)
+- [콘텐츠 문서 문법](/guide/content-format.md)
+- [참고 엔진 조사](/guide/engine-survey.md)
+- [시작하기](/guide/index.md): alice CLI로 샘플을 검사하고 첫 콘텐츠 문서를 만든다
+- [새 세션 시작하기](/guide/onboarding.md)
+- [성능 — 로깅 · 프로파일링 · 예산](/guide/performance.md)
+- [현재 실행 상태와 개발 순서](/guide/status.md)
+- [왜 이렇게 만들었나](/guide/why.md): AI 친화가 형식이 아니라 구조의 문제인 이유
+
+## 레퍼런스
+
+- [진단 코드](/reference/diagnostics.md): 왜 그 규칙이 있는가
+- [조건식 심볼](/reference/expression-symbols.md): when 에서 읽을 수 있는 이름 전부
+
+### schemas
+
+- [Actor](/reference/schemas/alice-actor-1.md): 장면에 놓이는 개체 하나. 트랜스폼과 컴포넌트, 그리고 행동으로 이루어진다
+- [Animation](/reference/schemas/alice-animation-1.md): 클립과 상태 그래프. 블렌드와 전이를 값으로 기술한다
+- [Behavior](/reference/schemas/alice-behavior-1.md): 액터의 동작을 규칙으로 적는다. **이 엔진에는 게임플레이 스크립트 언어가 없다.** 언리얼의 C++/블루프린트, 유니티의 C# 이 있던 자리를 이 문서가 대신한다. 규칙은 선언적이고, 순서에 의존하지 않으며, 조건이 참이 될 때만 실행된다
+- [Animator](/reference/schemas/alice-component-animator-1.md): animation 문서의 상태 그래프를 이 액터의 스키닝 메시에 적용한다
+- [Audio Source](/reference/schemas/alice-component-audioSource-1.md): 이 액터의 위치에서 소리를 낸다
+- [Camera](/reference/schemas/alice-component-camera-1.md): 장면을 촬영한다. priority 가 가장 높은 카메라가 화면을 담당한다
+- [Collider](/reference/schemas/alice-component-collider-1.md): 충돌 형상. 모양에 따라 쓰는 필드가 다르다
+- [Light](/reference/schemas/alice-component-light-1.md): 장면을 밝힌다
+- [Mesh](/reference/schemas/alice-component-mesh-1.md): 정적/스키닝 메시를 그린다
+- [Particles](/reference/schemas/alice-component-particles-1.md): effect 문서를 이 액터 위치에서 재생한다
+- [Rigidbody](/reference/schemas/alice-component-rigidbody-1.md): 물리 시뮬레이션에 참여한다. Collider 가 함께 있어야 의미가 있다
+- [Transform](/reference/schemas/alice-component-transform-1.md): 월드 공간에서의 위치·회전·크기. 모든 액터가 암묵적으로 하나 가진다
+- [Effect](/reference/schemas/alice-effect-1.md): 파티클 이펙트. 에미터를 겹쳐 하나의 연출을 만든다
+- [Input Map](/reference/schemas/alice-input-1.md): 물리 입력을 이름 있는 행동으로 바꾼다. 행동 문서는 키가 아니라 이름을 참조하므로 PC·패드·터치를 같은 콘텐츠로 지원할 수 있다
+- [Material](/reference/schemas/alice-material-1.md): 표면이 빛에 어떻게 반응하는지. 셰이더 코드를 쓰지 않고 값으로 기술한다
+- [Physics Material](/reference/schemas/alice-physics-1.md): 표면의 마찰과 반발. 얼음·고무·금속의 차이가 여기서 온다
+- [Project](/reference/schemas/alice-project-1.md): 프로젝트 전체 설정. 엔진이 가장 먼저 읽는 문서다
+- [Scene](/reference/schemas/alice-scene-1.md): 액터들이 놓인 하나의 세계. 게임은 씬의 연속이다
+- [Sound](/reference/schemas/alice-sound-1.md): 소리 하나의 정의. 변주와 랜덤화를 값으로 기술해 반복감을 없앤다
+
+### verbs
+
+- [actor.destroy](/reference/verbs/actor.destroy.md): 액터를 제거한다
+- [actor.setActive](/reference/verbs/actor.setActive.md): 액터를 켜거나 끈다
+- [actor.setTag](/reference/verbs/actor.setTag.md): 액터에 태그를 붙이거나 뗀다
+- [actor.spawn](/reference/verbs/actor.spawn.md): actor 문서로부터 새 액터를 만든다
+- [anim.play](/reference/verbs/anim.play.md): 상태 그래프의 특정 상태로 즉시 전환한다
+- [anim.set](/reference/verbs/anim.set.md): 애니메이션 파라미터 값을 설정한다
+- [anim.setSpeed](/reference/verbs/anim.setSpeed.md): 재생 속도 배율을 바꾼다
+- [anim.trigger](/reference/verbs/anim.trigger.md): trigger 타입 파라미터를 한 프레임 켠다
+- [audio.play](/reference/verbs/audio.play.md): sound 문서를 재생한다
+- [audio.setBusVolume](/reference/verbs/audio.setBusVolume.md): 믹서 버스의 음량을 바꾼다
+- [audio.stop](/reference/verbs/audio.stop.md): 재생 중인 소리를 멈춘다
+- [camera.activate](/reference/verbs/camera.activate.md): 이 카메라를 화면 담당으로 만든다
+- [camera.shake](/reference/verbs/camera.shake.md): 카메라를 흔든다
+- [debug.draw](/reference/verbs/debug.draw.md): 디버그 도형을 한 프레임 그린다
+- [log.write](/reference/verbs/log.write.md): 구조화 로그를 남긴다
+- [physics.force](/reference/verbs/physics.force.md): 매 프레임 지속되는 힘을 가한다
+- [physics.impulse](/reference/verbs/physics.impulse.md): 강체에 순간적인 충격을 준다
+- [physics.setVelocity](/reference/verbs/physics.setVelocity.md): 속도를 직접 지정한다
+- [physics.teleport](/reference/verbs/physics.teleport.md): 물리 보간 없이 즉시 이동시킨다. 순간이동에는 setPosition 대신 이것을 쓴다
+- [profile.zone](/reference/verbs/profile.zone.md): 이 동작 묶음을 프로파일러 존으로 감싼다
+- [scene.load](/reference/verbs/scene.load.md): 다른 씬으로 전환한다
+- [transform.lookAt](/reference/verbs/transform.lookAt.md): 대상을 바라보게 회전시킨다
+- [transform.rotate](/reference/verbs/transform.rotate.md): 현재 회전에서 상대적으로 돌린다
+- [transform.setPosition](/reference/verbs/transform.setPosition.md): 액터를 특정 위치로 옮긴다
+- [transform.setRotation](/reference/verbs/transform.setRotation.md): 회전을 설정한다
+- [transform.setScale](/reference/verbs/transform.setScale.md): 크기를 설정한다
+- [transform.translate](/reference/verbs/transform.translate.md): 현재 위치에서 상대적으로 움직인다
+- [var.add](/reference/verbs/var.add.md): 숫자 변수에 값을 더한다
+- [var.set](/reference/verbs/var.set.md): 행동의 지역 변수 값을 바꾼다
+- [vfx.spawn](/reference/verbs/vfx.spawn.md): effect 문서를 한 번 재생한다
+- [vfx.stop](/reference/verbs/vfx.stop.md): 재생 중인 이펙트를 멈춘다
+- [wait](/reference/verbs/wait.md): 다음 동작까지 기다린다
+
+## 시작하는 법
+
+엔진을 클론했다면 이 순서로 물어보라. 추측할 필요가 없다.
+
+```bash
+alice schema list --json      # 만들 수 있는 문서 타입
+alice verbs --json            # 할 수 있는 동작
+alice verbs --symbols --json  # 조건식에서 읽을 수 있는 이름
+alice new <타입> <이름>        # 올바른 뼈대
+alice check <경로> --json     # 맞는지 확인
+alice explain <진단코드>       # 왜 그 규칙이 있는지
+```

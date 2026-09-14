@@ -1,0 +1,266 @@
+{
+  "symbols": [
+    {
+      "name": "actor.count",
+      "kind": "function",
+      "type": "int",
+      "summary": "해당 태그를 가진 액터 수",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "actor.distance",
+      "kind": "function",
+      "type": "float",
+      "summary": "이 액터와 그 이름의 액터 사이 거리(미터)",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "actor.exists",
+      "kind": "function",
+      "type": "bool",
+      "summary": "그 이름의 액터가 씬에 있는지",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "anim.finished",
+      "kind": "function",
+      "type": "bool",
+      "summary": "그 이름의 클립이 끝났는지",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "anim.normalizedTime",
+      "kind": "property",
+      "type": "float",
+      "summary": "현재 클립의 진행도 0..1"
+    },
+    {
+      "name": "anim.state",
+      "kind": "property",
+      "type": "string",
+      "summary": "현재 애니메이션 상태 이름"
+    },
+    {
+      "name": "input.axis",
+      "kind": "function",
+      "type": "float",
+      "summary": "축 행동의 값 (-1..1)",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "input.held",
+      "kind": "function",
+      "type": "bool",
+      "summary": "지금 눌려 있는 행동인지",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "input.pressed",
+      "kind": "function",
+      "type": "bool",
+      "summary": "이번 프레임에 눌리기 시작한 행동인지. 인자는 input 문서의 행동 이름",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "input.released",
+      "kind": "function",
+      "type": "bool",
+      "summary": "이번 프레임에 떼어진 행동인지",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "math.abs",
+      "kind": "function",
+      "type": "float",
+      "summary": "절댓값",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "math.ceil",
+      "kind": "function",
+      "type": "int",
+      "summary": "올림",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "math.clamp",
+      "kind": "function",
+      "type": "float",
+      "summary": "값을 [최소, 최대] 안으로 자른다",
+      "minArgs": 3,
+      "maxArgs": 3
+    },
+    {
+      "name": "math.cos",
+      "kind": "function",
+      "type": "float",
+      "summary": "코사인(라디안)",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "math.floor",
+      "kind": "function",
+      "type": "int",
+      "summary": "내림",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "math.lerp",
+      "kind": "function",
+      "type": "float",
+      "summary": "선형 보간",
+      "minArgs": 3,
+      "maxArgs": 3
+    },
+    {
+      "name": "math.max",
+      "kind": "function",
+      "type": "float",
+      "summary": "둘 중 큰 값",
+      "minArgs": 2,
+      "maxArgs": 2
+    },
+    {
+      "name": "math.min",
+      "kind": "function",
+      "type": "float",
+      "summary": "둘 중 작은 값",
+      "minArgs": 2,
+      "maxArgs": 2
+    },
+    {
+      "name": "math.pi",
+      "kind": "property",
+      "type": "float",
+      "summary": "원주율"
+    },
+    {
+      "name": "math.random",
+      "kind": "function",
+      "type": "float",
+      "summary": "난수. 인자 없으면 0..1, 둘이면 그 범위. **비결정적이라 리플레이가 어긋난다**",
+      "minArgs": 0,
+      "maxArgs": 2
+    },
+    {
+      "name": "math.round",
+      "kind": "function",
+      "type": "int",
+      "summary": "반올림",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "math.sin",
+      "kind": "function",
+      "type": "float",
+      "summary": "사인(라디안)",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "math.sqrt",
+      "kind": "function",
+      "type": "float",
+      "summary": "제곱근",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "physics.grounded",
+      "kind": "property",
+      "type": "bool",
+      "summary": "이 액터가 바닥에 닿아 있는지"
+    },
+    {
+      "name": "physics.speed",
+      "kind": "property",
+      "type": "float",
+      "summary": "속도의 크기(m/s)"
+    },
+    {
+      "name": "physics.touching",
+      "kind": "function",
+      "type": "bool",
+      "summary": "인자로 준 태그를 가진 것과 닿아 있는지",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "physics.velocityY",
+      "kind": "property",
+      "type": "float",
+      "summary": "수직 속도(m/s). 낙하 판정에 쓴다"
+    },
+    {
+      "name": "scene.name",
+      "kind": "property",
+      "type": "string",
+      "summary": "현재 씬 이름"
+    },
+    {
+      "name": "self.active",
+      "kind": "property",
+      "type": "bool",
+      "summary": "이 액터가 켜져 있는지"
+    },
+    {
+      "name": "self.hasTag",
+      "kind": "function",
+      "type": "bool",
+      "summary": "이 액터가 해당 태그를 가졌는지",
+      "minArgs": 1,
+      "maxArgs": 1
+    },
+    {
+      "name": "self.name",
+      "kind": "property",
+      "type": "string",
+      "summary": "이 액터의 이름"
+    },
+    {
+      "name": "self.position",
+      "kind": "property",
+      "type": "vec3",
+      "summary": "이 액터의 월드 위치"
+    },
+    {
+      "name": "time.delta",
+      "kind": "property",
+      "type": "float",
+      "summary": "이전 프레임과의 간격(초)"
+    },
+    {
+      "name": "time.frame",
+      "kind": "property",
+      "type": "int",
+      "summary": "프레임 번호"
+    },
+    {
+      "name": "time.now",
+      "kind": "property",
+      "type": "float",
+      "summary": "게임 시작으로부터의 초"
+    },
+    {
+      "name": "time.since",
+      "kind": "function",
+      "type": "float",
+      "summary": "인자로 준 시각 이후 흐른 초",
+      "minArgs": 1,
+      "maxArgs": 1
+    }
+  ]
+}

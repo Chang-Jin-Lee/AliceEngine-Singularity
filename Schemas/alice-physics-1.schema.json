@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-physics-1.schema.json",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "type": "string",
+      "x-alice-format": "schema-id",
+      "description": "항상 alice/physics/1"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "사람이 읽는 이름. 문서 안에서 참조 대상이 된다"
+    },
+    "staticFriction": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "정지 마찰 계수",
+      "default": 0.6
+    },
+    "dynamicFriction": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "운동 마찰 계수",
+      "default": 0.6
+    },
+    "restitution": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "반발 계수. 1 이면 에너지를 잃지 않는다",
+      "default": 0.0
+    },
+    "density": {
+      "type": "number",
+      "minimum": 0.0,
+      "description": "밀도(kg/m³)",
+      "default": 1000.0
+    },
+    "frictionCombine": {
+      "type": "string",
+      "enum": [
+        "average",
+        "min",
+        "max",
+        "multiply"
+      ],
+      "description": "두 표면이 만났을 때 마찰을 합치는 방식",
+      "default": "average"
+    },
+    "restitutionCombine": {
+      "type": "string",
+      "enum": [
+        "average",
+        "min",
+        "max",
+        "multiply"
+      ],
+      "description": "반발을 합치는 방식",
+      "default": "average"
+    }
+  },
+  "required": [
+    "schema",
+    "name"
+  ],
+  "additionalProperties": false,
+  "title": "Physics Material",
+  "description": "표면의 마찰과 반발. 얼음·고무·금속의 차이가 여기서 온다",
+  "x-alice-schema-id": "alice/physics/1"
+}

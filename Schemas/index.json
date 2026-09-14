@@ -1,0 +1,140 @@
+{
+  "engine": "AliceEngine-Singularity",
+  "dialect": "https://json-schema.org/draft/2020-12/schema",
+  "count": 19,
+  "schemas": [
+    {
+      "id": "alice/actor/1",
+      "file": "alice-actor-1.schema.json",
+      "title": "Actor",
+      "description": "장면에 놓이는 개체 하나. 트랜스폼과 컴포넌트, 그리고 행동으로 이루어진다",
+      "fields": 8
+    },
+    {
+      "id": "alice/animation/1",
+      "file": "alice-animation-1.schema.json",
+      "title": "Animation",
+      "description": "클립과 상태 그래프. 블렌드와 전이를 값으로 기술한다",
+      "fields": 6
+    },
+    {
+      "id": "alice/behavior/1",
+      "file": "alice-behavior-1.schema.json",
+      "title": "Behavior",
+      "description": "액터의 동작을 규칙으로 적는다. **이 엔진에는 게임플레이 스크립트 언어가 없다.** 언리얼의 C++/블루프린트, 유니티의 C# 이 있던 자리를 이 문서가 대신한다. 규칙은 선언적이고, 순서에 의존하지 않으며, 조건이 참이 될 때만 실행된다",
+      "fields": 4
+    },
+    {
+      "id": "alice/component/animator/1",
+      "file": "alice-component-animator-1.schema.json",
+      "title": "Animator",
+      "description": "animation 문서의 상태 그래프를 이 액터의 스키닝 메시에 적용한다",
+      "fields": 3
+    },
+    {
+      "id": "alice/component/audioSource/1",
+      "file": "alice-component-audioSource-1.schema.json",
+      "title": "Audio Source",
+      "description": "이 액터의 위치에서 소리를 낸다",
+      "fields": 8
+    },
+    {
+      "id": "alice/component/camera/1",
+      "file": "alice-component-camera-1.schema.json",
+      "title": "Camera",
+      "description": "장면을 촬영한다. priority 가 가장 높은 카메라가 화면을 담당한다",
+      "fields": 7
+    },
+    {
+      "id": "alice/component/collider/1",
+      "file": "alice-component-collider-1.schema.json",
+      "title": "Collider",
+      "description": "충돌 형상. 모양에 따라 쓰는 필드가 다르다",
+      "fields": 8
+    },
+    {
+      "id": "alice/component/light/1",
+      "file": "alice-component-light-1.schema.json",
+      "title": "Light",
+      "description": "장면을 밝힌다",
+      "fields": 7
+    },
+    {
+      "id": "alice/component/mesh/1",
+      "file": "alice-component-mesh-1.schema.json",
+      "title": "Mesh",
+      "description": "정적/스키닝 메시를 그린다",
+      "fields": 6
+    },
+    {
+      "id": "alice/component/particles/1",
+      "file": "alice-component-particles-1.schema.json",
+      "title": "Particles",
+      "description": "effect 문서를 이 액터 위치에서 재생한다",
+      "fields": 3
+    },
+    {
+      "id": "alice/component/rigidbody/1",
+      "file": "alice-component-rigidbody-1.schema.json",
+      "title": "Rigidbody",
+      "description": "물리 시뮬레이션에 참여한다. Collider 가 함께 있어야 의미가 있다",
+      "fields": 8
+    },
+    {
+      "id": "alice/component/transform/1",
+      "file": "alice-component-transform-1.schema.json",
+      "title": "Transform",
+      "description": "월드 공간에서의 위치·회전·크기. 모든 액터가 암묵적으로 하나 가진다",
+      "fields": 3
+    },
+    {
+      "id": "alice/effect/1",
+      "file": "alice-effect-1.schema.json",
+      "title": "Effect",
+      "description": "파티클 이펙트. 에미터를 겹쳐 하나의 연출을 만든다",
+      "fields": 6
+    },
+    {
+      "id": "alice/input/1",
+      "file": "alice-input-1.schema.json",
+      "title": "Input Map",
+      "description": "물리 입력을 이름 있는 행동으로 바꾼다. 행동 문서는 키가 아니라 이름을 참조하므로 PC·패드·터치를 같은 콘텐츠로 지원할 수 있다",
+      "fields": 3
+    },
+    {
+      "id": "alice/material/1",
+      "file": "alice-material-1.schema.json",
+      "title": "Material",
+      "description": "표면이 빛에 어떻게 반응하는지. 셰이더 코드를 쓰지 않고 값으로 기술한다",
+      "fields": 8
+    },
+    {
+      "id": "alice/physics/1",
+      "file": "alice-physics-1.schema.json",
+      "title": "Physics Material",
+      "description": "표면의 마찰과 반발. 얼음·고무·금속의 차이가 여기서 온다",
+      "fields": 8
+    },
+    {
+      "id": "alice/project/1",
+      "file": "alice-project-1.schema.json",
+      "title": "Project",
+      "description": "프로젝트 전체 설정. 엔진이 가장 먼저 읽는 문서다",
+      "fields": 9
+    },
+    {
+      "id": "alice/scene/1",
+      "file": "alice-scene-1.schema.json",
+      "title": "Scene",
+      "description": "액터들이 놓인 하나의 세계. 게임은 씬의 연속이다",
+      "fields": 5
+    },
+    {
+      "id": "alice/sound/1",
+      "file": "alice-sound-1.schema.json",
+      "title": "Sound",
+      "description": "소리 하나의 정의. 변주와 랜덤화를 값으로 기술해 반복감을 없앤다",
+      "fields": 10
+    }
+  ]
+}
