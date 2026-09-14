@@ -9,7 +9,7 @@
 #      │         └─ Verbs      동사 레지스트리 · 조건식 · 2차 검사
 #      └─ RHI                  그래픽 추상화 (백엔드 중립 인터페이스)
 #
-# Runtime은 공개 계약만 있다. Asset / Bridge / Editor 구현은 백로그에 있다.
+# Runtime은 ECS와 공개 계약을 제공한다. Asset / Bridge / Editor 구현은 백로그에 있다.
 
 set(ALICE_ENGINE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" CACHE INTERNAL "엔진 소스 루트")
 
@@ -88,7 +88,8 @@ alice_module(Alice.Verbs
 # 백엔드 중립 그래픽 인터페이스.
 add_subdirectory(RHI)
 
-# ALI-02: declarations only. Compile each header even with ALICE_BUILD_TESTS=OFF.
+# SID-02 implements World/registry; render extraction and rules remain declarations.
+# Compile each public header even with ALICE_BUILD_TESTS=OFF.
 set(alice_runtime_headers
     Runtime/RuntimeTypes.h
     Runtime/ComponentRegistry.h
@@ -97,10 +98,15 @@ set(alice_runtime_headers
     Runtime/RenderExtraction.h
     Runtime/Rules.h
 )
-alice_module(Alice.Runtime INTERFACE
+alice_module(Alice.Runtime
     FOLDER "Engine"
     DEPS Alice.Verbs
     SOURCES ${alice_runtime_headers}
+        Runtime/ECS/Support.h
+        Runtime/ECS/ComponentRegistry.cpp
+        Runtime/ECS/NativePool.h
+        Runtime/ECS/NativePool.cpp
+        Runtime/ECS/World.cpp
 )
 set(alice_runtime_probes)
 foreach(header IN LISTS alice_runtime_headers)

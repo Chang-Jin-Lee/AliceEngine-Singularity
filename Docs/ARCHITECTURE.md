@@ -15,7 +15,7 @@ Foundation                로그 · 프로파일러 · 진단 · 파일시스템
    │
    └─ Platform (예정)     창 · 입력 · 플랫폼 파일시스템      → ALI-04
 
-Runtime (공개 계약)       ECS · Scene · 규칙 평가기 구현은 SID-*
+Runtime (ECS 구현)        World · 컴포넌트 저장소 / Scene · 규칙 평가는 후속 SID-*
    ├─ Doc, Schema, Verbs
    └─ Foundation          RHI 의존 없음
 
@@ -120,9 +120,9 @@ AI 가 스스로 고칩니다.
 
 ## Runtime 공개 계약 — ALI-02
 
-상태: **선언과 컴파일 검사만 제공**. World 생성·씬 로딩·규칙 실행·렌더 추출 함수의
-정의는 아직 없으므로 이 API를 호출하는 실행 파일은 링크할 수 없습니다.
-헤더 검사 통과는 게임 실행이나 ECS 동작 검증을 뜻하지 않습니다.
+상태: **SID-02에서 World와 ComponentRegistry를 구현**했습니다. `Alice.Runtime` 정적
+라이브러리를 링크해 ECS를 실행할 수 있습니다. 씬 로딩·규칙 실행·렌더 추출은 후속 작업이며,
+게임 창과 에디터는 아직 없습니다. 공개 헤더 컴파일 검사와 ECS 실행 테스트를 함께 제공합니다.
 
 ### 파일과 책임
 
@@ -269,6 +269,10 @@ SID-03의 활성 계층 밖 엔티티와 `mesh.visible=false`는 추출에서 �
 | `runtime.component.invalid_edit` | 편집 콜백 null / 유효한 편집 함수 제공 |
 | `runtime.entity.invalid` | 소속·세대·수명 오류 / 현 World에서 ID 재조회 |
 | `runtime.world.read_locked` | 가드 보유 중 변경 / 모든 읽기 가드 해제 후 변경 |
+| `runtime.world.reentrant` | 변경 콜백 안에서 World 재진입 / 콜백 종료 후 읽기·변경 |
+| `runtime.storage.capacity` | 저장소 한도 초과 / World 또는 컴포넌트 수 축소 |
+| `runtime.storage.allocation_failed` | 네이티브 저장소 할당 실패 / 메모리 확보 후 재시도 |
+| `runtime.component.codec_failed` | 코덱이 빈 오류 코드를 반환 / 코덱 진단과 입력 수정 |
 | `runtime.command.invalid_order` | self와 정렬 키 불일치 / 문서 위치와 self로 키 재생성 |
 | `runtime.command.duplicate_order` | 중복 명령 키 / 규칙당 각 action을 한 번만 수집 |
 | `runtime.verb.unbound` | 실행 바인딩 없음 / 지원하는 바인딩 등록 또는 규칙 수정 |
@@ -279,8 +283,20 @@ SID-03의 활성 계층 밖 엔티티와 `mesh.visible=false`는 추출에서 �
 기본 빌드의 `Alice.Runtime.Contracts`가 헤더 6개를 각각 단독 컴파일하고 소비자 예제와
 읽기 constness·수명 타입·소유 필드를 컴파일 검사합니다. 실행 테스트를 꺼도 유지됩니다.
 `CMake/RuntimeContracts.cpp.in`은 검사 소스이며 Runtime 구현이 아닙니다.
-실제 stale ID·가드 잠금·실패 원자성·코덱 수명·정렬 충돌의 실행 테스트는 해당 구현과 함께
-SID-02/03/04에 추가해야 합니다.
+SID-02의 실행 테스트 11개는 stale ID·가드 잠금·실패 원자성·코덱 수명·64바이트 정렬과
+연속 저장·교집합 질의를 검사합니다. 명령 정렬 충돌은 SID-04에서 검증합니다.
+
+### ECS 구현 — SID-02
+
+`Engine/Runtime/ECS/`는 세대 슬롯과 타입별 sparse/dense 풀을 사용합니다. 풀 성장 시
+move-construct 후 원본을 파괴하며, 제거 시 마지막 원소를 이동해 연속 저장을 유지합니다.
+문서 설정은 스키마 검증과 임시 객체 decode를 마친 뒤 교체하므로 실패 시 기존 값이 남습니다.
+읽기 가드는 공유 저장소를 소유하므로 World 객체를 먼저 파괴해도 네이티브 포인터가 유효합니다.
+이 API는 단일 스레드에서 사용하며, 읽기 가드가 있는 동안 모든 변경을 거부합니다.
+
+질의는 가장 작은 풀을 기준으로 교집합을 모아 엔티티 인덱스순으로 반환합니다.
+`World.Query`, `World.CommitDestructions` 프로파일 영역을 제공합니다. 질의 결과의 배열 할당과
+정렬 비용이 있으며, 성능 수치는 아직 측정하지 않았습니다.
 
 ### 대안과 비용
 
@@ -293,7 +309,7 @@ SID-02/03/04에 추가해야 합니다.
   네이티브 접근을 잃습니다. 명시적 코덱을 선택하며 수명·정렬 규약을 구현해야 합니다.
 - **가상 World 인터페이스를 모듈마다 추가:** 모킹은 쉽지만 구현체가 하나인 현 단계에서
   인터페이스 수가 늘어납니다. World는 PImpl 선언, 실제 교체 지점인 심볼/동사 실행기만
-  가상 인터페이스로 둡니다. 이번 산출물은 링크 가능한 World 구현을 포함하지 않습니다.
+  가상 인터페이스로 둡니다. SID-02의 구현은 이 공개 계약을 유지합니다.
 
 ---
 
@@ -307,8 +323,8 @@ SID-02/03/04에 추가해야 합니다.
 | Verbs | 2,000 | `CoreVerbs.cpp` (**엔진 API 표면 그 자체**) |
 | RHI | 2,000 | `RHIDevice.h` (~160줄 인터페이스), `NullDevice.cpp` (검증기) |
 | Tools | 1,400 | `Commands_Doc.cpp`, `Commands_Info.cpp` |
-| Runtime | 공개 헤더 6개 | `World.h`, `RenderView.h`, `Rules.h` (구현 없음) |
-| Tests | 2,000 | 실행 테스트 137개 + Runtime 컴파일 계약 |
+| Runtime | 공개 헤더 6개 + ECS | `ECS/World.cpp`, `ECS/ComponentRegistry.cpp`, `ECS/NativePool.cpp` |
+| Tests | 2,400 | 실행 테스트 148개 + Runtime 컴파일 계약 |
 
 **이 엔진을 이해하려면 두 파일을 읽으면 됩니다.**
 
