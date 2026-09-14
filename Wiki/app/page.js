@@ -21,7 +21,7 @@ export default function Home() {
 
       <div className="status-note">
         <strong>엔진, 지금 실행할 수 있나요?</strong>
-        <p><code>alice</code> CLI로 콘텐츠를 만들고 검증할 수 있습니다.
+        <p><code>alice</code> CLI로 콘텐츠를 만들고 검증할 수 있으며, ECS 라이브러리는 실행 테스트를 제공합니다.
           게임 창·에디터·실제 렌더 백엔드는 개발 예정입니다.</p>
         <Link href="/guide/status/">현재 기능과 다음 개발 순서 →</Link>
       </div>

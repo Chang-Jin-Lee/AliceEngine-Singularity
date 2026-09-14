@@ -14,6 +14,11 @@ set(ALICE_TEST_SOURCES
 
 set(ALICE_TEST_DEPS Alice.Foundation Alice.Doc)
 
+if(TARGET Alice.Runtime)
+    list(APPEND ALICE_TEST_SOURCES Runtime_ECS_Tests.cpp)
+    list(APPEND ALICE_TEST_DEPS Alice.Runtime)
+endif()
+
 if(TARGET Alice.Schema)
     list(APPEND ALICE_TEST_SOURCES Schema_Tests.cpp)
     list(APPEND ALICE_TEST_DEPS Alice.Schema)

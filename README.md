@@ -8,7 +8,7 @@
 
 [시작하기](#빌드) · [위키 실행](#위키-만들고-보기) · [현재 상태와 다음 작업](Docs/STATUS.md)
 
-[![tests](https://img.shields.io/badge/tests-137%20passing-brightgreen)](Engine/Tests)
+[![tests](https://img.shields.io/badge/tests-148%20passing-brightgreen)](Engine/Tests)
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-blue)](CMakeLists.txt)
 [![license](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
@@ -102,22 +102,23 @@ player.behavior.yaml:12:9: error[verb.unknown]: 'audio.paly' 는 없는 동사�
 - 동사 **정의** 32개 + 조건식 파서/검사기 + 식 심볼 36개 (실제 동사 실행은 Runtime에서 구현 예정)
 - 구조화 로깅(NDJSON) · 계층 프로파일러 · 프레임 예산 초과 자동 감지
 - 백엔드 중립 RHI 인터페이스 + 검증기를 겸하는 Null 백엔드
-- Runtime 공개 헤더 6개와 컴파일 계약 검사 (World 등 함수 구현은 아직 없음)
+- Runtime ECS 라이브러리: 엔티티 생성·지연 파괴, 타입별 연속 저장, 다중 컴포넌트 질의, 읽기 가드
+- Runtime 공개 헤더 6개와 컴파일 계약 검사 (렌더 추출·규칙 실행은 후속 구현)
 - `alice` CLI 10개 명령, 전부 `--json` 지원
 - JSON Schema 자동 생성 (에디터 자동완성)
-- 테스트 137개
+- 테스트 148개 (ECS 실행 테스트 11개 포함)
 - 위키 정적 빌드와 로컬 미리보기, Markdown 원문과 AI용 JSON 레퍼런스
 
 **아직 안 된다 (백로그에 있습니다)**
 
-- 런타임: ECS/World/Scene 로딩, 규칙 평가기 → [`Agents/Backlog/sidney/`](Agents/Backlog/sidney)
+- 런타임: Scene 로딩, 규칙 평가기, 상태 덤프, 프레임 루프 → [`Agents/Backlog/sidney/`](Agents/Backlog/sidney)
 - 렌더러: D3D11/D3D12/Vulkan/Metal 백엔드 → [`Agents/Backlog/monday/`](Agents/Backlog/monday)
 - 애셋 파이프라인: 임포터, 캐시 → [`Agents/Backlog/chrono/`](Agents/Backlog/chrono)
 - 엔진 내장 AI 대화창 → [`CHR-01`](Agents/Backlog/chrono/CHR-01.md)
 - 에디터 UI, 위키 공개 배포·검색·영어 번역
 
-**ALI-02(Runtime 인터페이스)는 작성·컴파일 검증을 마쳤습니다.** 리뷰·병합 후
-**SID-02(ECS) → SID-03(씬 로더) → SID-04(규칙 평가기)** 순서로 구현합니다.
+**SID-02(ECS)는 구현되어 테스트 실행 파일에서 실제로 동작합니다.**
+다음은 **SID-03(씬 로더) → SID-04(규칙 평가기)** 순서입니다.
 화면 출력에는 실제 그래픽 백엔드와 플랫폼 창·입력 구현도 필요합니다.
 
 ---
