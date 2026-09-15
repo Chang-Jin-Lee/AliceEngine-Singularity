@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <article className="doc">
       <div className="hero">
-        <span className="phase-label">PHASE 0 · 콘텐츠 도구 실행 가능</span>
+        <span className="phase-label">WINDOWS EDITOR · 콘텐츠 도구 · ECS</span>
         <h1>AliceEngine-Singularity</h1>
         <p className="lede">
           콘텐츠는 코드가 아니라 텍스트 문서입니다.<br />
@@ -21,13 +21,13 @@ export default function Home() {
 
       <div className="status-note">
         <strong>엔진, 지금 실행할 수 있나요?</strong>
-        <p><code>alice</code> CLI로 콘텐츠를 만들고 검증할 수 있으며, ECS 라이브러리는 실행 테스트를 제공합니다.
-          게임 창·에디터·실제 렌더 백엔드는 개발 예정입니다.</p>
+        <p>Windows 에디터 창에서 씬 문서를 열고 액터 속성을 수정·검증·저장할 수 있습니다.
+          게임플레이 실행과 실제 메시 렌더링은 후속 작업입니다.</p>
         <Link href="/guide/status/">현재 기능과 다음 개발 순서 →</Link>
       </div>
 
       <div className="quick-links">
-        <Link href="/guide/index/" className="primary-link">CLI 실행해 보기</Link>
+        <Link href="/guide/editor/" className="primary-link">에디터 실행하기</Link>
         <Link href="/guide/onboarding/">개발에 참여하기 →</Link>
       </div>
 

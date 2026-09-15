@@ -8,7 +8,7 @@
 
 [시작하기](#빌드) · [위키 실행](#위키-만들고-보기) · [현재 상태와 다음 작업](Docs/STATUS.md)
 
-[![tests](https://img.shields.io/badge/tests-148%20passing-brightgreen)](Engine/Tests)
+[![tests](https://img.shields.io/badge/tests-154%20passing-brightgreen)](Engine/Tests)
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-blue)](CMakeLists.txt)
 [![license](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
@@ -91,7 +91,7 @@ player.behavior.yaml:12:9: error[verb.unknown]: 'audio.paly' 는 없는 동사�
 
 ## 지금 되는 것 / 안 되는 것
 
-**Phase 0 · `alice` CLI는 실행 가능하며, 게임 창과 에디터는 아직 없습니다.**
+**Windows에서는 독립 에디터 창을 실행할 수 있습니다. `alice` CLI와 ECS도 실행 가능합니다.**
 `Samples/FirstLight`는 검증 가능한 콘텐츠 샘플입니다. 현재 플레이할 수 있는 게임은 아닙니다.
 자세한 실행 상태와 개발 순서는 [Docs/STATUS.md](Docs/STATUS.md)에 있습니다.
 
@@ -106,7 +106,8 @@ player.behavior.yaml:12:9: error[verb.unknown]: 'audio.paly' 는 없는 동사�
 - Runtime 공개 헤더 6개와 컴파일 계약 검사 (렌더 추출·규칙 실행은 후속 구현)
 - `alice` CLI 10개 명령, 전부 `--json` 지원
 - JSON Schema 자동 생성 (에디터 자동완성)
-- 테스트 148개 (ECS 실행 테스트 11개 포함)
+- Windows 씬 에디터: 프로젝트·계층·속성·배치 뷰포트·원문·검증·저장·Undo/Redo
+- 테스트 154개 (ECS 11개, 에디터 문서 모델 6개 포함) + Windows 창 smoke 검사
 - 위키 정적 빌드와 로컬 미리보기, Markdown 원문과 AI용 JSON 레퍼런스
 
 **아직 안 된다 (백로그에 있습니다)**
@@ -115,13 +116,25 @@ player.behavior.yaml:12:9: error[verb.unknown]: 'audio.paly' 는 없는 동사�
 - 렌더러: D3D11/D3D12/Vulkan/Metal 백엔드 → [`Agents/Backlog/monday/`](Agents/Backlog/monday)
 - 애셋 파이프라인: 임포터, 캐시 → [`Agents/Backlog/chrono/`](Agents/Backlog/chrono)
 - 엔진 내장 AI 대화창 → [`CHR-01`](Agents/Backlog/chrono/CHR-01.md)
-- 에디터 UI, 위키 공개 배포·검색·영어 번역
+- 에디터의 실제 게임 실행·메시 렌더링·도킹, 위키 공개 배포·검색·영어 번역
 
 **SID-02(ECS)는 구현되어 테스트 실행 파일에서 실제로 동작합니다.**
 다음은 **SID-03(씬 로더) → SID-04(규칙 평가기)** 순서입니다.
 화면 출력에는 실제 그래픽 백엔드와 플랫폼 창·입력 구현도 필요합니다.
 
 ---
+
+## 에디터 켜기
+
+Windows PowerShell에서 저장소 루트를 기준으로 실행합니다.
+
+```powershell
+pwsh -NoProfile -File .\Scripts\editor.ps1
+```
+
+처음에는 자동 빌드하고 FirstLight 씬을 엽니다. 빌드 후에는 `build\bin\Alice.Editor.exe`를
+더블클릭해도 됩니다. 액터 선택 → 속성 수정 → **Apply changes** → **Save** 순서로 편집합니다.
+뷰포트는 배치용 와이어 도형이며 게임플레이 실행은 아직 없습니다. [자세한 사용법](Docs/EDITOR.md).
 
 ## 빌드
 
@@ -194,6 +207,7 @@ npm start
 | 문서 | 내용 |
 |---|---|
 | [`Docs/STATUS.md`](Docs/STATUS.md) | **지금 실행되는 것, 위키 열기, 다음 엔진 개발 순서** |
+| [`Docs/EDITOR.md`](Docs/EDITOR.md) | **Windows 에디터 실행·편집·저장과 현재 범위** |
 | [`AGENTS.md`](AGENTS.md) | **AI 에이전트 진입점.** Codex·Claude Code 가 자동으로 읽는다 |
 | [`Docs/ONBOARDING.md`](Docs/ONBOARDING.md) | **새 세션 시작하기.** 복사해서 붙여넣을 프롬프트 |
 | [`Docs/ARCHITECTURE.md`](Docs/ARCHITECTURE.md) | 모듈 경계와 의존성 규칙 |

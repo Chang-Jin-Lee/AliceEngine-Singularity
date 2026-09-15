@@ -150,12 +150,12 @@ Seeho 는 여기에 더해 성능 회귀를 봅니다.
 | 에이전트 | 대기 | 진행중 | 완료 |
 |---|---|---|---|
 | [Alice](Backlog/alice) | 2 | 0 | 3 |
-| [Sidney](Backlog/sidney) | 4 | 0 | 1 |
+| [Sidney](Backlog/sidney) | 4 | 0 | 2 |
 | [Monday](Backlog/monday) | 5 | 0 | 1 |
-| [Chrono](Backlog/chrono) | 6 | 2 | 3 |
+| [Chrono](Backlog/chrono) | 6 | 1 | 4 |
 | [Seeho](Backlog/seeho) | 4 | 0 | 1 |
 
 > 이 표는 손으로 갱신합니다. 자동화는 [`SEE-03`](Backlog/seeho/SEE-03.md) 에 있습니다.
 
 ALI-02와 ALI-05는 PR #1, #2 병합 완료 (2026-09-09).
-SID-02는 [PR #3](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/3)에서 리뷰 중이다 (위 표의 별도 집계 밖).
+SID-02와 CHR-10은 PR #3, #4를 거쳐 main에 병합되었다 (2026-09-14).

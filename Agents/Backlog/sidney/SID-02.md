@@ -1,7 +1,7 @@
 # SID-02 · ECS World — 컴포넌트 저장소
 
 ```
-상태: 리뷰
+상태: 완료
 크기: L
 선행: ALI-02
 담당: Codex (Sidney)
@@ -9,6 +9,7 @@
 
 PR: [#3](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/3)
 기반 브랜치: `chrono/CHR-10-local-wiki`
+PR #3과 통합 PR #4를 통해 main 병합 완료 (`443cd21`, 2026-09-14).
 
 ## 무엇을
 

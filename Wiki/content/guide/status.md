@@ -6,10 +6,10 @@ order: 1
 
 # 현재 실행 상태와 개발 순서
 
-> 기준: 2026-09-14 · Phase 0 + Runtime ECS · 엔진 버전 0.1.0
+> 기준: 2026-09-15 · Runtime ECS + Windows 에디터 · 엔진 버전 0.1.0
 
-**지금 실행할 수 있는 것은 `alice` 콘텐츠 도구입니다.** YAML/JSON 문서를 만들고,
-검증하고, 정리할 수 있습니다. 게임 창을 띄우는 실행 파일이나 에디터는 아직 없습니다.
+**Windows 에디터와 `alice` 콘텐츠 도구를 실행할 수 있습니다.** 에디터에서 씬의 액터를
+선택하고 속성을 수정·검증·저장할 수 있습니다. 게임플레이 실행은 아직 없습니다.
 `Samples/FirstLight`는 검증 가능한 콘텐츠 샘플이며, 현재 플레이할 수 있는 게임은 아닙니다.
 `Alice.Runtime` 라이브러리의 ECS도 링크·실행할 수 있으며 `Alice.Tests`가 실제 API 호출을 검증합니다.
 
@@ -17,6 +17,7 @@ order: 1
 
 | 기능 | 현재 상태 | 확인 방법 |
 |---|---|---|
+| Windows 에디터 | 독립 창, 문서 목록·계층·속성·배치 뷰포트·검증·저장 | `pwsh -File Scripts/editor.ps1`, [사용법](/guide/editor/) |
 | 문서 모델 | 스키마 19개: 문서 10종 + 컴포넌트 9종 | `alice schema list --json` |
 | 게임플레이 문법 | 동사 정의 32개, 조건식 심볼 36개, 정적 검사 | `alice verbs --json` |
 | 콘텐츠 검증 | 위치·진단 코드·수정 힌트를 함께 출력 | `alice check Samples --json` |
@@ -32,6 +33,9 @@ order: 1
 `doctor`의 AI CLI 항목은 PATH에서 프로그램을 찾은 결과이며 로그인 확인은 아닙니다.
 
 ## 엔진 실행해 보기
+
+Windows 에디터는 저장소 루트에서 `pwsh -NoProfile -File .\Scripts\editor.ps1`로 실행합니다.
+빌드 후 `build\bin\Alice.Editor.exe`를 더블클릭해도 됩니다. [에디터 사용법](/guide/editor/)을 보십시오.
 
 Windows에서 저장소 루트를 기준으로 실행합니다. CMake 3.24+와 C++20 컴파일러가 필요합니다.
 
@@ -139,3 +143,10 @@ HTTP 200으로 확인했습니다. 구현은 [PR #3](https://github.com/Chang-Ji
 리뷰 중입니다. macOS 테스트 출력의 `size_t` 타입 차이를 수정한 `e1cbfb5`의
 [GitHub CI](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/actions/runs/34814297441)에서
 Windows·Ubuntu·macOS, 위키, 개발 규칙이 모두 통과했습니다. main 병합과 공개 위키 배포는 남아 있습니다.
+
+2026-09-14, PR #3과 통합 [PR #4](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/4)를
+병합해 위키·CLI·ECS가 main에 들어갔습니다 (`443cd21`).
+
+2026-09-15, CHR-11에서 Windows 에디터를 구현했습니다. 문서 모델 테스트 6개와 실제 창의
+smoke 검사 10항목을 통과했습니다. 저장 검증·외부 변경 검사·진단 품질을 제거한 세 변형을
+테스트 실패로 검출한 뒤 복구했습니다. 전체 실행 테스트는 154개입니다. 미디어 애셋 추가는 없습니다.
