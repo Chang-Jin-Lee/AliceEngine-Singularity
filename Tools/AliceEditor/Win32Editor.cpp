@@ -169,7 +169,14 @@ struct App {
             double number = 0;
             auto result = std::from_chars(text.data(), text.data() + text.size(), number);
             if (result.ec != std::errc{} || result.ptr != text.data() + text.size() || !std::isfinite(number)) {
-                notice = "editor.transform.invalid_number: enter a finite number in every axis field."; StatusText(); return false;
+                auto error = MakeError("editor.transform.invalid_number", "Transform input is not a finite number",
+                    "Enter a finite decimal number in this axis field, or use Undo to restore the applied value");
+                const char* field = i < 3 ? "position" : i < 6 ? "rotation" : "scale";
+                error.file = model.Path();
+                error.path = "actors[" + std::to_string(selected) + "].transform." + field + "[" + std::to_string(i % 3) + "]";
+                const auto* original = model.Document().root.AtPath(error.path);
+                error.mark = original && original->mark.Valid() ? original->mark : Mark{1, 1, 0};
+                notice = error.ToPretty(); StatusText(); return false;
             }
             auto& vector = i < 3 ? actor.position : i < 6 ? actor.rotation : actor.scale;
             vector[static_cast<usize>(i % 3)] = number;

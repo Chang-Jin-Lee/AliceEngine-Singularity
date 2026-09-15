@@ -13,4 +13,7 @@
 - [x] Win32Editor.cpp와 SceneViewport.cpp를 연결하고 기본 FirstLight를 열어 실제 창을 표시한다.
 - [x] 실제 창 smoke 검사, 저장/진단 회귀 결함 주입, 독립 리뷰와 화면 QA를 수행한다.
 - [x] Scripts/editor.ps1, Docs/EDITOR.md, README 및 생성 위키를 갱신한다.
-- [ ] 공식 verify, 위키 빌드, 커밋·푸시·PR 및 CI를 완료한다.
+- [x] 공식 verify, 위키 빌드, 커밋·푸시·PR 및 CI를 완료한다.
+
+검증: 154개 테스트, Windows 창 10항목, 위키 68페이지.
+PR #5, CI run 34977356060에서 세 플랫폼과 위키·규칙 검사 통과.
