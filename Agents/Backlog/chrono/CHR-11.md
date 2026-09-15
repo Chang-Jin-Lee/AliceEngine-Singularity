@@ -1,11 +1,13 @@
 # CHR-11 · 실행 가능한 Windows 씬 에디터
 
 ```
-상태: 진행중
+상태: 리뷰
 크기: L
 선행: CHR-10, SID-02
 담당: Codex (Chrono)
 ```
+
+PR: [#5](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/5), base `main`.
 
 ## 무엇을 / 왜
 

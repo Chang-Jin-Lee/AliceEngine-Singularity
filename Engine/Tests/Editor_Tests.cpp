@@ -38,8 +38,9 @@ ALICE_TEST(Editor, EditUndoRedoSaveRoundTrip) {
     ALICE_REQUIRE(model.Save().IsOk()); ALICE_CHECK(!model.IsDirty());
     editor::DocumentModel reloaded;
     ALICE_REQUIRE(reloaded.Open(file.path).IsOk());
-    ALICE_CHECK_STR(reloaded.Actors()[0].name, "Edited");
-    ALICE_CHECK_EQ(reloaded.Actors()[0].position[0], 9.0);
+    const auto reloadedActors = reloaded.Actors();
+    ALICE_CHECK_STR(reloadedActors[0].name, "Edited");
+    ALICE_CHECK_EQ(reloadedActors[0].position[0], 9.0);
     ALICE_CHECK(reloaded.Text().find("artist note") != std::string::npos);
 }
 ALICE_TEST(Editor, InvalidTextCannotOverwriteFile) {
