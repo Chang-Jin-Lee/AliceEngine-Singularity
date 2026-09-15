@@ -215,7 +215,7 @@ CI 가 이 넷과 `Agent:` 표기를 검사합니다.
 | 검사 | 명령 |
 |---|---|
 | 경고 0 빌드 | `cmake --build build` |
-| 테스트 148개 | `Alice.Tests` |
+| 테스트 154개 | `Alice.Tests` |
 | 샘플 콘텐츠 0오류 | `alice check Samples --json` |
 | 문서 정규화 상태 | `alice fmt Samples --check` |
 | 생성된 JSON Schema 최신 | `alice schema emit Schemas` + `git diff` |
@@ -247,9 +247,10 @@ Engine/
   Schema/       콘텐츠 모델 · 검증 · JSON Schema 생성
   Verbs/        동사 · 조건식 · 2차 검사
   RHI/          그래픽 추상화 + Null 백엔드
-  Tests/        148개
+  Tests/        154개 + Windows 에디터 창 smoke 검사
   Runtime/      공개 계약 헤더 6개 + ECS 구현 (씬·규칙·루프는 후속 작업)
 Tools/AliceCLI/ alice 명령
+Tools/AliceEditor/ Windows 씬 에디터 + 플랫폼 독립 문서 모델
 Samples/        FirstLight — 코드 없는 완전한 프로젝트
 Agents/         역할 정의와 백로그 26건
 Docs/           설계 문서 · ADR

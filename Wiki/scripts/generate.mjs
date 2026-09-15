@@ -21,6 +21,7 @@ const OUT_API = path.join(WIKI, 'public', 'api');
 const GITHUB = 'https://github.com/Chang-Jin-Lee/AliceEngine-Singularity';
 const docMap = {
   'Docs/STATUS.md': 'guide/status.md',
+  'Docs/EDITOR.md': 'guide/editor.md',
   'Docs/ONBOARDING.md': 'guide/onboarding.md',
   'Docs/CONTENT_FORMAT.md': 'guide/content-format.md',
   'Docs/ARCHITECTURE.md': 'guide/architecture.md',

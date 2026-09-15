@@ -14,6 +14,11 @@ set(ALICE_TEST_SOURCES
 
 set(ALICE_TEST_DEPS Alice.Foundation Alice.Doc)
 
+if(TARGET Alice.Editor.Model)
+    list(APPEND ALICE_TEST_SOURCES Editor_Tests.cpp)
+    list(APPEND ALICE_TEST_DEPS Alice.Editor.Model)
+endif()
+
 if(TARGET Alice.Runtime)
     list(APPEND ALICE_TEST_SOURCES Runtime_ECS_Tests.cpp)
     list(APPEND ALICE_TEST_DEPS Alice.Runtime)
@@ -41,6 +46,11 @@ alice_executable(Alice.Tests
 )
 
 add_test(NAME Alice.Tests COMMAND Alice.Tests)
+
+if(TARGET Alice.Editor)
+    add_test(NAME Alice.Editor.Smoke COMMAND Alice.Editor --smoke-test --project "${PROJECT_SOURCE_DIR}/Samples/FirstLight")
+    set_tests_properties(Alice.Editor.Smoke PROPERTIES TIMEOUT 20)
+endif()
 
 # CI 와 AI 도구는 JSON 결과를 읽는다.
 add_test(NAME Alice.Tests.Json COMMAND Alice.Tests --json)

@@ -127,7 +127,8 @@ AI 가 스스로 고칩니다.
 
 상태: **SID-02에서 World와 ComponentRegistry를 구현**했습니다. `Alice.Runtime` 정적
 라이브러리를 링크해 ECS를 실행할 수 있습니다. 씬 로딩·규칙 실행·렌더 추출은 후속 작업이며,
-게임 창과 에디터는 아직 없습니다. 공개 헤더 컴파일 검사와 ECS 실행 테스트를 함께 제공합니다.
+게임플레이 실행은 아직 없습니다. Windows 문서 에디터는 Tools/AliceEditor에서 별도로 제공하며,
+공개 헤더 컴파일 검사와 ECS 실행 테스트를 함께 제공합니다.
 
 ### 파일과 책임
 
@@ -329,7 +330,8 @@ move-construct 후 원본을 파괴하며, 제거 시 마지막 원소를 이동
 | RHI | 2,000 | `RHIDevice.h` (~160줄 인터페이스), `NullDevice.cpp` (검증기) |
 | Tools | 1,400 | `Commands_Doc.cpp`, `Commands_Info.cpp` |
 | Runtime | 공개 헤더 6개 + ECS | `ECS/World.cpp`, `ECS/ComponentRegistry.cpp`, `ECS/NativePool.cpp` |
-| Tests | 2,400 | 실행 테스트 148개 + Runtime 컴파일 계약 |
+| Editor (Tools) | 문서 모델 + Win32/GDI | `Tools/AliceEditor/` (기존 Doc/Schema/Verbs 소비, 엔진 공개 헤더 변경 없음) |
+| Tests | 2,500 | 실행 테스트 154개 + Runtime 컴파일 계약 + Windows 창 smoke |
 
 **이 엔진을 이해하려면 두 파일을 읽으면 됩니다.**
 
