@@ -117,7 +117,9 @@ Result<Vec2> PlatformerSession::Tick(double dt, const std::vector<std::string>& 
     m_jumpPending = m_jumpPending || (jumping && !m_jumpHeld); m_jumpHeld = jumping;
     double axis = 0; for (const auto& pair : m_moveBindings) axis += double(held(pair.second))-double(held(pair.first));
     axis = std::clamp(axis,-1.0,1.0);
-    if (dt > 0.1) ALICE_LOG_WARN("physics", "physics.time.clamped").Msg("Platformer frame time was clamped").F("seconds",dt).F("limit",0.1);
+    if (dt > 0.1) {
+        ALICE_LOG_WARN("physics", "physics.time.clamped").Msg("Platformer frame time was clamped").F("seconds",dt).F("limit",0.1);
+    }
     m_accumulator += std::min(dt,0.1);
     for (int i=0; i<6 && m_accumulator+1e-12>=step; ++i) {
         double velocity = m_velocityY;

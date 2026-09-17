@@ -47,3 +47,5 @@ Alice.PhysicsBench는 지형 100/1,000/10,000개, 독립 캐릭터 쿼리 1/100�
 개발 원시 출력은 로컬 Testing/results에 두고 커밋에서 제외한다. 공유 성능 결과는 Testing/Measurements에 보관한다. 전체 verify 및 원격 CI/PR 결과는 최종 통합 단계에서 기록한다.
 
 최종 로컬 검증: Scripts/verify.ps1 -BuildDir Testing/build 전체 6개 단계 통과. CTest 활성 5개(191개 단위 테스트를 실행하는 러너, 콘텐츠/정규화, 실제 창 2개) 통과. 비활성 JSON CTest와 별개로 Alice.Tests --json을 직접 실행해 191/0 확인. npm test 2개 및 npm run build 통과.
+
+PR #7 첫 원격 실행에서 GCC/Clang은 로그 매크로를 감싼 중괄호 없는 if를 dangling-else 경고로 거부했다. 해당 if에 중괄호를 추가했다. MSVC 로컬 검증만으로 이식성 검증을 대신할 수 없음을 확인했다. 위키·개발 규칙은 첫 원격 실행에서도 통과했다.
