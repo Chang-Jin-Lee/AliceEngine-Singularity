@@ -1,7 +1,7 @@
 # CHR-12 · 새 씬·분할 터미널·큐브 입력 예제
 
 ```
-상태: 리뷰
+상태: 완료
 크기: L
 선행: CHR-11
 담당: Codex (Chrono)
@@ -20,7 +20,7 @@ PR: [#6](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/6), base 
 - [x] CubePlayground 씬, Play/Stop, 이동 입력 및 위치·회전·크기 편집 검증
 - [x] 실행 중 상태는 ECS에 격리하고 Stop 시 편집 원본 복원
 - [x] 예제 기반 개발 규칙, README/위키/샘플 설명과 권리 기록
-- [ ] 모델·터미널·UI 회귀, 실제 창 확인, 공식 verify와 CI, 커밋·푸시·PR
+- [x] 모델·터미널·UI 회귀, 실제 창 확인, 공식 verify와 CI, 커밋·푸시·PR
 
 ## 경계
 
@@ -41,5 +41,6 @@ Scripts/editor.ps1, 관련 CMake·문서·백로그·위키.
 최종 독립 리뷰에서 추가 중대 결함은 발견되지 않았다. 실제 AI CLI별 전체 화면 UI와
 실제 IME 조합 이벤트 호환성은 별도 수동 확인 범위로 남긴다.
 
-첫 CI의 Windows·위키·개발 규칙은 통과했다. GCC가 지적한 테스트 루프의 불필요한 복사와
-Clang이 지적한 테스트 임시 액터 목록의 수명을 수정해 재검증한다.
+첫 CI에서 GCC가 지적한 테스트 루프의 불필요한 복사와 Clang이 지적한 테스트 임시 액터
+목록의 수명을 수정했다. `ea39e74`의 [CI](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/actions/runs/35189888295)에서
+Windows·Ubuntu·macOS·위키·개발 규칙 다섯 검사가 모두 통과했다.

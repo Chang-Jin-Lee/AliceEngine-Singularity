@@ -7,7 +7,7 @@ Spec: ../specs/2026-09-16-interactive-workspace-design.md
 - [x] Terminal implementer: isolated TerminalSession/TerminalScreen/TerminalPane and tests; no shared GUI/CMake edits.
 - [x] Preview implementer: isolated PlaySession and input sample YAML + model tests; no GUI/CMake edits.
 - [x] Parent: focused reviews, CMake links, smoke checks and real window demo.
-- [ ] Parent: docs, example-based development rule, full verify/wiki/CI, commit/push/PR.
+- [x] Parent: docs, example-based development rule, full verify/wiki/CI, commit/push/PR.
 
 ## Ledger
 
@@ -38,3 +38,7 @@ Remaining: push implementation, PR/CI and main integration under existing user a
 Implementation ab40001 pushed, PR #6 opened. CI 35189631348 passed Windows/wiki/conventions,
 but GCC rejected a copied structured-binding loop and Clang caught three test macro references to
 temporary actor-vector elements. Tests now use a reference loop and owned actor snapshots.
+
+CI fix ea39e74 passed all five jobs in run 35189888295. Scoped review approved the CI fixes.
+Task completion bookkeeping follows with full verify; merge PR #6 after its final checks.
+Wiki preview served updated HTML/Markdown with HTTP 200 at http://127.0.0.1:4173/guide/editor/.
