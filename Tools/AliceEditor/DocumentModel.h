@@ -11,10 +11,12 @@ struct Actor {
 };
 
 Status AtomicSave(const std::string& path, std::string_view text, std::string_view expected);
+Status AtomicCreate(const std::string& path, std::string_view text);
 
 class DocumentModel {
 public:
     Status Open(const std::string& path);
+    Status CreateScene(const std::string& path, const std::string& name);
     void SetText(std::string text);
     bool Validate();
     Status Save();

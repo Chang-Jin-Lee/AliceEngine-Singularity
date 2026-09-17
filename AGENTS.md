@@ -139,6 +139,14 @@ CMake 가 강제합니다. 위로 흐르는 참조는 **설정 단계에서** �
 현재 FirstLight에 포함된 것은 YAML 샘플 문서입니다. 문서가 참조하는 메시·음원 파일은
 포함되어 있지 않습니다. 이후 애셋을 추가하면 개별 파일의 출처 기록을 먼저 남깁니다.
 
+## 예시로 확인하는 개발
+
+사용자 요청에 따라 새 편집·실행 기능은 `Samples/`의 재현 가능한 예시 씬과 함께 개발합니다.
+샘플 README에 여는 방법, 조작 순서, 기대 결과와 현재 제한을 적고 자동 검증 및 실제 창 확인을
+완료하십시오. 기존 예시를 확장해도 됩니다. 기능을 설명만 하고 확인할 예시를 남기지 마십시오.
+`Samples/CubePlayground`는 입력과 위치·회전·스케일의 첫 실행 예시입니다. 직접 작성한 YAML과
+코드로 그리는 기본 도형만 사용하며 외부 미디어를 포함하지 않습니다.
+
 ## 코드 관례
 
 ```cpp
@@ -215,7 +223,7 @@ CI 가 이 넷과 `Agent:` 표기를 검사합니다.
 | 검사 | 명령 |
 |---|---|
 | 경고 0 빌드 | `cmake --build build` |
-| 테스트 154개 | `Alice.Tests` |
+| 테스트 173개 (Windows) | `Alice.Tests` |
 | 샘플 콘텐츠 0오류 | `alice check Samples --json` |
 | 문서 정규화 상태 | `alice fmt Samples --check` |
 | 생성된 JSON Schema 최신 | `alice schema emit Schemas` + `git diff` |
@@ -247,11 +255,11 @@ Engine/
   Schema/       콘텐츠 모델 · 검증 · JSON Schema 생성
   Verbs/        동사 · 조건식 · 2차 검사
   RHI/          그래픽 추상화 + Null 백엔드
-  Tests/        154개 + Windows 에디터 창 smoke 검사
+  Tests/        173개 (Windows) + Windows 에디터 창 smoke 검사
   Runtime/      공개 계약 헤더 6개 + ECS 구현 (씬·규칙·루프는 후속 작업)
 Tools/AliceCLI/ alice 명령
 Tools/AliceEditor/ Windows 씬 에디터 + 플랫폼 독립 문서 모델
-Samples/        FirstLight — 코드 없는 완전한 프로젝트
+Samples/        FirstLight 문서 예제 + CubePlayground 입력·변환 실행 예제
 Agents/         역할 정의와 백로그 26건
 Docs/           설계 문서 · ADR
 Schemas/        생성물 — 에디터 자동완성용 JSON Schema

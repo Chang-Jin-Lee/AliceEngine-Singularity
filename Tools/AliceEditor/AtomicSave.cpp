@@ -11,12 +11,14 @@
 #endif
 
 namespace alice::editor {
-Status AtomicSave(const std::string& path, std::string_view text, std::string_view expected) {
+static Status AtomicWrite(const std::string& path, std::string_view text, std::string_view expected, bool create) {
     auto failure = [&](const char* code, const char* message, const char* hint) -> Status {
         auto d = MakeError(code, message, hint); d.file = path; d.path = "document"; d.mark = {1, 1, 0}; return d;
     };
     const auto before = fs::ReadTextFile(path);
-    if (!before || before.Value() != expected) return failure("editor.save.conflict", "The file changed outside this editor",
+    if (create && fs::Exists(path)) return failure("editor.create.exists", "A file already exists at this path",
+        "Choose a new scene filename; existing documents are never overwritten by New scene");
+    if (!create && (!before || before.Value() != expected)) return failure("editor.save.conflict", "The file changed outside this editor",
         "Copy your edits, reopen the file and reconcile the external changes before saving");
     const auto nativePath = [](std::string_view value) {
         return std::filesystem::path(std::u8string_view(reinterpret_cast<const char8_t*>(value.data()), value.size()));
@@ -50,17 +52,25 @@ Status AtomicSave(const std::string& path, std::string_view text, std::string_vi
 #endif
     std::error_code ec;
     const auto latest = fs::ReadTextFile(path);
-    if (!written || !latest || latest.Value() != expected) {
+    if (!written || (!create && (!latest || latest.Value() != expected))) {
         std::filesystem::remove(temporary, ec);
         return failure("editor.save.failed", "Could not finish the save or the original changed during writing",
             "Check free disk space and permissions; reopen external changes before retrying");
     }
 #ifdef _WIN32
-    if (!ReplaceFileW(target.c_str(), temporary.c_str(), nullptr, 0, nullptr, nullptr)) ec = std::error_code(static_cast<int>(GetLastError()), std::system_category());
+    const bool replaced = create ? MoveFileExW(temporary.c_str(), target.c_str(), 0) != FALSE
+                                 : ReplaceFileW(target.c_str(), temporary.c_str(), nullptr, 0, nullptr, nullptr) != FALSE;
+    if (!replaced) ec = std::error_code(static_cast<int>(GetLastError()), std::system_category());
 #else
-    const auto permissions = std::filesystem::status(target, ec).permissions();
-    if (!ec) std::filesystem::permissions(temporary, permissions, ec);
-    if (!ec) std::filesystem::rename(temporary, target, ec);
+    if (create) {
+        // Linking publishes the complete file without replacing a concurrently created destination.
+        if (link(temporary.c_str(), target.c_str()) != 0) ec = std::error_code(errno, std::generic_category());
+        if (!ec) std::filesystem::remove(temporary, ec);
+    } else {
+        const auto permissions = std::filesystem::status(target, ec).permissions();
+        if (!ec) std::filesystem::permissions(temporary, permissions, ec);
+        if (!ec) std::filesystem::rename(temporary, target, ec);
+    }
 #endif
     if (ec) {
         std::error_code cleanup; std::filesystem::remove(temporary, cleanup);
@@ -68,5 +78,11 @@ Status AtomicSave(const std::string& path, std::string_view text, std::string_vi
             "Close programs locking this file and check write permissions before retrying");
     }
     return Status::Ok();
+}
+Status AtomicSave(const std::string& path, std::string_view text, std::string_view expected) {
+    return AtomicWrite(path, text, expected, false);
+}
+Status AtomicCreate(const std::string& path, std::string_view text) {
+    return AtomicWrite(path, text, {}, true);
 }
 } // namespace alice::editor

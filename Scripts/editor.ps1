@@ -14,7 +14,7 @@ if ($Build -or -not (Test-Path -LiteralPath $editor)) {
     & "$PSScriptRoot/build.ps1" -WarningsAsErrors
     if ($LASTEXITCODE -ne 0) { throw 'Editor build failed.' }
 }
-if (-not $Project) { $Project = Join-Path $repo 'Samples/FirstLight' }
+if (-not $Project) { $Project = Join-Path $repo 'Samples/CubePlayground' }
 $projectPath = (Resolve-Path -LiteralPath $Project).Path
 if (-not (Test-Path -LiteralPath $projectPath -PathType Container)) { throw 'Project must be a folder.' }
 $editorArgs = @('--project', ('"{0}"' -f $projectPath))

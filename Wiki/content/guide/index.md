@@ -8,7 +8,7 @@ order: 0
 
 **Windows 에디터와 콘텐츠 도구 `alice`를 실행할 수 있습니다.**
 창을 열려면 저장소 루트에서 `pwsh -NoProfile -File .\Scripts\editor.ps1`을 실행합니다.
-[에디터 사용법](/guide/editor/)에서 씬 편집·저장 방법을 확인하십시오.
+[에디터 사용법](/guide/editor/)에서 새 씬 생성, 패널 크기 조절, AI용 터미널과 큐브 Play/Stop을 확인하십시오.
 이 가이드에서는 문서를 만들고 검사합니다. 전체 구현 상태는 [현재 상태](/guide/status/)를 보십시오.
 
 ## 빌드
