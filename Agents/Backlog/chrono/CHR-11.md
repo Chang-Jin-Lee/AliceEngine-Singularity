@@ -1,7 +1,7 @@
 # CHR-11 · 실행 가능한 Windows 씬 에디터
 
 ```
-상태: 리뷰
+상태: 완료
 크기: L
 선행: CHR-10, SID-02
 담당: Codex (Chrono)
@@ -43,4 +43,4 @@ README·AGENTS·상태 문서·Wiki 및 이 작업의 설계/계획.
 
 `a3186b6`의 [CI](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/actions/runs/34977356060)에서
 Windows·Ubuntu·macOS·위키·개발 규칙이 모두 통과했다. macOS의 컴파일 경고로 발견한
-테스트 임시 배열 수명도 수정했다. PR #5는 main 대상으로 리뷰 중이다.
+테스트 임시 배열 수명도 수정했다. PR #5는 main에 병합되었다 (`53f201c`).

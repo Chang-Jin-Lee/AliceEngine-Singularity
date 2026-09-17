@@ -8,7 +8,7 @@
 
 [시작하기](#빌드) · [위키 실행](#위키-만들고-보기) · [현재 상태와 다음 작업](Docs/STATUS.md)
 
-[![tests](https://img.shields.io/badge/tests-154%20passing-brightgreen)](Engine/Tests)
+[![tests](https://img.shields.io/badge/tests-173%20passing-brightgreen)](Engine/Tests)
 [![C++20](https://img.shields.io/badge/C%2B%2B-20-blue)](CMakeLists.txt)
 [![license](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
@@ -92,7 +92,8 @@ player.behavior.yaml:12:9: error[verb.unknown]: 'audio.paly' 는 없는 동사�
 ## 지금 되는 것 / 안 되는 것
 
 **Windows에서는 독립 에디터 창을 실행할 수 있습니다. `alice` CLI와 ECS도 실행 가능합니다.**
-`Samples/FirstLight`는 검증 가능한 콘텐츠 샘플입니다. 현재 플레이할 수 있는 게임은 아닙니다.
+`Samples/CubePlayground`에서 Play/Stop과 큐브 이동·회전·크기 조절을 확인할 수 있습니다.
+`Samples/FirstLight`는 검증 가능한 콘텐츠 샘플이며 일반 게임 실행은 후속 작업입니다.
 자세한 실행 상태와 개발 순서는 [Docs/STATUS.md](Docs/STATUS.md)에 있습니다.
 
 **된다**
@@ -107,7 +108,8 @@ player.behavior.yaml:12:9: error[verb.unknown]: 'audio.paly' 는 없는 동사�
 - `alice` CLI 10개 명령, 전부 `--json` 지원
 - JSON Schema 자동 생성 (에디터 자동완성)
 - Windows 씬 에디터: 프로젝트·계층·속성·배치 뷰포트·원문·검증·저장·Undo/Redo
-- 테스트 154개 (ECS 11개, 에디터 문서 모델 6개 포함) + Windows 창 smoke 검사
+- New scene, 마우스로 크기 조절하는 패널, 오른쪽 실제 PowerShell 터미널, ECS 큐브 Play/Stop
+- 테스트 173개(Windows, 다른 플랫폼 171개) + 실제 Windows 창 smoke 검사
 - 위키 정적 빌드와 로컬 미리보기, Markdown 원문과 AI용 JSON 레퍼런스
 
 **아직 안 된다 (백로그에 있습니다)**
@@ -132,9 +134,12 @@ Windows PowerShell에서 저장소 루트를 기준으로 실행합니다.
 pwsh -NoProfile -File .\Scripts\editor.ps1
 ```
 
-처음에는 자동 빌드하고 FirstLight 씬을 엽니다. 빌드 후에는 `build\bin\Alice.Editor.exe`를
+처음에는 자동 빌드하고 CubePlayground 씬을 엽니다. 빌드 후에는 `build\bin\Alice.Editor.exe`를
 더블클릭해도 됩니다. 액터 선택 → 속성 수정 → **Apply changes** → **Save** 순서로 편집합니다.
-뷰포트는 배치용 와이어 도형이며 게임플레이 실행은 아직 없습니다. [자세한 사용법](Docs/EDITOR.md).
+**New scene**으로 씬을 만들고, **Cube demo → Play**로 예시를 실행합니다. Scene을 클릭한 뒤
+WASD 이동, Space/Ctrl 높이, Q/E 회전, F/R 크기를 조절합니다. **Stop**은 편집 상태를 복원합니다.
+오른쪽은 AI CLI를 직접 실행할 수 있는 PowerShell이며, 패널 경계는 드래그로 조절합니다.
+뷰포트는 기본 와이어 큐브이며 실제 메시·물리·일반 규칙 실행은 후속 작업입니다. [자세한 사용법](Docs/EDITOR.md).
 
 ## 빌드
 

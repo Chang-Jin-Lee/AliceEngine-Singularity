@@ -15,8 +15,11 @@ set(ALICE_TEST_SOURCES
 set(ALICE_TEST_DEPS Alice.Foundation Alice.Doc)
 
 if(TARGET Alice.Editor.Model)
-    list(APPEND ALICE_TEST_SOURCES Editor_Tests.cpp)
+    list(APPEND ALICE_TEST_SOURCES Editor_Tests.cpp Editor_Layout_Tests.cpp Editor_Play_Tests.cpp Terminal_Tests.cpp)
     list(APPEND ALICE_TEST_DEPS Alice.Editor.Model)
+    if(WIN32)
+        list(APPEND ALICE_TEST_DEPS Alice.Editor.Terminal)
+    endif()
 endif()
 
 if(TARGET Alice.Runtime)
@@ -48,7 +51,7 @@ alice_executable(Alice.Tests
 add_test(NAME Alice.Tests COMMAND Alice.Tests)
 
 if(TARGET Alice.Editor)
-    add_test(NAME Alice.Editor.Smoke COMMAND Alice.Editor --smoke-test --project "${PROJECT_SOURCE_DIR}/Samples/FirstLight")
+    add_test(NAME Alice.Editor.Smoke COMMAND Alice.Editor --smoke-test --project "${PROJECT_SOURCE_DIR}/Samples/CubePlayground")
     set_tests_properties(Alice.Editor.Smoke PROPERTIES TIMEOUT 20)
 endif()
 

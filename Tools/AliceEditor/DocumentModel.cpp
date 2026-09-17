@@ -42,11 +42,27 @@ Status DocumentModel::Open(const std::string& path) {
     m_path = path; m_text = read.Value(); m_saved = m_text;
     m_undo.clear(); m_redo.clear(); Validate(); return Status::Ok();
 }
+Status DocumentModel::CreateScene(const std::string& path, const std::string& name) {
+    if (name.empty()) return Error("editor.scene.name_empty", "Scene name cannot be empty", path, "Enter a nonempty scene name");
+    doc::Document document; document.path = path; document.syntax = doc::DetectSyntax(path, {});
+    document.root = doc::Value::MakeMap();
+    document.root.Set("schema", doc::Value{"alice/scene/1"});
+    document.root.Set("name", doc::Value{name});
+    document.root.Set("actors", doc::Value::MakeSeq());
+    DiagnosticBag bag; Check(document, bag); ALICE_TRY(FirstError(bag));
+    ALICE_TRY(AtomicCreate(path, doc::SerializeDocument(document)));
+    return Open(path);
+}
 bool DocumentModel::Validate() {
     m_diagnostics.Clear(); m_document = {};
     m_parsed = doc::ParseDocument(m_text, doc::Syntax::Auto, m_path, m_document, m_diagnostics);
     if (m_parsed) Check(m_document, m_diagnostics);
     m_diagnostics.SetFileIfEmpty(m_path);
+    for (auto& diagnostic : m_diagnostics.Items()) {
+        if (!diagnostic.mark.Valid()) diagnostic.mark = {1, 1, 0};
+        if (diagnostic.path.empty()) diagnostic.path = "document";
+        if (diagnostic.hint.empty()) diagnostic.hint = "Correct the syntax at the indicated line and validate the document again";
+    }
     return IsValid();
 }
 void DocumentModel::Remember() {

@@ -101,7 +101,7 @@ ALICE_TEST(Editor, ExistingTemporaryFileIsPreserved) {
 ALICE_TEST(Editor, SyntaxErrorsAndUnknownSchemasHaveRepairHints) {
     File file; editor::DocumentModel model;
     ALICE_REQUIRE(model.Open(file.path).IsOk());
-    for (const char* text : {"schema: [", "schema: unknown/type/1\nname: Test\n"}) {
+    for (const char* text : {"schema: [", "schema: unknown/type/1\nname: Test\n", "schema: alice/scene/1\nname: \"\\u0\"\n"}) {
         model.SetText(text); ALICE_CHECK(!model.IsValid());
         ALICE_REQUIRE(!model.Diagnostics().Empty());
         for (const auto& d : model.Diagnostics().Items()) {
@@ -111,4 +111,35 @@ ALICE_TEST(Editor, SyntaxErrorsAndUnknownSchemasHaveRepairHints) {
         ALICE_CHECK(model.Save().IsErr());
         ALICE_CHECK_STR(fs::ReadTextFile(file.path).Value(), kScene);
     }
+}
+
+ALICE_TEST(Editor, NewSceneIsValidAndNeverOverwritesExistingFiles) {
+    File file; editor::DocumentModel model;
+    ALICE_REQUIRE(model.Open(file.path).IsOk());
+    const auto before = model.Text();
+    const auto path = file.path + ".new.yaml";
+    ALICE_REQUIRE(model.CreateScene(path, "NewScene").IsOk());
+    ALICE_CHECK(model.IsValid()); ALICE_CHECK(model.IsScene());
+    ALICE_CHECK(!model.IsDirty()); ALICE_CHECK(model.Actors().empty());
+    const auto saved = fs::ReadTextFile(path).Value();
+    auto rejected = model.CreateScene(path, "Overwrite");
+    ALICE_REQUIRE(rejected.IsErr()); ALICE_CHECK(!rejected.Error().hint.empty());
+    ALICE_CHECK_STR(fs::ReadTextFile(path).Value(), saved);
+    ALICE_CHECK_STR(model.Text(), saved);
+    ALICE_CHECK_STR(fs::ReadTextFile(file.path).Value(), before);
+    ALICE_CHECK(model.CreateScene(file.path + ".invalid.yaml", "").IsErr());
+    ALICE_CHECK(!fs::Exists(file.path + ".invalid.yaml"));
+}
+
+ALICE_TEST(Editor, NewJsonSceneReopensAsValidJson) {
+    File file; editor::DocumentModel model;
+    const auto path = file.path + ".new.json";
+    ALICE_REQUIRE(model.CreateScene(path, "JSON Scene").IsOk());
+    ALICE_REQUIRE(model.IsValid());
+    ALICE_CHECK(model.IsScene());
+    ALICE_CHECK(model.Document().syntax == doc::Syntax::Json);
+    editor::DocumentModel reopened;
+    ALICE_REQUIRE(reopened.Open(path).IsOk());
+    ALICE_CHECK(reopened.IsValid()); ALICE_CHECK(reopened.IsScene());
+    ALICE_CHECK_STR(reopened.Document().root.Find("name")->AsString(), "JSON Scene");
 }

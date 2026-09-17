@@ -1,9 +1,9 @@
 # 현재 실행 상태와 개발 순서
 
-> 기준: 2026-09-15 · Runtime ECS + Windows 에디터 · 엔진 버전 0.1.0
+> 기준: 2026-09-16 · Runtime ECS + 대화형 Windows 에디터 · 엔진 버전 0.1.0
 
 **Windows 에디터와 `alice` 콘텐츠 도구를 실행할 수 있습니다.** 에디터에서 씬의 액터를
-선택하고 속성을 수정·검증·저장할 수 있습니다. 게임플레이 실행은 아직 없습니다.
+선택하고 속성을 수정·검증·저장할 수 있습니다. CubePlayground에서 입력과 Transform을 Play/Stop으로 확인합니다.
 `Samples/FirstLight`는 검증 가능한 콘텐츠 샘플이며, 현재 플레이할 수 있는 게임은 아닙니다.
 `Alice.Runtime` 라이브러리의 ECS도 링크·실행할 수 있으며 `Alice.Tests`가 실제 API 호출을 검증합니다.
 
@@ -12,6 +12,8 @@
 | 기능 | 현재 상태 | 확인 방법 |
 |---|---|---|
 | Windows 에디터 | 독립 창, 문서 목록·계층·속성·배치 뷰포트·검증·저장 | `pwsh -File Scripts/editor.ps1`, [사용법](/guide/editor/) |
+| 대화형 작업 공간 | 새 씬 생성, 드래그 분할선, 실제 PowerShell 터미널 | New scene, 오른쪽 Terminal |
+| 큐브 실행 예시 | ECS의 임시 Transform, 키보드 이동·회전·크기, Stop 복원 | Cube demo → Play, [샘플](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/blob/main/Samples/CubePlayground/README.md) |
 | 문서 모델 | 스키마 19개: 문서 10종 + 컴포넌트 9종 | `alice schema list --json` |
 | 게임플레이 문법 | 동사 정의 32개, 조건식 심볼 36개, 정적 검사 | `alice verbs --json` |
 | 콘텐츠 검증 | 위치·진단 코드·수정 힌트를 함께 출력 | `alice check Samples --json` |
@@ -144,3 +146,8 @@ Windows·Ubuntu·macOS, 위키, 개발 규칙이 모두 통과했습니다. main
 2026-09-15, CHR-11에서 Windows 에디터를 구현했습니다. 문서 모델 테스트 6개와 실제 창의
 smoke 검사 10항목을 통과했습니다. 저장 검증·외부 변경 검사·진단 품질을 제거한 세 변형을
 테스트 실패로 검출한 뒤 복구했습니다. 전체 실행 테스트는 154개입니다. 미디어 애셋 추가는 없습니다.
+
+2026-09-17, CHR-11 PR #5를 main에 병합했고 CHR-12에서 새 씬·분할 터미널·큐브 입력
+예시를 구현했습니다. Windows 테스트 173개, 실제 창 smoke 20항목, 공식 verify 6단계,
+위키 68페이지 빌드를 통과했습니다. 기본 실행 프로젝트는 CubePlayground입니다.
+외부 미디어 없이 직접 작성한 YAML과 기본 도형을 사용합니다.

@@ -1,0 +1,23 @@
+# The editor draws its own cube wireframes; no external mesh assets are required.
+schema: alice/scene/1
+name: Cube Playground
+actors:
+  - name: Player Cube
+    tags:
+      - player
+    transform:
+      position: [0, 1, 0]
+      rotation: [0, 0, 0]
+      scale: [1, 1, 1]
+  - name: Ground
+    transform: { position: [0, -0.5, 0], scale: [10, 0.5, 10] }
+  - name: Landmark Left
+    transform:
+      position: [-3, 0.5, -3]
+      rotation: [0, 30, 0]
+      scale: [1, 2, 1]
+  - name: Landmark Right
+    transform:
+      position: [3, 0.5, -3]
+      rotation: [0, -30, 0]
+      scale: [1, 2, 1]
