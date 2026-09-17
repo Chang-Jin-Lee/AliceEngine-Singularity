@@ -1,0 +1,26 @@
+# Unit box colliders follow the drawn cube scale; no external assets are used.
+schema: alice/scene/1
+name: Platformer Physics Demo
+environment: { gravity: [0, -9.81, 0] }
+actors:
+  - name: Player
+    tags:
+      - player
+    transform: { position: [-4, 2, 0], scale: [0.8, 1, 0.8] }
+    components:
+      character2d: { speed: 4, jumpSpeed: 7, gravityScale: 1 }
+      collider: { shape: box }
+  - name: Ground
+    transform: { position: [0, -0.5, 0], scale: [14, 1, 2] }
+    components:
+      collider: { shape: box }
+  - name: Step One
+    transform: { position: [-1, 0.75, 0], scale: [2, 0.5, 2] }
+    components:
+      collider: { shape: box }
+  - name: Step Two
+    transform: { position: [2, 1.75, 0], scale: [2, 0.5, 2] }
+    components:
+      collider: { shape: box }
+  - name: Goal Marker
+    transform: { position: [6, 1, 0], scale: [0.3, 2, 0.3] }

@@ -1,0 +1,8 @@
+schema: alice/project/1
+name: Platformer Physics Demo
+version: 0.1.0
+startScene: scenes/main.scene.yaml
+contentRoot: .
+renderer: { backend: "null", targetFrameRate: 60, resolution: [1600, 900] }
+platforms:
+  - windows

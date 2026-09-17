@@ -2,7 +2,7 @@
 alice_module(Alice.Editor.Model
     FOLDER "Tools"
     SOURCES DocumentModel.h DocumentModel.cpp AtomicSave.cpp WorkspaceLayout.h WorkspaceLayout.cpp
-        PlaySession.h PlaySession.cpp TerminalScreen.h TerminalScreen.cpp
+        PlaySession.h PlaySession.cpp PlatformerSession.h PlatformerSession.cpp TerminalScreen.h TerminalScreen.cpp
     DEPS Alice.Verbs Alice.Runtime)
 target_include_directories(Alice.Editor.Model PUBLIC "${PROJECT_SOURCE_DIR}/Tools")
 if(WIN32)

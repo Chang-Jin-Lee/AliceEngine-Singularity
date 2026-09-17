@@ -1,0 +1,11 @@
+schema: alice/input/1
+name: Platformer Preview Controls
+actions:
+  - name: MoveX
+    type: axis
+    bindings:
+      - key.ad
+  - name: Jump
+    type: button
+    bindings:
+      - key.space

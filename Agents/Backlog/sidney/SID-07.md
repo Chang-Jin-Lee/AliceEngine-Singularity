@@ -1,7 +1,7 @@
 # SID-07 · 최소 2D 플랫폼어 물리
 
 ```
-상태: 진행중
+상태: 리뷰
 크기: L
 선행: SID-02
 담당: Codex (Sidney, 사용자 승인으로 스키마·에디터·테스트 연결 포함)
@@ -12,11 +12,11 @@
 ## 왜
 문서 검증만 가능했던 플랫폼어 예제를 실제 이동·점프·착지로 검증하기 위해서다.
 ## 완료 기준
-- [ ] swept AABB, 정적 공간 인덱스, 접지·벽·천장 충돌 테스트
-- [ ] 사용자 제공자 교체 예제와 테스트
-- [ ] Testing/PlatformerDemo 콘텐츠 검사 및 실제 창 Play smoke
-- [ ] 성능 측정·제한·사용법 문서
-- [ ] 전체 verify 성공 및 PR 리뷰
+- [x] swept AABB, 정적 공간 인덱스, 접지·벽·천장 충돌 테스트
+- [x] 사용자 제공자 교체 예제와 테스트
+- [x] Testing/PlatformerDemo 콘텐츠 검사 및 실제 창 Play smoke
+- [x] 성능 측정·제한·사용법 문서
+- [x] 전체 verify 성공 및 PR 리뷰
 ## 건드리는 파일
 Engine/Runtime/Physics/*, Engine/Schema/CoreSchemas.cpp, Tools/AliceEditor/*, Engine/Tests/*, 빌드 목록, 생성 스키마, Testing/*.
 ## 건드리면 안 되는 것

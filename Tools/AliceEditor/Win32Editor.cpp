@@ -312,7 +312,11 @@ struct App {
         if (!FlushEdits()) return;
         if (id == Play) {
             const auto result = play.Start(model, fs::Join(root, "input/default.input.yaml"));
-            notice = result ? "Play preview: click Scene, WASD move, Space/Ctrl height, Q/E rotate, F/R scale. Stop restores the document." : result.Error().ToPretty();
+            bool platformer = false;
+            for (const auto& actor : model.Document().root["actors"].Items())
+                platformer = platformer || actor["components"].Has("character2d");
+            notice = result ? (platformer ? "Platformer: click Scene, A/D move, Space jumps when grounded. Stop to edit or restart."
+                : "Play preview: click Scene, WASD move, Space/Ctrl height, Q/E rotate, F/R scale. Stop restores the document.") : result.Error().ToPretty();
             if (result) { sourceMode = false; lastTick = std::chrono::steady_clock::now(); SetTimer(window, 2, 16, nullptr); SetFocus(window); }
             Refresh(); return;
         }
@@ -419,6 +423,22 @@ struct App {
                     check("play_inspector", play.Actors()[0].position[0] == 3.5 && model.Text() == before);
                     SetFocus(terminal.Handle()); check("terminal_focus", TerminalFocus());
                     Command(Stop); check("stop_restores_document", !play.IsPlaying() && model.Text() == before && !model.IsDirty());
+                }
+            }
+            if (root.find("PlatformerDemo") != std::string::npos) {
+                Command(Play); check("physics_started", play.IsPlaying());
+                if (play.IsPlaying()) {
+                    const auto initialY = play.Actors()[0].position[1];
+                    bool stepped = true;
+                    for (int i=0; i<120; ++i) stepped = play.Tick(1.0/60, {}).IsOk() && stepped;
+                    const auto landedY = play.Actors()[0].position[1];
+                    check("physics_landed", stepped && landedY < initialY && std::abs(landedY - 0.5) < 0.001);
+                    const auto jump = play.Tick(1.0/60, {"key.space"});
+                    check("physics_jumped", jump.IsOk() && play.Actors()[0].position[1] > landedY);
+                    const auto x = play.Actors()[0].position[0];
+                    const auto move = play.Tick(1.0/60, {"key.d"});
+                    check("physics_moved", move.IsOk() && play.Actors()[0].position[0] > x);
+                    Command(Stop); check("physics_stop_restores", !play.IsPlaying() && model.Text() == before && !model.IsDirty());
                 }
             }
         }

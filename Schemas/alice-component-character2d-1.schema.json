@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "alice-component-character2d-1.schema.json",
+  "type": "object",
+  "properties": {
+    "speed": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 100.0,
+      "description": "좌우 이동 속도(m/s)",
+      "default": 4.0
+    },
+    "jumpSpeed": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 100.0,
+      "description": "접지 상태에서 점프할 때 위쪽 초기 속도(m/s)",
+      "default": 7.0
+    },
+    "gravityScale": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 10.0,
+      "description": "씬의 수직 중력 배율",
+      "default": 1.0
+    }
+  },
+  "additionalProperties": false,
+  "title": "Platformer Character 2D",
+  "description": "XY 평면의 비회전 사각형 캐릭터. box collider와 함께 사용하며 고정 지형과 충돌한다",
+  "examples": [
+    {
+      "speed": 4.0,
+      "jumpSpeed": 7.0,
+      "gravityScale": 1.0
+    }
+  ],
+  "x-alice-pitfalls": [
+    {
+      "wrong": "rigidbody: {}",
+      "right": "character2d: { speed: 4, jumpSpeed: 7 }",
+      "why": "플랫폼어 컨트롤러는 일반 강체가 아니다. rigidbody와 동시에 사용하지 않는다"
+    }
+  ],
+  "x-alice-schema-id": "alice/component/character2d/1"
+}

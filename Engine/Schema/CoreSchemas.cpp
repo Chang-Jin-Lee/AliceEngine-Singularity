@@ -114,6 +114,22 @@ SchemaPtr LightComponent() {
         .Build();
 }
 
+SchemaPtr Character2DComponent() {
+    Value example = Value::MakeMap();
+    example.Set("speed", Value{4.0});
+    example.Set("jumpSpeed", Value{7.0});
+    example.Set("gravityScale", Value{1.0});
+    return B::Map("alice/component/character2d/1")
+        .Title("Platformer Character 2D")
+        .Describe("XY 평면의 비회전 사각형 캐릭터. box collider와 함께 사용하며 고정 지형과 충돌한다")
+        .Field("speed", B::Float(), "좌우 이동 속도(m/s)").Default(Value{4.0}).Range(0.0, 100.0)
+        .Field("jumpSpeed", B::Float(), "접지 상태에서 점프할 때 위쪽 초기 속도(m/s)").Default(Value{7.0}).Range(0.0, 100.0)
+        .Field("gravityScale", B::Float(), "씬의 수직 중력 배율").Default(Value{1.0}).Range(0.0, 10.0)
+        .Example(std::move(example))
+        .Pitfall("rigidbody: {}", "character2d: { speed: 4, jumpSpeed: 7 }", "플랫폼어 컨트롤러는 일반 강체가 아니다. rigidbody와 동시에 사용하지 않는다")
+        .Build();
+}
+
 SchemaPtr RigidbodyComponent() {
     return B::Map("alice/component/rigidbody/1")
         .Title("Rigidbody")
@@ -253,6 +269,7 @@ SchemaPtr Components() {
         .Field("camera",      B::Ref("alice/component/camera/1").Build())
         .Field("light",       B::Ref("alice/component/light/1").Build())
         .Field("rigidbody",   B::Ref("alice/component/rigidbody/1").Build())
+        .Field("character2d", B::Ref("alice/component/character2d/1").Build())
         .Field("collider",    B::Ref("alice/component/collider/1").Build())
         .Field("audioSource", B::Ref("alice/component/audioSource/1").Build())
         .Field("particles",   B::Ref("alice/component/particles/1").Build())
@@ -595,6 +612,7 @@ void RegisterCoreSchemas(Registry& registry) {
     registry.Register(CameraComponent());
     registry.Register(LightComponent());
     registry.Register(RigidbodyComponent());
+    registry.Register(Character2DComponent());
     registry.Register(ColliderComponent());
     registry.Register(AudioSourceComponent());
     registry.Register(ParticlesComponent());
