@@ -49,3 +49,7 @@ Alice.PhysicsBench는 지형 100/1,000/10,000개, 독립 캐릭터 쿼리 1/100�
 최종 로컬 검증: Scripts/verify.ps1 -BuildDir Testing/build 전체 6개 단계 통과. CTest 활성 5개(191개 단위 테스트를 실행하는 러너, 콘텐츠/정규화, 실제 창 2개) 통과. 비활성 JSON CTest와 별개로 Alice.Tests --json을 직접 실행해 191/0 확인. npm test 2개 및 npm run build 통과.
 
 PR #7 첫 원격 실행에서 GCC/Clang은 로그 매크로를 감싼 중괄호 없는 if를 dangling-else 경고로 거부했다. 해당 if에 중괄호를 추가했다. MSVC 로컬 검증만으로 이식성 검증을 대신할 수 없음을 확인했다. 위키·개발 규칙은 첫 원격 실행에서도 통과했다.
+
+## GitHub 통합 완료
+
+[PR #7](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/7)은 2026-09-17 14:09 UTC에 main으로 머지됐다. 병합 커밋은 0221526927ece58ff7a66aaecd4de06a867276c4다. [최종 PR CI 실행](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/actions/runs/35231353444)에서 Windows, Ubuntu, macOS, 위키, 개발 규칙 모두 통과했다. 로컬 main도 해당 병합으로 fast-forward했다. 머지 후에는 완료 상태·계획·이 기록만 정리한다.

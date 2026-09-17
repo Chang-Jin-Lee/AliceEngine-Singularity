@@ -1,13 +1,14 @@
 # SID-07 · 최소 2D 플랫폼어 물리
 
 ```
-상태: 리뷰
+상태: 완료
 크기: L
 선행: SID-02
 담당: Codex (Sidney, 사용자 승인으로 스키마·에디터·테스트 연결 포함)
 ```
 
 PR: https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/7
+병합: 0221526, 2026-09-17 (Windows/Linux/macOS/위키/개발 규칙 CI 통과)
 
 ## 무엇을
 고정 지형과 사각형 캐릭터용 고정 스텝 물리, 교체 가능한 C++ 제공자, YAML 설정, Play 연결을 구현한다.

@@ -17,7 +17,7 @@
 - [x] 2. CoreSchemas.cpp character2d 및 Editor PlatformerSession 어댑터: 문서 검증과 위치/힌트, 고정 스텝 누적/점프 edge 보존, ECS Transform 반영. Editor_Play_Tests.cpp에서 기존 실패를 먼저 확인한다.
 - [x] 3. Testing/PlatformerDemo: 실행 씬, 사용자 제공자 예제, 벤치마크. 실제 창 smoke에서 Play 시작·낙하·착지·점프·Stop 검사. 기존 CubePlayground smoke 보존.
 - [x] 4. 코어/통합 리뷰 후 지적 수정. 의도적 충돌 처리 무력화로 회귀 테스트 실패 확인 후 복구. `Scripts/verify.ps1 -BuildDir Testing/build`, Testing check/fmt, 벤치마크 실행.
-- [ ] 5. 생성 스키마·위키 레퍼런스 갱신, 결과/제한 문서화, 커밋·푸시·PR 생성·CI 확인·머지.
+- [x] 5. 생성 스키마·위키 레퍼런스 갱신, 결과/제한 문서화, 커밋·푸시·PR 생성·CI 확인·머지.
 
 ## Shared interface
 Runtime core contract is recorded in Runtime/Physics/Platformer.h before adapter coding. Provider input is bounds plus displacement; output is resolved bounds, blocked axes, grounded and query counters. Provider is stateless with respect to character state; caller owns serializable position/velocity. Static world is initialized atomically. Editor holds one Character state and calls the shared fixed-step helper.
@@ -37,3 +37,5 @@ Progress and exact commands/results are recorded in VERIFICATION.md after execut
 - Review findings: tangent corner, terrain source provenance, transactional reload fixed with failing regression tests then passing.
 - Coordinate limit tightened to 1e6 to preserve meaningful 1e-8 contact tolerance.
 - Native provider replacement is demonstrated through the runtime API; YAML provider registry/DSL remain outside scope.
+
+Completed: PR #7 merged into main as 0221526 after all five GitHub checks passed.
