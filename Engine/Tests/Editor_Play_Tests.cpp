@@ -64,7 +64,8 @@ ALICE_TEST(EditorPlay, MovesOnlyTaggedPlayerAndStopLeavesSourceUnchanged) {
     ALICE_CHECK(!files.model.IsDirty()); ALICE_CHECK_STR(files.model.Text(), kScene);
     ALICE_CHECK_STR(fs::ReadTextFile(files.scenePath).Value(), kScene);
     ALICE_REQUIRE(play.Start(files.model, files.inputPath).IsOk());
-    ALICE_CHECK_EQ(play.Actors()[0].position[0], 0.0);
+    const auto restarted = play.Actors();
+    ALICE_CHECK_EQ(restarted[0].position[0], 0.0);
 }
 
 ALICE_TEST(EditorPlay, NormalizesMotionClampsTimeAndClearsUnfocusedInput) {
@@ -110,7 +111,8 @@ ALICE_TEST(EditorPlay, InspectorEditsRotationScaleAndBindingsAreLiveOnly) {
     ALICE_REQUIRE(fs::WriteTextFile(files.inputPath, remapped).IsOk());
     ALICE_REQUIRE(play.Start(files.model, files.inputPath).IsOk());
     ALICE_REQUIRE(play.Tick(0.1, {"key.d"}).IsOk());
-    ALICE_CHECK_EQ(play.Actors()[0].position[0], 0.0);
+    const auto unmoved = play.Actors();
+    ALICE_CHECK_EQ(unmoved[0].position[0], 0.0);
     ALICE_REQUIRE(play.Tick(0.1, {"key.e"}).IsOk());
     ALICE_CHECK(std::abs(play.Actors()[0].position[0] - 0.4) < 1e-9);
 }
@@ -152,7 +154,8 @@ ALICE_TEST(EditorPlay, BoundsAndSessionLifecycleRemainAtomic) {
     actor.scale = {0.06, 0.06, 0.06};
     ALICE_REQUIRE(play.EditActor(0, actor).IsOk());
     ALICE_REQUIRE(play.Tick(0.1, {"key.f"}).IsOk());
-    ALICE_CHECK_EQ(play.Actors()[0].scale[0], 0.05);
+    const auto shrunk = play.Actors();
+    ALICE_CHECK_EQ(shrunk[0].scale[0], 0.05);
     play.Stop(); play.Stop(); ALICE_CHECK(!play.IsPlaying());
     files.model.SetText("schema: alice/scene/1\nname: Invalid\nactors: broken\n");
     CheckPlayError(aliceCtx, play.Start(files.model, files.inputPath), files.scenePath, "editor.play.scene_invalid");

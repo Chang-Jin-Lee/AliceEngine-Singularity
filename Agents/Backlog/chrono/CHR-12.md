@@ -7,6 +7,8 @@
 담당: Codex (Chrono)
 ```
 
+PR: [#6](https://github.com/Chang-Jin-Lee/AliceEngine-Singularity/pull/6), base `main`.
+
 ## 요구와 완료 기준
 
 사용자는 새 씬 버튼, 왼쪽 편집기/오른쪽 AI용 터미널, 마우스 크기 조절,
@@ -38,3 +40,6 @@ Scripts/editor.ps1, 관련 CMake·문서·백로그·위키.
 입력 초기화 변형은 각각 회귀 테스트 실패를 확인한 뒤 복원했다.
 최종 독립 리뷰에서 추가 중대 결함은 발견되지 않았다. 실제 AI CLI별 전체 화면 UI와
 실제 IME 조합 이벤트 호환성은 별도 수동 확인 범위로 남긴다.
+
+첫 CI의 Windows·위키·개발 규칙은 통과했다. GCC가 지적한 테스트 루프의 불필요한 복사와
+Clang이 지적한 테스트 임시 액터 목록의 수명을 수정해 재검증한다.

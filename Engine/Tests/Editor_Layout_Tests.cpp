@@ -19,7 +19,7 @@ ALICE_TEST(EditorLayout, ExtremeDragsAndResizeKeepPanelsUsable) {
     editor::WorkspaceLayout layout;
     for (int coordinate : {-10000, 10000}) for (const auto split : {editor::Split::Terminal, editor::Split::Hierarchy, editor::Split::Inspector, editor::Split::Console, editor::Split::Project}) {
         layout.Drag(split, coordinate, coordinate, 1600, 1000);
-        for (const auto [width, height] : {std::pair{1100, 760}, {1600, 1000}, {2400, 1400}}) {
+        for (const auto& [width, height] : {std::pair{1100, 760}, {1600, 1000}, {2400, 1400}}) {
             const auto g = layout.Compute(width, height);
             ALICE_CHECK(g.left >= 160); ALICE_CHECK(g.right - g.left >= 250);
             ALICE_CHECK(g.editor - g.right >= 240); ALICE_CHECK(width - g.editor >= 280);

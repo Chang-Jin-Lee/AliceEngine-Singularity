@@ -34,3 +34,7 @@ passes all 20. Whole-branch review found no additional important defects. Offici
 Windows 173/173, CTest 2/2 enabled, Wiki tests 2/2 and static build 68 routes passed.
 Fresh GUI capture confirms right-side terminal, all dividers, cubes, and Korean/CLI command output.
 Remaining: push implementation, PR/CI and main integration under existing user authorization.
+
+Implementation ab40001 pushed, PR #6 opened. CI 35189631348 passed Windows/wiki/conventions,
+but GCC rejected a copied structured-binding loop and Clang caught three test macro references to
+temporary actor-vector elements. Tests now use a reference loop and owned actor snapshots.
