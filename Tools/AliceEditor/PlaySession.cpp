@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Preview state belongs to a disposable ECS world, never to the editable document.
 #include "AliceEditor/PlaySession.h"
+#include "AliceEditor/PlatformerSession.h"
 #include "Runtime/World.h"
 #include "Schema/Registry.h"
 #include <algorithm>
@@ -92,6 +93,7 @@ struct PlaySession::Impl {
     std::vector<std::string> names;
     std::array<std::vector<Binding>, 5> bindings;
     usize player = 0;
+    std::unique_ptr<PlatformerSession> physics;
     SourceLocation ActorSource(usize index, const char* field = "transform") const {
         const auto& actors = original.root["actors"];
         if (index >= actors.Size()) return Location(original, "actors", actors);
@@ -123,6 +125,13 @@ Status PlaySession::Start(const DocumentModel& document, const std::string& inpu
         "Add tags: [player] to exactly one top-level actor in this scene");
     if (playerCount > 1) return Error("editor.play.player_multiple", "More than one player actor was found", source,
         "Keep the player tag on exactly one top-level actor");
+    for (usize i = 0; i < actorValues.Size(); ++i) {
+        const auto& component = actorValues.At(i)["components"]["character2d"];
+        if (i != next->player && !component.IsNull()) return Error("physics.content.unsupported",
+            "The character2d component must belong to the player", Location(next->original,
+                "actors[" + std::to_string(i) + "].components.character2d", component),
+            "Keep character2d on exactly one top-level actor and tag that actor player");
+    }
 
     DocumentModel input;
     const auto opened = input.Open(inputPath);
@@ -144,6 +153,10 @@ Status PlaySession::Start(const DocumentModel& document, const std::string& inpu
     if (inputDocument.SchemaId() != "alice/input/1") return Error("editor.play.input_invalid",
         "Preview requires an input map", Location(inputDocument, "schema", inputDocument.root["schema"]),
         "Use schema: alice/input/1 and define MoveX, MoveZ, MoveY, RotateY and Scale axis actions");
+    if (actorValues.At(next->player)["components"].Has("character2d")) {
+        next->physics = std::make_unique<PlatformerSession>();
+        ALICE_TRY(next->physics->Load(next->original, next->player, inputDocument));
+    } else {
     const auto& actions = inputDocument.root["actions"];
     std::array<bool, 5> seen{};
     for (usize index = 0; index < actions.Size(); ++index) {
@@ -178,6 +191,8 @@ Status PlaySession::Start(const DocumentModel& document, const std::string& inpu
         "The preview input map is missing required actions", Location(inputDocument, "actions", actions),
         "Define MoveX, MoveZ, MoveY, RotateY and Scale as axis actions with supported key pairs");
 
+    }
+
     auto schemas = std::make_shared<schema::Registry>();
     schema::RegisterCoreSchemas(*schemas);
     auto components = std::make_shared<runtime::ComponentRegistry>();
@@ -197,6 +212,16 @@ Status PlaySession::Start(const DocumentModel& document, const std::string& inpu
             transform.IsNull() ? doc::Value::MakeMap() : transform, actorSource));
         next->entities.push_back(entity.Value());
         next->names.push_back(actorValues.At(index)["name"].AsString());
+    }
+    if (next->physics) {
+        auto position = next->physics->Tick(0, {});
+        if (!position) return position.Error();
+        ALICE_TRY(next->world->EditComponent(next->entities[next->player], next->transform, typeid(Transform),
+            [](void* object, void* context) noexcept {
+                auto& value = *static_cast<Transform*>(object);
+                const auto& xy = *static_cast<runtime::physics::Vec2*>(context);
+                value.position[0] = xy.x; value.position[1] = xy.y;
+            }, &position.Value(), source));
     }
     m_impl = std::move(next);
     return Status::Ok();
@@ -223,6 +248,8 @@ Status PlaySession::EditActor(usize index, const Actor& actor) {
     if (index >= m_impl->entities.size()) return Error("editor.play.actor_invalid", "Preview actor does not exist",
         m_impl->ActorSource(index), "Select an existing actor from the preview hierarchy");
     const auto source = m_impl->ActorSource(index);
+    if (m_impl->physics) return Error("physics.edit.unsupported", "Stop physics before editing actors", source,
+        "Press Stop, edit the scene, then Play again to rebuild colliders and reset velocity");
     if (actor.name.empty()) return Error("editor.play.actor_name_empty", "Preview actor name cannot be empty", m_impl->ActorSource(index, "name"),
         "Enter a nonempty actor name");
     Transform transform{actor.position, actor.rotation, actor.scale};
@@ -239,6 +266,16 @@ Status PlaySession::Tick(double dt, const std::vector<std::string>& heldKeys) {
     const auto source = m_impl->ActorSource(m_impl->player);
     if (!std::isfinite(dt) || dt < 0) return Error("editor.play.time_invalid", "Preview delta time must be finite and nonnegative",
         source, "Supply an elapsed time in seconds that is finite and at least zero");
+    if (m_impl->physics) {
+        auto position = m_impl->physics->Tick(dt, heldKeys);
+        if (!position) return position.Error();
+        return m_impl->world->EditComponent(m_impl->entities[m_impl->player], m_impl->transform, typeid(Transform),
+            [](void* object, void* context) noexcept {
+                auto& value = *static_cast<Transform*>(object);
+                const auto& xy = *static_cast<runtime::physics::Vec2*>(context);
+                value.position[0] = xy.x; value.position[1] = xy.y;
+            }, &position.Value(), source);
+    }
     dt = std::min(dt, 0.1);
     std::array<double, 5> axes{};
     const auto held = [&heldKeys](const std::string& key) { return std::find(heldKeys.begin(), heldKeys.end(), key) != heldKeys.end(); };

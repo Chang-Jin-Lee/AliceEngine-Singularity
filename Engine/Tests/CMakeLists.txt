@@ -15,7 +15,7 @@ set(ALICE_TEST_SOURCES
 set(ALICE_TEST_DEPS Alice.Foundation Alice.Doc)
 
 if(TARGET Alice.Editor.Model)
-    list(APPEND ALICE_TEST_SOURCES Editor_Tests.cpp Editor_Layout_Tests.cpp Editor_Play_Tests.cpp Terminal_Tests.cpp)
+    list(APPEND ALICE_TEST_SOURCES Editor_Tests.cpp Editor_Layout_Tests.cpp Editor_Play_Tests.cpp Editor_Physics_Tests.cpp Terminal_Tests.cpp)
     list(APPEND ALICE_TEST_DEPS Alice.Editor.Model)
     if(WIN32)
         list(APPEND ALICE_TEST_DEPS Alice.Editor.Terminal)
@@ -23,7 +23,7 @@ if(TARGET Alice.Editor.Model)
 endif()
 
 if(TARGET Alice.Runtime)
-    list(APPEND ALICE_TEST_SOURCES Runtime_ECS_Tests.cpp)
+    list(APPEND ALICE_TEST_SOURCES Runtime_ECS_Tests.cpp Physics_Tests.cpp)
     list(APPEND ALICE_TEST_DEPS Alice.Runtime)
 endif()
 
@@ -50,11 +50,27 @@ alice_executable(Alice.Tests
 
 add_test(NAME Alice.Tests COMMAND Alice.Tests)
 
+if(TARGET alice)
+    add_test(NAME Alice.Platformer.Content COMMAND alice check "${PROJECT_SOURCE_DIR}/Testing/PlatformerDemo" --json)
+    add_test(NAME Alice.Platformer.Format COMMAND alice fmt "${PROJECT_SOURCE_DIR}/Testing/PlatformerDemo" --check)
+endif()
+
 if(TARGET Alice.Editor)
     add_test(NAME Alice.Editor.Smoke COMMAND Alice.Editor --smoke-test --project "${PROJECT_SOURCE_DIR}/Samples/CubePlayground")
     set_tests_properties(Alice.Editor.Smoke PROPERTIES TIMEOUT 20)
+    add_test(NAME Alice.Editor.PlatformerSmoke COMMAND Alice.Editor --smoke-test --project "${PROJECT_SOURCE_DIR}/Testing/PlatformerDemo")
+    set_tests_properties(Alice.Editor.PlatformerSmoke PROPERTIES TIMEOUT 20 RUN_SERIAL TRUE)
+    set_tests_properties(Alice.Editor.Smoke PROPERTIES RUN_SERIAL TRUE)
 endif()
 
 # CI 와 AI 도구는 JSON 결과를 읽는다.
 add_test(NAME Alice.Tests.Json COMMAND Alice.Tests --json)
 set_tests_properties(Alice.Tests.Json PROPERTIES DISABLED TRUE)
+
+# Explicit target keeps measurements separate from correctness tests.
+if(TARGET Alice.Runtime)
+    target_sources(Alice.Tests PRIVATE "${PROJECT_SOURCE_DIR}/Testing/PlatformerDemo/CustomPhysicsExample.cpp")
+    add_executable(Alice.PhysicsBench "${PROJECT_SOURCE_DIR}/Testing/PlatformerDemo/Benchmark.cpp")
+    alice_apply_common_settings(Alice.PhysicsBench)
+    target_link_libraries(Alice.PhysicsBench PRIVATE Alice.Runtime)
+endif()

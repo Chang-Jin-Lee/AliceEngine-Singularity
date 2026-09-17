@@ -20,6 +20,7 @@
   <url><loc>/reference/schemas/alice-component-animator-1/</loc></url>
   <url><loc>/reference/schemas/alice-component-audioSource-1/</loc></url>
   <url><loc>/reference/schemas/alice-component-camera-1/</loc></url>
+  <url><loc>/reference/schemas/alice-component-character2d-1/</loc></url>
   <url><loc>/reference/schemas/alice-component-collider-1/</loc></url>
   <url><loc>/reference/schemas/alice-component-light-1/</loc></url>
   <url><loc>/reference/schemas/alice-component-mesh-1/</loc></url>

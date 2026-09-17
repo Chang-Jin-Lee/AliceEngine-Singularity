@@ -1,0 +1,283 @@
+{
+  "warmup": 20,
+  "samples": 100,
+  "profiler_enabled": false,
+  "fixed_dt": 0.016666666666666666,
+  "rows": [
+    {
+      "terrain": 100,
+      "actors": 1,
+      "dense": false,
+      "indexed": false,
+      "build_us": 3.4,
+      "step_mean_us": 1.174,
+      "step_p95_us": 1.2,
+      "candidates": 40000,
+      "exact_tests": 40000
+    },
+    {
+      "terrain": 100,
+      "actors": 1,
+      "dense": false,
+      "indexed": true,
+      "build_us": 7.3,
+      "step_mean_us": 0.149,
+      "step_p95_us": 0.2,
+      "candidates": 300,
+      "exact_tests": 300
+    },
+    {
+      "terrain": 100,
+      "actors": 100,
+      "dense": false,
+      "indexed": false,
+      "build_us": 2.2,
+      "step_mean_us": 130.24,
+      "step_p95_us": 138.4,
+      "candidates": 4000000,
+      "exact_tests": 4000000
+    },
+    {
+      "terrain": 100,
+      "actors": 100,
+      "dense": false,
+      "indexed": true,
+      "build_us": 6,
+      "step_mean_us": 17.996,
+      "step_p95_us": 18.1,
+      "candidates": 30000,
+      "exact_tests": 30000
+    },
+    {
+      "terrain": 100,
+      "actors": 1,
+      "dense": true,
+      "indexed": false,
+      "build_us": 2.1,
+      "step_mean_us": 1.442,
+      "step_p95_us": 1.6,
+      "candidates": 40000,
+      "exact_tests": 40000
+    },
+    {
+      "terrain": 100,
+      "actors": 1,
+      "dense": true,
+      "indexed": true,
+      "build_us": 6.8,
+      "step_mean_us": 0.188,
+      "step_p95_us": 0.2,
+      "candidates": 300,
+      "exact_tests": 300
+    },
+    {
+      "terrain": 100,
+      "actors": 100,
+      "dense": true,
+      "indexed": false,
+      "build_us": 2.3,
+      "step_mean_us": 134.738,
+      "step_p95_us": 140.1,
+      "candidates": 4000000,
+      "exact_tests": 4000000
+    },
+    {
+      "terrain": 100,
+      "actors": 100,
+      "dense": true,
+      "indexed": true,
+      "build_us": 7.9,
+      "step_mean_us": 17.837,
+      "step_p95_us": 18.2,
+      "candidates": 30000,
+      "exact_tests": 30000
+    },
+    {
+      "terrain": 1000,
+      "actors": 1,
+      "dense": false,
+      "indexed": false,
+      "build_us": 72.9,
+      "step_mean_us": 11.679,
+      "step_p95_us": 11.6,
+      "candidates": 400000,
+      "exact_tests": 400000
+    },
+    {
+      "terrain": 1000,
+      "actors": 1,
+      "dense": false,
+      "indexed": true,
+      "build_us": 172,
+      "step_mean_us": 0.18,
+      "step_p95_us": 0.2,
+      "candidates": 300,
+      "exact_tests": 300
+    },
+    {
+      "terrain": 1000,
+      "actors": 100,
+      "dense": false,
+      "indexed": false,
+      "build_us": 28.3,
+      "step_mean_us": 1165.61,
+      "step_p95_us": 1236,
+      "candidates": 40000000,
+      "exact_tests": 40000000
+    },
+    {
+      "terrain": 1000,
+      "actors": 100,
+      "dense": false,
+      "indexed": true,
+      "build_us": 169.2,
+      "step_mean_us": 24.393,
+      "step_p95_us": 28.1,
+      "candidates": 30000,
+      "exact_tests": 30000
+    },
+    {
+      "terrain": 1000,
+      "actors": 1,
+      "dense": true,
+      "indexed": false,
+      "build_us": 26,
+      "step_mean_us": 11.398,
+      "step_p95_us": 11.6,
+      "candidates": 400000,
+      "exact_tests": 400000
+    },
+    {
+      "terrain": 1000,
+      "actors": 1,
+      "dense": true,
+      "indexed": true,
+      "build_us": 181.8,
+      "step_mean_us": 0.176,
+      "step_p95_us": 0.2,
+      "candidates": 300,
+      "exact_tests": 300
+    },
+    {
+      "terrain": 1000,
+      "actors": 100,
+      "dense": true,
+      "indexed": false,
+      "build_us": 32.8,
+      "step_mean_us": 1157,
+      "step_p95_us": 1215.6,
+      "candidates": 40000000,
+      "exact_tests": 40000000
+    },
+    {
+      "terrain": 1000,
+      "actors": 100,
+      "dense": true,
+      "indexed": true,
+      "build_us": 176,
+      "step_mean_us": 24.155,
+      "step_p95_us": 27.7,
+      "candidates": 30000,
+      "exact_tests": 30000
+    },
+    {
+      "terrain": 10000,
+      "actors": 1,
+      "dense": false,
+      "indexed": false,
+      "build_us": 231.5,
+      "step_mean_us": 116.59,
+      "step_p95_us": 129.1,
+      "candidates": 4000000,
+      "exact_tests": 4000000
+    },
+    {
+      "terrain": 10000,
+      "actors": 1,
+      "dense": false,
+      "indexed": true,
+      "build_us": 2120,
+      "step_mean_us": 0.22,
+      "step_p95_us": 0.3,
+      "candidates": 300,
+      "exact_tests": 300
+    },
+    {
+      "terrain": 10000,
+      "actors": 100,
+      "dense": false,
+      "indexed": false,
+      "build_us": 211.1,
+      "step_mean_us": 11498.9,
+      "step_p95_us": 11923.7,
+      "candidates": 400000000,
+      "exact_tests": 400000000
+    },
+    {
+      "terrain": 10000,
+      "actors": 100,
+      "dense": false,
+      "indexed": true,
+      "build_us": 2229.2,
+      "step_mean_us": 26.285,
+      "step_p95_us": 26.5,
+      "candidates": 30000,
+      "exact_tests": 30000
+    },
+    {
+      "terrain": 10000,
+      "actors": 1,
+      "dense": true,
+      "indexed": false,
+      "build_us": 185.7,
+      "step_mean_us": 114.736,
+      "step_p95_us": 119.9,
+      "candidates": 4000000,
+      "exact_tests": 4000000
+    },
+    {
+      "terrain": 10000,
+      "actors": 1,
+      "dense": true,
+      "indexed": true,
+      "build_us": 1997.7,
+      "step_mean_us": 0.203,
+      "step_p95_us": 0.2,
+      "candidates": 300,
+      "exact_tests": 300
+    },
+    {
+      "terrain": 10000,
+      "actors": 100,
+      "dense": true,
+      "indexed": false,
+      "build_us": 245.6,
+      "step_mean_us": 18008.7,
+      "step_p95_us": 52147.5,
+      "candidates": 400000000,
+      "exact_tests": 400000000
+    },
+    {
+      "terrain": 10000,
+      "actors": 100,
+      "dense": true,
+      "indexed": true,
+      "build_us": 5480.4,
+      "step_mean_us": 100.526,
+      "step_p95_us": 100.8,
+      "candidates": 30000,
+      "exact_tests": 30000
+    }
+  ],
+  "environment": {
+    "cpu": "Intel Core i9-14900HX",
+    "physical_cores": 24,
+    "logical_processors": 32,
+    "os": "Windows",
+    "compiler": "MSVC 19.51.36248.0",
+    "build": "RelWithDebInfo /O2",
+    "date": "2026-09-17",
+    "threads": 1,
+    "scope": "Repeated collision query batches, not complete game frames; no Box2D comparison"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "engine": "AliceEngine-Singularity",
   "dialect": "https://json-schema.org/draft/2020-12/schema",
-  "count": 19,
+  "count": 20,
   "schemas": [
     {
       "id": "alice/actor/1",
@@ -44,6 +44,13 @@
       "title": "Camera",
       "description": "장면을 촬영한다. priority 가 가장 높은 카메라가 화면을 담당한다",
       "fields": 7
+    },
+    {
+      "id": "alice/component/character2d/1",
+      "file": "alice-component-character2d-1.schema.json",
+      "title": "Platformer Character 2D",
+      "description": "XY 평면의 비회전 사각형 캐릭터. box collider와 함께 사용하며 고정 지형과 충돌한다",
+      "fields": 3
     },
     {
       "id": "alice/component/collider/1",

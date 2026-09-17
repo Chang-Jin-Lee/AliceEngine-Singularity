@@ -97,11 +97,13 @@ set(alice_runtime_headers
     Runtime/RenderView.h
     Runtime/RenderExtraction.h
     Runtime/Rules.h
+    Runtime/Physics/Platformer.h
 )
 alice_module(Alice.Runtime
     FOLDER "Engine"
     DEPS Alice.Verbs
     SOURCES ${alice_runtime_headers}
+        Runtime/Physics/Platformer.cpp
         Runtime/ECS/Support.h
         Runtime/ECS/ComponentRegistry.cpp
         Runtime/ECS/NativePool.h
